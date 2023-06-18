@@ -8,6 +8,7 @@ import { success, warning } from "@/utils/message";
 
 import Card from "@/components/Card";
 import FormGroup from "@/components/FormGroup";
+import FormInput from "@/components/FormInput";
 
 import type { ErrorResponse } from "@/types";
 
@@ -45,8 +46,7 @@ export default function Login(): ReactElement {
     <Card title="Login">
       <form name="login">
         <FormGroup label="Email">
-          <input
-            className="form-control shadow-none w-100"
+          <FormInput
             value={email}
             type="email"
             name="email"
@@ -55,8 +55,7 @@ export default function Login(): ReactElement {
           />
         </FormGroup>
         <FormGroup label="Password">
-          <input
-            className="form-control shadow-none w-100"
+          <FormInput
             value={password}
             type="password"
             onInput={passwordChanged}
