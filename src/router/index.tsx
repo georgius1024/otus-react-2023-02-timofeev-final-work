@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import DefaultLayout from "@/layouts/default";
-import PrivateRoute from "@/components/PrivaterRoute";
+import PrivateRoute from "@/components/PrivateRoute";
 
 import HomePage from "@/pages/Home.tsx";
 import LoginPage from "@/pages/Login.tsx";
