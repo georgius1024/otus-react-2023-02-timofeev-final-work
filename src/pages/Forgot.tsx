@@ -7,6 +7,7 @@ import { forgot } from "@/store/auth";
 
 import Card from "@/components/Card";
 import FormGroup from "@/components/FormGroup";
+import FormInput from "@/components/FormInput";
 
 import type { ErrorResponse } from "@/types";
 
@@ -37,8 +38,7 @@ export default function ForgotPage(): ReactElement {
     <Card title="Restore password">
       <form name="forgot">
         <FormGroup label="Email">
-          <input
-            className="form-control shadow-none w-100"
+          <FormInput
             value={email}
             type="email"
             name="email"
