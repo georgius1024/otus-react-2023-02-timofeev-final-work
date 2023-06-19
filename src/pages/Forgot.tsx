@@ -2,7 +2,7 @@ import { ReactElement, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-import { success, warning } from "@/utils/message";
+import useAlert from "@/utils/AlertHook";
 import { forgot } from "@/store/auth";
 
 import Card from "@/components/Card";
@@ -15,7 +15,7 @@ export default function ForgotPage(): ReactElement {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
-
+  const alert = useAlert();
   const emailChanged = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEmail(event.target.value);
   };
@@ -24,13 +24,15 @@ export default function ForgotPage(): ReactElement {
     event: React.MouseEvent<HTMLButtonElement>
   ): Promise<void> => {
     event.preventDefault();
-    // @ts-ignore
-    const { error } = (await dispatch(forgot({ email }))) as unknown as  ErrorResponse;
+    const { error } = (await dispatch(
+      // @ts-ignore
+      forgot({ email })
+    )) as unknown as ErrorResponse;
     if (!error) {
-      success("We sent reset password recovery email");
+      alert("We sent reset password recovery email", "success");
       navigate("/login");
     } else {
-      warning(error.message);
+      alert(error.message, "warning");
     }
   };
 

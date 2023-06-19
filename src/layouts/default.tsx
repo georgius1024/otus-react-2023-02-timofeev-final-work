@@ -1,6 +1,7 @@
 import { PropsWithChildren } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import AlertsPanel from "@/components/AlertsPanel";
 import type { RootState } from "@/store";
 import type { User } from "@/types";
 import { logout } from "@/store/auth";
@@ -42,6 +43,7 @@ export default function DefaultLayout(props: PropsWithChildren) {
           <ul className="navbar-nav flex-row">{ProfileLinks(user)}</ul>
         </div>
       </nav>
+      <AlertsPanel/>
       {props.children}
       <nav
         className="navbar bg-secondary position-absolute"

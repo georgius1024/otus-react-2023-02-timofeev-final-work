@@ -1,10 +1,10 @@
 import { ReactElement, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import useAlert from "@/utils/AlertHook";
 
 import { login } from "@/store/auth";
 import { AppDispatch } from "@/store";
-import { success, warning } from "@/utils/message";
 
 import Card from "@/components/Card";
 import FormGroup from "@/components/FormGroup";
@@ -17,6 +17,7 @@ export default function Login(): ReactElement {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const alert = useAlert()
 
   const emailChanged = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEmail(event.target.value);
@@ -35,10 +36,11 @@ export default function Login(): ReactElement {
       login({ email, password })
     )) as ErrorResponse;
     if (!error) {
-      success("Welcome back");
+
+      alert("Welcome back", 'success');
       navigate("/");
     } else {
-      warning(error.message);
+      alert(error.message, 'warning');
     }
   };
 
