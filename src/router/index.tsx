@@ -4,9 +4,9 @@ import PrivateRoute from "@/components/PrivateRoute";
 
 import HomePage from "@/pages/Home.tsx";
 import LoginPage from "@/pages/Login.tsx";
-import ForgotPage from "@/pages/Forgot";
-import ModulePage from "@/pages/Module";
-import ErrorPage from "@/pages/Error";
+import ForgotPage from "@/pages/Forgot.tsx";
+import ModulePage from "@/pages/Module.tsx";
+import ErrorPage from "@/pages/Error.tsx";
 
 const routes = [
   {
