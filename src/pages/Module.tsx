@@ -7,24 +7,24 @@ import { useDispatch } from "react-redux";
 import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
 import * as modules from "@/services/modules";
-import { set } from "@/store/busy";
 export default function ModulePage(): ReactElement {
-
-  const dispatch = useDispatch();
 
   const [list, setList] = useState<Module[]>([])
   const alert = useAlert()
   const busy = useBusy()
-  const {id} = useParams()
+  const {id = ''} = useParams()
 
-  useEffect(() => {
-    dispatch(set(true));
-    modules.fetchAll().then(r => setList(r))
+  const reload = useCallback(async (parent: string) => {
+    busy(true)
+    await modules.fetchAll(parent).then(r => setList(r))
     .catch(console.error)
-    .finally(() => dispatch(set(false)))
-  }, [dispatch]);
+    .finally(() => busy(false))
+  }, [busy])
+  useEffect(() => {
+   reload(id)
+  }, [reload, id]);
   const create = () => {
-    modules.create({name: 'Module', type: 'lesson'})
+    modules.create({name: 'Module', type: 'lesson', parent: id}).catch(console.error).then(console.log)
   }
   return (
     <>

@@ -18,9 +18,9 @@ export default function HomePage(): ReactElement {
   return (
     <>
       <h1>HOME</h1>
-      <button onClick={raiseDefault}>Raise</button>
-      <button onClick={raiseBusy}>Busy</button>
-      <Link class="btn btn-secondary" to="/module">Modules</Link>
+      <button className="btn btn-secondary" onClick={raiseDefault}>Raise</button>
+      <button className="btn btn-secondary" onClick={raiseBusy}>Busy</button>
+      <Link className="btn btn-secondary" to="/module">Modules</Link>
     </>
   );
 }

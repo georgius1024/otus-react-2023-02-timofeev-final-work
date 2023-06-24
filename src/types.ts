@@ -26,7 +26,7 @@ export type Activity = WordActivity | PhraseActivity
 
 export type Module = {
   id?: string;
-  parent?: string;
+  parent: string;
   name: string;
   type: string;
   position?: number;

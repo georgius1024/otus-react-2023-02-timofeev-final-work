@@ -6,6 +6,7 @@ import HomePage from "@/pages/Home.tsx";
 import LoginPage from "@/pages/Login.tsx";
 import ForgotPage from "@/pages/Forgot";
 import ModulePage from "@/pages/Module";
+import ErrorPage from "@/pages/Error";
 
 const routes = [
   {
@@ -28,6 +29,11 @@ const routes = [
   {
     path: "/forgot",
     element: ForgotPage,
+    layout: DefaultLayout,
+  },
+  {
+    path: "*",
+    element: ErrorPage,
     layout: DefaultLayout,
   },
 ].map((route) => {
