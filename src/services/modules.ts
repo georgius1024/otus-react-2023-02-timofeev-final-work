@@ -26,7 +26,13 @@ const withoutId = (item: Module): Module => {
   return rest;
 };
 
-export async function fetchAll(parent = ""): Promise<Module[]> {
+export async function fetchAll(): Promise<Module[]> {
+  const response = await getDocs(
+    query(modulesTableRef)
+  );
+  return response.docs.map(withId);
+}
+export async function fetchChildren(parent = ""): Promise<Module[]> {
   const response = await getDocs(
     query(modulesTableRef, where("parent", "==", parent))
   );

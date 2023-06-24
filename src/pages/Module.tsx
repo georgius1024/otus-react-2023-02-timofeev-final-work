@@ -1,8 +1,9 @@
 import { ReactElement, useEffect, useState, useCallback } from "react";
 import type { Module } from "@/types";
-
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+
+import ModulesTree from "@/components/ModulesTree";
 
 import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
@@ -37,11 +38,7 @@ export default function ModulePage(): ReactElement {
   return (
     <>
       <h1>MODULE</h1>
-      <ul>
-        {list.map((e) => (
-          <li><Link to={`/module/${e.id}`}>{e.name}</Link></li>
-        ))}
-      </ul>
+      <ModulesTree list={list}/>
       {
         id && <Link to='/module'>Start</Link>
       }
