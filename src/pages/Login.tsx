@@ -1,10 +1,10 @@
 import { ReactElement, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useAlert from "@/utils/AlertHook";
 
 import { login } from "@/store/auth";
-import { AppDispatch } from "@/store";
+import { AppDispatch, RootState } from "@/store";
 
 import Card from "@/components/Card";
 import FormGroup from "@/components/FormGroup";
@@ -17,6 +17,7 @@ export default function Login(): ReactElement {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const busy = useSelector((state: RootState) => state.auth.busy);
   const alert = useAlert()
 
   const emailChanged = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -63,6 +64,7 @@ export default function Login(): ReactElement {
           />
         </FormGroup>
         <button
+          disabled={busy}
           className="btn btn-primary d-block w-100 my-3"
           type="button"
           onClick={submit}

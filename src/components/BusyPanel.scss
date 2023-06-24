@@ -1,0 +1,30 @@
+@import "@/variables.scss";
+.busy-state-panel {
+  backdrop-filter: blur(2px);
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  position: fixed;
+  z-index: 10;
+  display: flex;
+  pointer-events: none;
+  align-items: center;
+  justify-content: center;
+  .spinner {
+    width: 80px;
+    height: 80px;
+    border-width: 8px;
+    border-radius: 100%;
+    border-style: solid;
+    border-color: transparentize($secondary, 0.3);
+    border-top-color: lighten($secondary, 50);
+    animation: spinner-animation 1s linear infinite;
+  }
+}
+
+@keyframes spinner-animation {
+  to {
+    transform: rotate(360deg);
+  }
+}
