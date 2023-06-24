@@ -1,4 +1,5 @@
 import { ReactElement, useState } from "react";
+import { Link } from "react-router-dom";
 import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
 export default function HomePage(): ReactElement {
@@ -19,6 +20,7 @@ export default function HomePage(): ReactElement {
       <h1>HOME</h1>
       <button onClick={raiseDefault}>Raise</button>
       <button onClick={raiseBusy}>Busy</button>
+      <Link class="btn btn-secondary" to="/module">Modules</Link>
     </>
   );
 }

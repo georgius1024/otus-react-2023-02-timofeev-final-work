@@ -5,11 +5,18 @@ import PrivateRoute from "@/components/PrivateRoute";
 import HomePage from "@/pages/Home.tsx";
 import LoginPage from "@/pages/Login.tsx";
 import ForgotPage from "@/pages/Forgot";
+import ModulePage from "@/pages/Module";
 
 const routes = [
   {
     path: "/",
     element: HomePage,
+    layout: DefaultLayout,
+    private: true,
+  },
+  {
+    path: "/module/:id?",
+    element: ModulePage,
     layout: DefaultLayout,
     private: true,
   },
