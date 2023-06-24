@@ -1,5 +1,4 @@
 import type { AuthState } from "@/store/auth/types";
-import { restore } from ".";
 
 export default {
   logout: (state: AuthState) => {

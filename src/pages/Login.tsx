@@ -36,7 +36,6 @@ export default function Login(): ReactElement {
       login({ email, password })
     )) as ErrorResponse;
     if (!error) {
-
       alert("Welcome back", 'success');
       navigate("/");
     } else {
