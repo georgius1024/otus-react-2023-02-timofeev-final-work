@@ -1,8 +1,7 @@
 import { ReactElement, useEffect, useState, useCallback } from "react";
 import type { Module } from "@/types";
 import { useParams } from "react-router-dom";
-import { Link, useNavigate } from "react-router-dom";
-import classNames from "classnames";
+import { useNavigate } from "react-router-dom";
 import "@/pages/Module.scss";
 
 //import useAlert from "@/utils/AlertHook";
@@ -56,8 +55,24 @@ export default function ModulePage(): ReactElement {
     reload(id);
   }, [reload, id]);
 
-  const create = (type: string) => {
-    setCurrentModule({ type, parent: id, name: "" });
+  const canCreate = (): boolean => {
+    const last = parentModules.at(-1);
+    return last?.type !== "activity";
+  };
+
+  const availableCreateType = (): string => {
+    const last = parentModules.at(-1);
+    switch (last?.type) {
+      case "course":
+        return "lesson";
+      case "lesson":
+        return "activity";
+      default:
+        return "course";
+    }
+  };
+  const create = () => {
+    setCurrentModule({ type: availableCreateType(), parent: id, name: "" });
     showEditor(true);
   };
   const editModule = (id: string) => {
@@ -117,44 +132,14 @@ export default function ModulePage(): ReactElement {
           onEdit={editModule}
           onDelete={deleteModule}
         />
-        <div className="dropdown">
-          <button
-            className="btn btn-primary dropdown-toggle mt-3 w-100"
-            type="button"
-            id="createButton"
-            data-bs-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            Create
-          </button>
-          <div className="dropdown-menu" aria-labelledby="createButton">
-            <div
-              className={classNames("dropdown-item", {
-                disabled: currentModule,
-              })}
-              onClick={() => create("course")}
-            >
-              Course
-            </div>
-            <div
-              className={classNames("dropdown-item", {
-                disabled: currentModule?.type !== "course",
-              })}
-              onClick={() => create("lesson")}
-            >
-              Lesson
-            </div>
-            <div
-              className={classNames("dropdown-item", {
-                disabled: currentModule?.type !== "lesson",
-              })}
-              onClick={() => create("activity")}
-            >
-              Activity
-            </div>
-          </div>
-        </div>
+        <button
+          className="btn btn-primary mt-3 w-100"
+          disabled={!canCreate}
+          type="button"
+          onClick={create}
+        >
+          Create {availableCreateType()}
+        </button>
       </div>
       <SidePanel
         position="right"
@@ -170,7 +155,7 @@ export default function ModulePage(): ReactElement {
         )}
         <div className="mt-3 d-flex justify-content-end">
           <button
-            disabled={!!currentModule?.name}
+            disabled={Boolean(currentModule?.name) === false}
             className="btn btn-primary w-100"
             type="button"
             onClick={saveModule}
