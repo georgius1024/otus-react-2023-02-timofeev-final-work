@@ -10,6 +10,7 @@ import useBusy from "@/utils/BusyHook";
 import ModuleForm from "@/components/ModuleForm";
 import ModulesTreePanel from "@/components/ModulesTreePanel";
 import SidePanel from "@/components/SidePanel";
+import ModulesBreadcrumbs from "@/components/ModuleBreadcrumbs";
 import * as modules from "@/services/modules";
 
 export default function ModulePage(): ReactElement {
@@ -44,9 +45,7 @@ export default function ModulePage(): ReactElement {
         .then((response) => {
           setChildrenModules(response[0]);
           const path = response[1] || [];
-          const current = path.at(-1) || null;
-          setCurrentModule(current);
-          setParentModules(path.slice(0, -1));
+          setParentModules(path)
           busy(false);
         })
         .catch(console.error);
@@ -120,57 +119,10 @@ export default function ModulePage(): ReactElement {
       .catch(console.error)
       .finally(() => busy(false));
   };
-  const destroyModule = () => {
-    if (!currentModule) {
-      return;
-    }
-    busy(true);
-    modules
-      .destroy(currentModule)
-      .then(() => {
-        showEditor(false);
-        reload(currentModule.parent);
-      })
-      .catch(console.error)
-      .finally(() => busy(false));
-  };
-  const breadcrumbs = () => {
-    const root = { name: "Root", id: "" };
-    const current = currentModule
-      ? { name: currentModule.name, id: currentModule.id }
-      : null;
-    return [
-      root,
-      ...parentModules.map((e) => ({ name: e.name, id: e.id })),
-      current,
-    ]
-      .filter(Boolean)
-      .map((e, index, array) => {
-        const isLast = index === array.length - 1;
-        return { ...e, active: isLast };
-      });
-  };
   return (
     <div className="container-fluid module-page">
       <h1>Modules</h1>
-      <nav>
-        <ol className="breadcrumb">
-          {breadcrumbs().map((e) =>
-            e.active ? (
-              <li className="breadcrumb-item active" key={e.id}>
-                {e.name}
-              </li>
-            ) : (
-              <li
-                className={`breadcrumb-item ${e.active ? "active" : ""}`}
-                key={e.id}
-              >
-                <Link to={`/module/${e.id}`}>{e.name}</Link>
-              </li>
-            )
-          )}
-        </ol>
-      </nav>
+      <ModulesBreadcrumbs parents={parentModules} />
       <div className="modules-list">
         <ModulesTreePanel
           modules={childrenModules}
@@ -227,18 +179,11 @@ export default function ModulePage(): ReactElement {
         {currentModule && <ModuleForm module={currentModule} onChange={setCurrentModule} />}
         <div className="mt-3 d-flex justify-content-end">
           <button
-            className="btn btn-primary w-100 me-3"
+            className="btn btn-primary w-100"
             type="button"
             onClick={saveModule}
           >
             Save
-          </button>
-          <button
-            className="btn btn-danger"
-            type="button"
-            onClick={destroyModule}
-          >
-            Delete
           </button>
         </div>
       </SidePanel>

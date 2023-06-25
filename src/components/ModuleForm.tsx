@@ -17,7 +17,12 @@ export default function ModuleForm(props: ModuleFormProps) {
 
   return (
     <FormGroup label="Name">
-      <FormInput type="text" placeholder="enter name here..." value={props.module.name} onInput={nameChanged} />
+      <FormInput
+        type="text"
+        placeholder="enter name here..."
+        value={props.module.name}
+        onInput={nameChanged}
+      />
     </FormGroup>
   );
 }
