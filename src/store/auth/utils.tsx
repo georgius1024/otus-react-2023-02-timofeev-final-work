@@ -1,11 +1,11 @@
 import type { User } from "@/types";
 export function store(user: User) {
-  localStorage["store/auth"] = JSON.stringify(user);
+  sessionStorage["store/auth"] = JSON.stringify(user);
 }
 export function restore(): User | undefined {
-  if ("store/auth" in localStorage) {
+  if ("store/auth" in sessionStorage) {
     try {
-      return JSON.parse(localStorage["store/auth"]) || {};
+      return JSON.parse(sessionStorage["store/auth"]) || {};
     } catch (error) {
       console.error(error);
     }
@@ -13,5 +13,5 @@ export function restore(): User | undefined {
   return undefined;
 }
 export function cleanup(): void {
-  localStorage.removeItem("store/auth")
+  sessionStorage.removeItem("store/auth")
 }
