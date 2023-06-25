@@ -15,24 +15,27 @@
       opacity: 1;
       .side-panel {
         transform: translateX(0);
-      }    
+      }
     }
   }
   .side-panel {
-    transform: translateX(-100vw);
     transition: transform 200ms ease;
     position: fixed;
-    text-align: center;
     top: 0;
     height: 100vh;
     background-color: #ffffff;
     z-index: 8;
     padding: 32px;
     &.left {
+      transform: translateX(-100vw);
       left: 0;
     }
     &.right {
+      transform: translateX(100vw);
       right: 0;
+    }
+    &.close {
+      padding-top: 80px;
     }
     .close-control {
       position: absolute;
@@ -44,6 +47,5 @@
       color: currentColor;
       cursor: pointer;
     }
-
   }
 }

@@ -2,6 +2,7 @@ import { ReactElement, useEffect, useState, useCallback } from "react";
 import type { Module } from "@/types";
 import { useParams } from "react-router-dom";
 import { Link, useNavigate } from "react-router-dom";
+import classNames from "classnames";
 import "@/pages/Module.scss";
 
 //import useAlert from "@/utils/AlertHook";
@@ -9,11 +10,15 @@ import useBusy from "@/utils/BusyHook";
 import FormGroup from "@/components/FormGroup";
 import FormInput from "@/components/FormInput";
 import ModulesTreePanel from "@/components/ModulesTreePanel";
+import SidePanel from "@/components/SidePanel";
 import * as modules from "@/services/modules";
+
 export default function ModulePage(): ReactElement {
   const [childrenModules, setChildrenModules] = useState<Module[]>([]);
   const [currentModule, setCurrentModule] = useState<Module | null>(null);
   const [parentModules, setParentModules] = useState<Module[]>([]);
+  const [editorVisible, showEditor] = useState<boolean>(false);
+
   const [newName, setNewName] = useState<string>("");
   //const alert = useAlert();
   const busy = useBusy();
@@ -69,12 +74,24 @@ export default function ModulePage(): ReactElement {
       .create({ name, type, parent: id })
       .catch(console.error)
       .then((newModule) => {
-        newModule && navigate(`/module/${newModule.id}`);
+        if (newModule?.type !== 'activity') {
+          switchTo(newModule?.id || '');
+        } else {
+          reload(newModule.parent);
+        }
       })
       .catch(console.error)
       .finally(() => busy(false));
   };
-
+  const editModule = (id: string) => {
+    const module = childrenModules.find(e => e.id === id)
+    if (!module) {
+      return 
+    }
+    setCurrentModule(module)
+    setNewName(module.name)
+    showEditor(true)
+  }
   const saveModule = () => {
     if (!currentModule) {
       return;
@@ -85,7 +102,8 @@ export default function ModulePage(): ReactElement {
       .update(updated)
       .then(() => setCurrentModule(updated))
       .then(() => {
-        navigate(`/module/${updated.parent}`);
+        showEditor(false)
+        reload(currentModule.parent);
       })
       .catch(console.error)
       .finally(() => busy(false));
@@ -99,7 +117,8 @@ export default function ModulePage(): ReactElement {
     modules
       .destroy(currentModule)
       .then(() => {
-        navigate(`/module/${currentModule.parent}`);
+        showEditor(false)
+        reload(currentModule.parent);
       })
       .catch(console.error)
       .finally(() => busy(false));
@@ -141,67 +160,63 @@ export default function ModulePage(): ReactElement {
           )}
         </ol>
       </nav>
-      <div className="row">
-        <div className="col modules-list">
-          <ModulesTreePanel
-            modules={childrenModules}
-            onSelect={switchTo}
-            onEdit={(x) => alert("edit" + x)}
-          />
-          <div className="dropdown">
-            <button
-              className="btn btn-primary dropdown-toggle mt-3 w-100"
-              type="button"
-              id="createButton"
-              data-bs-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              Create
-            </button>
-            <div className="dropdown-menu" aria-labelledby="createButton">
-              <div className="dropdown-item" onClick={() => create("course")}>
-                Course
-              </div>
-              <div className="dropdown-item" onClick={() => create("lesson")}>
-                Lesson
-              </div>
-              <div className="dropdown-item" onClick={() => create("activity")}>
-                Activity
-              </div>
+      <div className="modules-list">
+        <ModulesTreePanel
+          modules={childrenModules}
+          onSelect={switchTo}
+          onEdit={editModule}
+        />
+        <div className="dropdown">
+          <button
+            className="btn btn-primary dropdown-toggle mt-3 w-100"
+            type="button"
+            id="createButton"
+            data-bs-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            Create
+          </button>
+          <div className="dropdown-menu" aria-labelledby="createButton">
+            <div className={classNames("dropdown-item", {disabled: currentModule})} onClick={() => create("course")}>
+              Course
             </div>
-          </div>
-        </div>
-        <div className={`col ${currentModule ? "d-block" : "d-none"}`}>
-          <div className="card">
-            <div className="card-body module-editor">
-              <FormGroup label="Name">
-                <FormInput
-                  type="text"
-                  value={newName}
-                  onInput={newNameChanged}
-                />
-              </FormGroup>
+            <div className={classNames("dropdown-item", {disabled: currentModule?.type !== 'course'})} onClick={() => create("lesson")}>
+              Lesson
             </div>
-          </div>
-          <div className="mt-3 d-flex justify-content-end">
-            <button
-              className="btn btn-primary w-100 me-3"
-              type="button"
-              onClick={saveModule}
-            >
-              Save
-            </button>
-            <button
-              className="btn btn-danger"
-              type="button"
-              onClick={destroyModule}
-            >
-              Delete
-            </button>
+            <div className={classNames("dropdown-item", {disabled: currentModule?.type !== 'lesson'})} onClick={() => create("activity")}>
+              Activity
+            </div>
           </div>
         </div>
       </div>
+      <SidePanel
+        position="right"
+        width={600} 
+        show={editorVisible}
+        onClose={() => showEditor(false)}
+      >
+        <h4>Edit {currentModule?.type}</h4>
+            <FormGroup label="Name">
+              <FormInput type="text" value={newName} onInput={newNameChanged} />
+            </FormGroup>
+        <div className="mt-3 d-flex justify-content-end">
+          <button
+            className="btn btn-primary w-100 me-3"
+            type="button"
+            onClick={saveModule}
+          >
+            Save
+          </button>
+          <button
+            className="btn btn-danger"
+            type="button"
+            onClick={destroyModule}
+          >
+            Delete
+          </button>
+        </div>
+      </SidePanel>
     </div>
   );
 }

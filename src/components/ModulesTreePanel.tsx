@@ -1,6 +1,5 @@
 import "@/components/ModulesTreePanel.scss";
 import type { Module } from "@/types";
-import { ReactElement } from "react";
 type OnSelect = (id: string) => void;
 type OnEdit = (id: string) => void;
 
@@ -11,28 +10,34 @@ type ModulesTreePanelProps = {
 };
 
 export default function ModulesTreePanel(props: ModulesTreePanelProps) {
-  const buttonClick = (id: string) => (event: React.MouseEvent<HTMLSpanElement>) => {
+  const itemClick = (item: Module) => (event: React.MouseEvent<HTMLSpanElement>) => {
     event.stopPropagation()
-    props.onEdit(id)
+    const id = item.id || ''
+    if (item.type !== 'activity') {
+      props.onSelect(id)
+    } else {
+      props.onEdit(id)      
+    }
   }
 
-  const itemClick = (id: string) => (event: React.MouseEvent<HTMLSpanElement>) => {
+  const buttonClick = (item: Module) => (event: React.MouseEvent<HTMLSpanElement>) => {
     event.stopPropagation()
-    props.onSelect(id)
+    props.onEdit(item.id || '')
+    
   }
-  
+ 
   return (
-    <ul className="list-group modules-tree-panel">
+    <ul className="list-group list-group-flush modules-tree-panel">
       {props.modules.map((e) => (
         <li
-          onClick={itemClick(e.id || '')}
+          onClick={itemClick(e)}
           className="list-group-item d-flex justify-content-between align-items-center"
           key={e.id}
         >
           {e.name}
           <span
             className="badge bg-primary pill"
-            onClick={buttonClick(e.id || '')}
+            onClick={buttonClick(e)}
           >
             edit
           </span>

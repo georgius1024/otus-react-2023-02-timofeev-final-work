@@ -15,7 +15,6 @@ type SidePanelProps = {
 export default function SidePanel(props: PropsWithChildren<SidePanelProps>) {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const checkClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    console.log(event);
     const wrongKeys = [
       event.buttons !== 1,
       event.altKey,
@@ -26,7 +25,6 @@ export default function SidePanel(props: PropsWithChildren<SidePanelProps>) {
     if (wrongKeys.length) {
       return;
     }
-    console.log(sidebarRef.current);
     const clickInside = sidebarRef.current?.contains(event.target as Node);
     const visible = props.show;
 
@@ -49,7 +47,9 @@ export default function SidePanel(props: PropsWithChildren<SidePanelProps>) {
       >
         <div
           ref={sidebarRef}
-          className={classNames("side-panel", props.position || "right")}
+          className={classNames("side-panel", props.position || "right", {
+            close: props.closeControl !== false,
+          })}
           style={{ width: `${props.width || 600}px` }}
         >
           {props.closeControl !== false && closeControl()}
