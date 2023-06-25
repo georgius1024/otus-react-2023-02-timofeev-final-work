@@ -8,6 +8,7 @@ import "@/pages/Module.scss";
 import useBusy from "@/utils/BusyHook";
 import FormGroup from "@/components/FormGroup";
 import FormInput from "@/components/FormInput";
+import ModulesTreePanel from "@/components/ModulesTreePanel";
 import * as modules from "@/services/modules";
 export default function ModulePage(): ReactElement {
   const [childrenModules, setChildrenModules] = useState<Module[]>([]);
@@ -18,7 +19,7 @@ export default function ModulePage(): ReactElement {
   const busy = useBusy();
   const { id = "" } = useParams();
   const navigate = useNavigate();
-
+  const switchTo = (id: string | undefined) => navigate(`/module/${id}`);
   const reload = useCallback(
     async (parent: string) => {
       busy(true);
@@ -102,7 +103,7 @@ export default function ModulePage(): ReactElement {
       })
       .catch(console.error)
       .finally(() => busy(false));
-  }
+  };
   const breadcrumbs = () => {
     const root = { name: "Root", id: "" };
     const current = currentModule
@@ -141,18 +142,12 @@ export default function ModulePage(): ReactElement {
         </ol>
       </nav>
       <div className="row">
-        <div className="col">
-          <div className="list-group modules-list">
-            {childrenModules.map((e) => (
-              <Link
-                to={`/module/${e.id}`}
-                className="list-group-item"
-                key={e.id}
-              >
-                {e.name}
-              </Link>
-            ))}
-          </div>
+        <div className="col modules-list">
+          <ModulesTreePanel
+            modules={childrenModules}
+            onSelect={switchTo}
+            onEdit={(x) => alert("edit" + x)}
+          />
           <div className="dropdown">
             <button
               className="btn btn-primary dropdown-toggle mt-3 w-100"
@@ -197,7 +192,11 @@ export default function ModulePage(): ReactElement {
             >
               Save
             </button>
-            <button className="btn btn-danger" type="button" onClick={destroyModule}>
+            <button
+              className="btn btn-danger"
+              type="button"
+              onClick={destroyModule}
+            >
               Delete
             </button>
           </div>
