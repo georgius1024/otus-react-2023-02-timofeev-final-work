@@ -1,7 +1,4 @@
-import {
-  createAsyncThunk,
-  ActionReducerMapBuilder,
-} from "@reduxjs/toolkit";
+import { createAsyncThunk, ActionReducerMapBuilder } from "@reduxjs/toolkit";
 
 import {
   signInWithEmailAndPassword,
@@ -14,8 +11,13 @@ import { collection, query, limit, getDocs, where } from "firebase/firestore";
 import { auth } from "@/firebase";
 import { db } from "@/firebase";
 
-import type { AuthState, AuthPayload, RecoverPayload } from "@/store/auth/types";
+import type {
+  AuthState,
+  AuthPayload,
+  RecoverPayload,
+} from "@/store/auth/types";
 import type { User } from "@/types";
+import { store, cleanup } from "@/store/auth/utils";
 
 export const login = createAsyncThunk<
   User,
@@ -52,9 +54,12 @@ export const register = createAsyncThunk(
   }
 );
 
-export const forgot = createAsyncThunk("auth/forgot", async (payload: RecoverPayload) => {
-  return sendPasswordResetEmail(auth, payload.email);
-});
+export const forgot = createAsyncThunk(
+  "auth/forgot",
+  async (payload: RecoverPayload) => {
+    return sendPasswordResetEmail(auth, payload.email);
+  }
+);
 
 export default function (builder: ActionReducerMapBuilder<AuthState>) {
   builder
@@ -66,10 +71,12 @@ export default function (builder: ActionReducerMapBuilder<AuthState>) {
     .addCase(login.fulfilled, (state: AuthState, action) => {
       state.busy = false;
       state.user = action.payload as unknown as User;
+      store(state.user);
     })
     .addCase(login.rejected, (state: AuthState, action) => {
       state.busy = false;
       state.error = action.error.message;
+      cleanup();
     })
     .addCase(register.pending, (state: AuthState) => {
       state.busy = true;
@@ -79,10 +86,12 @@ export default function (builder: ActionReducerMapBuilder<AuthState>) {
     .addCase(register.fulfilled, (state: AuthState, action) => {
       state.busy = false;
       state.user = action.payload as unknown as User;
+      store(state.user);
     })
     .addCase(register.rejected, (state: AuthState, action) => {
       state.busy = false;
       state.error = action.error.message;
+      cleanup();
     })
     .addCase(forgot.pending, (state: AuthState) => {
       state.busy = true;
