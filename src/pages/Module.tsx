@@ -7,8 +7,7 @@ import "@/pages/Module.scss";
 
 //import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
-import FormGroup from "@/components/FormGroup";
-import FormInput from "@/components/FormInput";
+import ModuleForm from "@/components/ModuleForm";
 import ModulesTreePanel from "@/components/ModulesTreePanel";
 import SidePanel from "@/components/SidePanel";
 import * as modules from "@/services/modules";
@@ -19,7 +18,6 @@ export default function ModulePage(): ReactElement {
   const [parentModules, setParentModules] = useState<Module[]>([]);
   const [editorVisible, showEditor] = useState<boolean>(false);
 
-  const [newName, setNewName] = useState<string>("");
   //const alert = useAlert();
   const busy = useBusy();
   const { id = "" } = useParams();
@@ -49,7 +47,6 @@ export default function ModulePage(): ReactElement {
           const current = path.at(-1) || null;
           setCurrentModule(current);
           setParentModules(path.slice(0, -1));
-          setNewName(current?.name || "");
           busy(false);
         })
         .catch(console.error);
@@ -60,9 +57,6 @@ export default function ModulePage(): ReactElement {
     reload(id);
   }, [reload, id]);
 
-  const newNameChanged = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setNewName(event.target.value);
-  };
 
   const create = (type: string) => {
     const name = prompt(`Enter new ${type} name`, "new");
@@ -74,8 +68,8 @@ export default function ModulePage(): ReactElement {
       .create({ name, type, parent: id })
       .catch(console.error)
       .then((newModule) => {
-        if (newModule?.type !== 'activity') {
-          switchTo(newModule?.id || '');
+        if (newModule?.type !== "activity") {
+          switchTo(newModule?.id || "");
         } else {
           reload(newModule.parent);
         }
@@ -84,31 +78,48 @@ export default function ModulePage(): ReactElement {
       .finally(() => busy(false));
   };
   const editModule = (id: string) => {
-    const module = childrenModules.find(e => e.id === id)
+    const module = childrenModules.find((e) => e.id === id);
     if (!module) {
-      return 
-    }
-    setCurrentModule(module)
-    setNewName(module.name)
-    showEditor(true)
-  }
-  const saveModule = () => {
-    if (!currentModule) {
       return;
     }
-    const updated = { ...currentModule, name: newName } as Module;
+    setCurrentModule(module);
+    showEditor(true);
+  };
+
+  const deleteModule = (id: string) => {
+    const module = childrenModules.find((e) => e.id === id);
+    if (!module) {
+      return;
+    }
+    if (!confirm(`Delete ${module.type}?`)) {
+      return;
+    }
     busy(true);
     modules
-      .update(updated)
-      .then(() => setCurrentModule(updated))
+      .destroy(module)
       .then(() => {
-        showEditor(false)
-        reload(currentModule.parent);
+        reload(module.parent);
       })
       .catch(console.error)
       .finally(() => busy(false));
   };
 
+  const saveModule = () => {
+    if (!currentModule) {
+      return;
+    }
+    const updated = { ...currentModule } as Module;
+    busy(true);
+    modules
+      .update(updated)
+      .then(() => setCurrentModule(updated))
+      .then(() => {
+        showEditor(false);
+        reload(currentModule.parent);
+      })
+      .catch(console.error)
+      .finally(() => busy(false));
+  };
   const destroyModule = () => {
     if (!currentModule) {
       return;
@@ -117,7 +128,7 @@ export default function ModulePage(): ReactElement {
     modules
       .destroy(currentModule)
       .then(() => {
-        showEditor(false)
+        showEditor(false);
         reload(currentModule.parent);
       })
       .catch(console.error)
@@ -165,6 +176,7 @@ export default function ModulePage(): ReactElement {
           modules={childrenModules}
           onSelect={switchTo}
           onEdit={editModule}
+          onDelete={deleteModule}
         />
         <div className="dropdown">
           <button
@@ -178,13 +190,28 @@ export default function ModulePage(): ReactElement {
             Create
           </button>
           <div className="dropdown-menu" aria-labelledby="createButton">
-            <div className={classNames("dropdown-item", {disabled: currentModule})} onClick={() => create("course")}>
+            <div
+              className={classNames("dropdown-item", {
+                disabled: currentModule,
+              })}
+              onClick={() => create("course")}
+            >
               Course
             </div>
-            <div className={classNames("dropdown-item", {disabled: currentModule?.type !== 'course'})} onClick={() => create("lesson")}>
+            <div
+              className={classNames("dropdown-item", {
+                disabled: currentModule?.type !== "course",
+              })}
+              onClick={() => create("lesson")}
+            >
               Lesson
             </div>
-            <div className={classNames("dropdown-item", {disabled: currentModule?.type !== 'lesson'})} onClick={() => create("activity")}>
+            <div
+              className={classNames("dropdown-item", {
+                disabled: currentModule?.type !== "lesson",
+              })}
+              onClick={() => create("activity")}
+            >
               Activity
             </div>
           </div>
@@ -192,14 +219,12 @@ export default function ModulePage(): ReactElement {
       </div>
       <SidePanel
         position="right"
-        width={600} 
+        width={600}
         show={editorVisible}
         onClose={() => showEditor(false)}
       >
         <h4>Edit {currentModule?.type}</h4>
-            <FormGroup label="Name">
-              <FormInput type="text" value={newName} onInput={newNameChanged} />
-            </FormGroup>
+        {currentModule && <ModuleForm module={currentModule} onChange={setCurrentModule} />}
         <div className="mt-3 d-flex justify-content-end">
           <button
             className="btn btn-primary w-100 me-3"
