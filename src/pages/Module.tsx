@@ -45,7 +45,7 @@ export default function ModulePage(): ReactElement {
         .then((response) => {
           setChildrenModules(response[0]);
           const path = response[1] || [];
-          setParentModules(path)
+          setParentModules(path);
           busy(false);
         })
         .catch(console.error);
@@ -56,25 +56,9 @@ export default function ModulePage(): ReactElement {
     reload(id);
   }, [reload, id]);
 
-
   const create = (type: string) => {
-    const name = prompt(`Enter new ${type} name`, "new");
-    if (!name) {
-      return;
-    }
-    busy(true);
-    modules
-      .create({ name, type, parent: id })
-      .catch(console.error)
-      .then((newModule) => {
-        if (newModule?.type !== "activity") {
-          switchTo(newModule?.id || "");
-        } else {
-          reload(newModule.parent);
-        }
-      })
-      .catch(console.error)
-      .finally(() => busy(false));
+    setCurrentModule({ type, parent: id, name: "" });
+    showEditor(true);
   };
   const editModule = (id: string) => {
     const module = childrenModules.find((e) => e.id === id);
@@ -108,13 +92,16 @@ export default function ModulePage(): ReactElement {
       return;
     }
     const updated = { ...currentModule } as Module;
+
+    const action = updated.id
+      ? modules.update(updated)
+      : modules.create(updated);
     busy(true);
-    modules
-      .update(updated)
+    action
       .then(() => setCurrentModule(updated))
       .then(() => {
         showEditor(false);
-        reload(currentModule.parent);
+        reload(updated.parent);
       })
       .catch(console.error)
       .finally(() => busy(false));
@@ -175,10 +162,15 @@ export default function ModulePage(): ReactElement {
         show={editorVisible}
         onClose={() => showEditor(false)}
       >
-        <h4>Edit {currentModule?.type}</h4>
-        {currentModule && <ModuleForm module={currentModule} onChange={setCurrentModule} />}
+        <h4>
+          Edit {!currentModule?.id && "new"} {currentModule?.type}
+        </h4>
+        {currentModule && (
+          <ModuleForm module={currentModule} onChange={setCurrentModule} />
+        )}
         <div className="mt-3 d-flex justify-content-end">
           <button
+            disabled={!!currentModule?.name}
             className="btn btn-primary w-100"
             type="button"
             onClick={saveModule}
