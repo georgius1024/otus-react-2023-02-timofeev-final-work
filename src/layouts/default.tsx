@@ -36,7 +36,7 @@ export default function DefaultLayout(props: PropsWithChildren) {
 
   return (
     <div className="container-lg position-relative" style={{ height: "100vh" }}>
-      <nav className="navbar bg-secondary" data-bs-theme="dark">
+      <nav className="navbar bg-primary" data-bs-theme="dark">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
             Start
