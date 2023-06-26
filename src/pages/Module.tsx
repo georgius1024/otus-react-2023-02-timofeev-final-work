@@ -2,6 +2,8 @@ import { ReactElement, useEffect, useState, useCallback } from "react";
 import type { Module } from "@/types";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import debounce from "lodash.debounce";
+
 import "@/pages/Module.scss";
 
 //import useAlert from "@/utils/AlertHook";
@@ -51,15 +53,10 @@ export default function ModulePage(): ReactElement {
     },
     [busy]
   );
-  useEffect(() => {
-    reload(id);
-  }, [reload, id]);
-
   const canCreate = (): boolean => {
     const last = parentModules.at(-1);
     return last?.type !== "activity";
   };
-
   const availableCreateType = (): string => {
     const last = parentModules.at(-1);
     switch (last?.type) {
@@ -83,7 +80,6 @@ export default function ModulePage(): ReactElement {
     setCurrentModule(module);
     showEditor(true);
   };
-
   const deleteModule = (id: string) => {
     const module = childrenModules.find((e) => e.id === id);
     if (!module) {
@@ -101,7 +97,6 @@ export default function ModulePage(): ReactElement {
       .catch(console.error)
       .finally(() => busy(false));
   };
-
   const saveModule = () => {
     if (!currentModule) {
       return;
@@ -121,6 +116,27 @@ export default function ModulePage(): ReactElement {
       .catch(console.error)
       .finally(() => busy(false));
   };
+  const sortModules = (list: Module[]) => {
+    if (!list.length) {
+      return;
+    }
+    if (
+      list.length === childrenModules.length &&
+      list.every((e, index) => e.id === childrenModules[index].id)
+    ) {
+      return;
+    }
+    setChildrenModules(list);
+    busy(true);
+    modules
+      .sort(list)
+      .catch(console.error)
+      .finally(() => busy(false));
+  };
+  const sortDebounced = debounce(sortModules, 200)
+  useEffect(() => {
+    reload(id);
+  }, [reload, id]);
   return (
     <div className="container-fluid module-page">
       <h1>Modules</h1>
@@ -131,6 +147,7 @@ export default function ModulePage(): ReactElement {
           onSelect={switchTo}
           onEdit={editModule}
           onDelete={deleteModule}
+          onSort={sortDebounced}
         />
         <button
           className="btn btn-primary mt-3 w-100"

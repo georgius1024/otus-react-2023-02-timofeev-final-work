@@ -1,9 +1,16 @@
 .modules-tree-panel {
-  li {
+  .module-item {
+    &:hover {
+      background-color: #eeee;
+    }
+    }
+  .module-link {
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  .handle, .badge {
     cursor: pointer;
   }
-  li:hover {
-    background-color: #eeee;
-  }
-
 }

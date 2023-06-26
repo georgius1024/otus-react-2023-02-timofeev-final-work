@@ -1,4 +1,6 @@
 import type { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
+import sortBy from "lodash.sortby";
+import omit from "lodash.omit";
 import {
   collection,
   doc,
@@ -9,6 +11,7 @@ import {
   deleteDoc,
   query,
   where,
+  writeBatch,
 } from "firebase/firestore";
 
 import { db } from "@/firebase";
@@ -22,21 +25,18 @@ import type { Module } from "@/types";
 const withId = (item: QueryDocumentSnapshot<DocumentData>): Module =>
   ({ ...item.data(), id: item.id } as Module);
 const withoutId = (item: Module): Module => {
-  const { id, ...rest } = item;
-  return rest;
+  return omit(item, ["id"]);
 };
 
 export async function fetchAll(): Promise<Module[]> {
-  const response = await getDocs(
-    query(modulesTableRef)
-  );
+  const response = await getDocs(query(modulesTableRef));
   return response.docs.map(withId);
 }
 export async function fetchChildren(parent = ""): Promise<Module[]> {
   const response = await getDocs(
     query(modulesTableRef, where("parent", "==", parent))
   );
-  return response.docs.map(withId);
+  return sortBy(response.docs.map(withId), ["position"]);
 }
 
 export async function fetchOne(id: string): Promise<Module | null> {
@@ -45,6 +45,21 @@ export async function fetchOne(id: string): Promise<Module | null> {
     return withId(response);
   }
   return null;
+}
+
+export async function sort(modules: Module[]): Promise<void> {
+  if (!modules.length) {
+    return;
+  }
+  const batch = writeBatch(db);
+  const promises = modules.map(async (module, index) => {
+    if (module.id) {
+      const ref = moduleRef(module.id);
+      batch.update(ref, { position: index });
+    }
+  });
+  await Promise.all(promises);
+  await batch.commit();
 }
 
 export async function create(module: Module): Promise<Module> {
