@@ -1,26 +1,65 @@
 import { ReactElement, useState } from "react";
 import { Link } from "react-router-dom";
+import { ReactSortable } from "react-sortablejs";
 import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
+import SidePanel from "@/components/SidePanel";
+type Item = {
+  id: number;
+  name: string;
+};
 export default function HomePage(): ReactElement {
+  const [items, setItems] = useState<Item[]>([
+    { id: 1, name: "H1" },
+    { id: 2, name: "H2" },
+    { id: 3, name: "H3" },
+  ]);
   console.log("dom rendered");
   const [count, setCount] = useState(0);
-  const alert = useAlert()
-  const busy = useBusy()
+  const [show, setShow] = useState(false);
+  const alert = useAlert();
+  const busy = useBusy();
+
   const raiseDefault = () => {
-    alert(`Hello ${count}`)
+    alert(`Hello ${count}`);
     setCount(count + 1);
-  }
+  };
   const raiseBusy = () => {
-    busy(true)
-    setTimeout(() => busy(false), 2000)
-  }
+    busy(true);
+    setTimeout(() => busy(false), 2000);
+  };
   return (
     <>
       <h1>HOME</h1>
-      <button className="btn btn-secondary" onClick={raiseDefault}>Raise</button>
-      <button className="btn btn-secondary" onClick={raiseBusy}>Busy</button>
-      <Link className="btn btn-secondary" to="/module">Modules</Link>
+      <button className="btn btn-secondary" onClick={raiseDefault}>
+        Raise
+      </button>
+      <button className="btn btn-secondary" onClick={raiseBusy}>
+        Busy
+      </button>
+      <button className="btn btn-secondary" onClick={() => setShow(true)}>
+        Show
+      </button>
+      <Link className="btn btn-secondary" to="/module">
+        Modules
+      </Link>
+
+      <hr />
+      <hr />
+      <hr />
+      <hr />
+      <ReactSortable list={items} setList={setItems} sort={false} handle={".myhandle"} >
+        {items.map((e: Item) => (
+          <div className="item" key={e.id}>
+            <span className="myhandle" style={{cursor: 'pointer'}}>|||</span> 
+            <span className="ms-3">{e.name}</span>
+          </div>
+        ))}
+      </ReactSortable>
+      <pre>{JSON.stringify(items)}</pre>
+      <SidePanel position="left" show={show} onClose={() => setShow(false)}>
+        <h1>Side panel contenss</h1>
+      </SidePanel>
     </>
   );
 }
