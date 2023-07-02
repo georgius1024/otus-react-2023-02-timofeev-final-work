@@ -1,3 +1,5 @@
+
+import { nanoid } from "nanoid";
 import type { Module, ModuleType, ActivityType, Activity } from "@/types";
 type OnCreate = (module: Module) => void;
 
@@ -24,9 +26,37 @@ export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
   if (!createModuleType) {
     return null;
   }
+  const createActivity = (type: ActivityType): Activity | null => {
+    switch (type) {
+      case 'word':
+        return {
+          type,
+          word: '',
+          translation: ''
+        }
+      case 'phrase':
+        return {
+          type,
+          phrase: '',
+          translation: ''
+        }
+      case 'slide':
+        return {
+          type,
+          header: '',
+          slide: ''
+        }
+    }
+  }
   const createModule = (moduleType: ModuleType, activityType?: ActivityType): Module => {
     if (activityType) {
-      return { parent: props.current?.id || '', name: '', type: moduleType, activity: { type: activityType } } as Module
+      return {
+        id: nanoid(),
+        parent: props.current?.id || '', 
+        name: '', 
+        type: moduleType,
+        activity: createActivity(activityType)
+      } as Module
     }
     return { parent: props.current?.id || '', name: '', type: moduleType } as Module
   }

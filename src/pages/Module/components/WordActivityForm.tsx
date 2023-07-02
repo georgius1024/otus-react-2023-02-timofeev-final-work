@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import FormGroup from "@/components/FormGroup";
 import FormInput from "@/components/FormInput";
 
-import type { Activity } from "@/types";
+import type { Activity, WordActivity } from "@/types";
 
 //@ts-nocheck
 const ActivitySchema: any = yup.object({
@@ -21,7 +21,7 @@ type ActivityFormProps = {
 
 export default function WordAcrivityForm(props: ActivityFormProps) {
   return (
-    <Form schema={ActivitySchema} onSubmit={props.onSubmit} value={props.activity}>
+    <Form schema={ActivitySchema} onSubmit={props.onSubmit} defaultValue={props.activity as WordActivity}>
       <FormGroup label="Word">
         <Form.Field as={FormInput} name="word" type="text"
           placeholder="enter foreign word here..."

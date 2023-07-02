@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useState, useCallback } from "react";
-import type { Module, ModuleType } from "@/types";
+import type { Module } from "@/types";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import debounce from "lodash.debounce";
@@ -90,7 +90,8 @@ export default function ModulePage(): ReactElement {
     if (!module) {
       return;
     }
-    const action = module.id
+    // @ts-ignore
+    const action = showEditor === "edit"
       ? modules.update(module)
       : modules.create(module);
     busy(true);
