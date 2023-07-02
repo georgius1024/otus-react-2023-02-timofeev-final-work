@@ -8,12 +8,12 @@ import "@/pages/module/index.scss";
 
 //import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
-import ModuleForm from "@/pages/Module/compoments/ModuleForm";
-import ActivityForm from "@/pages/Module/compoments/ActivityFormDispatcher";
-import ModulesTreePanel from "@/pages/Module/compoments/ModulesTreePanel";
+import ModuleForm from "@/pages/Module/components/ModuleForm";
+import ActivityForm from "@/pages/Module/components/ActivityFormDispatcher";
+import ModulesTreePanel from "@/pages/Module/components/ModulesTreePanel";
 import SidePanel from "@/components/SidePanel";
 import ModulesBreadcrumbs from "@/layouts/ModuleBreadcrumbs";
-import CreateModuleWidget from "@/pages/Module/compoments/CreateModuleWidget";
+import CreateModuleWidget from "@/pages/Module/components/CreateModuleWidget";
 import * as modules from "@/services/modules";
 
 export default function ModulePage(): ReactElement {
