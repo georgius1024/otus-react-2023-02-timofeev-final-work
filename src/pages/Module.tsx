@@ -58,7 +58,7 @@ export default function ModulePage(): ReactElement {
     const last = parentModules.at(-1);
     return last?.type !== "activity";
   };
-  const availableCreateType = (): ModuleType => {
+  const createModuleType = ((): ModuleType => {
     const last = parentModules.at(-1);
     switch (last?.type) {
       case "course":
@@ -68,9 +68,9 @@ export default function ModulePage(): ReactElement {
       default:
         return "course";
     }
-  };
+  })();
   const create = () => {
-    setEditingModule({ type: availableCreateType(), parent: id, name: "" });
+    setEditingModule({ type: createModuleType, parent: id, name: "" });
     showEditor('create');
   };
   const editModule = (id: string) => {
@@ -163,7 +163,7 @@ export default function ModulePage(): ReactElement {
           type="button"
           onClick={create}
         >
-          Create {availableCreateType()}
+          Create {createModuleType}
         </button>
       </div>
       <SidePanel
