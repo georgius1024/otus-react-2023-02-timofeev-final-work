@@ -1,7 +1,7 @@
 import type { Module } from "@/types";
 import { Link } from "react-router-dom";
 type ModulesBreadcrumbsProps = {
-  parents: Module[];
+  path: Module[];
 };
 
 type Breadcrumb = {
@@ -12,7 +12,7 @@ type Breadcrumb = {
 export default function ModulesBreadcrumbs(props: ModulesBreadcrumbsProps) {
   const breadcrumbs: Breadcrumb[] = [
     { name: "Root", id: "" },
-    ...props.parents.map((e) => ({ name: e.name, id: e.id })),
+    ...props.path.map((e) => ({ name: e.name, id: e.id })),
   ]
     .filter(Boolean)
     .map((e, index, array) => {

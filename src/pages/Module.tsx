@@ -148,7 +148,7 @@ export default function ModulePage(): ReactElement {
   return (
     <div className="container-fluid module-page">
       <h1>Modules</h1>
-      <ModulesBreadcrumbs parents={parentModules} />
+      <ModulesBreadcrumbs path={parentModules} />
       <div className="modules-list">
         <ModulesTreePanel
           modules={childrenModules}
