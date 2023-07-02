@@ -55,7 +55,8 @@ export default function ModulePage(): ReactElement {
     },
     [busy]
   );
-  const lastModule = parentModules.at(-1)
+  const lastModule = parentModules.at(-1) || null
+  const formDomKey = [editingModule?.id, editingModule?.parent, lastModule?.type, 'key'].filter(Boolean).join('-')
   const create = (module: Module) => {
     setEditingModule(module);
     showEditor('create');
@@ -144,7 +145,7 @@ export default function ModulePage(): ReactElement {
           onDelete={deleteModule}
           onSort={sortDebounced}
         />
-        {lastModule && <CreateModuleWidget current={lastModule} onCreate={create} />}
+        {<CreateModuleWidget current={lastModule} onCreate={create} />}
       </div>
       <SidePanel
         position="right"
@@ -160,7 +161,7 @@ export default function ModulePage(): ReactElement {
         {
           EditorForm &&
           editingModule &&
-          <EditorForm module={editingModule} onSubmit={saveModule} key={editingModule.id} />
+          <EditorForm module={editingModule} onSubmit={saveModule} key={formDomKey} />
         }
       </SidePanel>
     </div>

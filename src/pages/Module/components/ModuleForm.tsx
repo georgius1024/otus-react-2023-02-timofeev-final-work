@@ -23,7 +23,7 @@ export default function ModuleForm(props: ModuleFormProps) {
     <Form schema={moduleSchema} onSubmit={props.onSubmit} defaultValue={props.module}>
       <FormGroup label="Name">
         <Form.Field as={FormInput} name="name" type="text"
-          placeholder="enter module name here..."
+          placeholder={`enter ${props.module.type} name here...`}
         />
         <Form.Message for="name" className="text-fanger mb-3 p-1 d-block" />
       </FormGroup>
