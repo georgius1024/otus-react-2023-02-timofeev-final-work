@@ -13,7 +13,7 @@ import ActivityForm from "@/pages/Module/compoments/ActivityFormDispatcher";
 import ModulesTreePanel from "@/pages/Module/compoments/ModulesTreePanel";
 import SidePanel from "@/components/SidePanel";
 import ModulesBreadcrumbs from "@/layouts/ModuleBreadcrumbs";
-import CreateModuleWidget from "@pages/Module/compoments/CreateModuleWidget";
+import CreateModuleWidget from "@/pages/Module/compoments/CreateModuleWidget";
 import * as modules from "@/services/modules";
 
 export default function ModulePage(): ReactElement {

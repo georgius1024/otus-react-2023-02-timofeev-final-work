@@ -1,5 +1,5 @@
 import { ReactSortable } from "react-sortablejs";
-import "@/components/ModulesTreePanel.scss";
+import "@/pages/Module/compoments/ModulesTreePanel.scss";
 import type { Module } from "@/types";
 import type { ItemInterface } from "react-sortablejs";
 import omit from "lodash.omit";
