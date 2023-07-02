@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import FormGroup from "@/components/FormGroup";
 import FormInput from "@/components/FormInput";
 
-import type { Module } from "@/types";
+import type { Activity } from "@/types";
 
 //@ts-nocheck
 const ActivitySchema: any = yup.object({
@@ -12,16 +12,16 @@ const ActivitySchema: any = yup.object({
   slide: yup.string().required()
 });
 
-type OnSubmit = (module: Module) => void;
+type OnSubmit = (activity: Activity) => void;
 
 type ActivityFormProps = {
-  module: Module;
+  activity: Activity;
   onSubmit: OnSubmit;
 };
 
 export default function SlideActivityForm(props: ActivityFormProps) {
   return (
-    <Form schema={ActivitySchema} onSubmit={props.onSubmit} value={props.module}>
+    <Form schema={ActivitySchema} onSubmit={props.onSubmit} value={props.activity}>
       <FormGroup label="Header">
         <Form.Field as={FormInput} name="word" type="text"
           placeholder="enter foreign phrase here..."
