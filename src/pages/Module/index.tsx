@@ -20,7 +20,7 @@ export default function ModulePage(): ReactElement {
   const [childrenModules, setChildrenModules] = useState<Module[]>([]);
   const [parentModules, setParentModules] = useState<Module[]>([]);
   const [editingModule, setEditingModule] = useState<Module | null>(null);
-  const [editorAction, showEditor] = useState<false | 'create' | 'edit'>(false);
+  const [editorAction, showEditor] = useState<'none' | 'create' | 'edit'>('none');
 
   //const alert = useAlert();
   const busy = useBusy();
@@ -86,19 +86,19 @@ export default function ModulePage(): ReactElement {
       .catch(console.error)
       .finally(() => busy(false));
   };
-  const saveModule = (module: Module | null) => {
+  const saveModule = (module: Module | null, editorAction: 'create' | 'edit') => {
     if (!module) {
       return;
     }
     // @ts-ignore
-    const action = showEditor === "edit"
+    const action = editorAction === "edit"
       ? modules.update(module)
       : modules.create(module);
     busy(true);
     action
       .then(() => setEditingModule(module))
       .then(() => {
-        showEditor(false);
+        showEditor('none');
         reload(module.parent);
       })
       .catch(console.error)
@@ -151,8 +151,8 @@ export default function ModulePage(): ReactElement {
       <SidePanel
         position="right"
         width={600}
-        show={Boolean(editorAction)}
-        onClose={() => showEditor(false)}
+        show={editorAction !== 'none'}
+        onClose={() => showEditor('none')}
       >
         <h4>
           <span className="text-capitalize">{editorAction}</span>
@@ -162,7 +162,7 @@ export default function ModulePage(): ReactElement {
         {
           EditorForm &&
           editingModule &&
-          <EditorForm module={editingModule} onSubmit={saveModule} key={formDomKey} />
+          <EditorForm module={editingModule} onSubmit={(module) => saveModule(module, editorAction)} key={formDomKey} />
         }
       </SidePanel>
     </div>
