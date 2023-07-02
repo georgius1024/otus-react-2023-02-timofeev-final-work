@@ -54,10 +54,6 @@ export default function ModulePage(): ReactElement {
     },
     [busy]
   );
-  const canCreate = (): boolean => {
-    const last = parentModules.at(-1);
-    return last?.type !== "activity";
-  };
   const createModuleType = ((): ModuleType => {
     const last = parentModules.at(-1);
     switch (last?.type) {
@@ -159,7 +155,7 @@ export default function ModulePage(): ReactElement {
         />
         <button
           className="btn btn-primary mt-3 w-100"
-          disabled={!canCreate}
+          disabled={!createModuleType}
           type="button"
           onClick={create}
         >
