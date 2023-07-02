@@ -5,6 +5,7 @@ type OnCreate = (module: Module) => void;
 
 type CreateModuleWidgetProps = {
   current: Module | null;
+  count?: number;
   onCreate: OnCreate
 };
 
@@ -49,16 +50,23 @@ export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
     }
   }
   const createModule = (moduleType: ModuleType, activityType?: ActivityType): Module => {
-    if (activityType) {
-      return {
-        id: nanoid(),
-        parent: props.current?.id || '', 
-        name: '', 
-        type: moduleType,
-        activity: createActivity(activityType)
-      } as Module
+    const base: Module = {
+      id: nanoid(),
+      parent: props.current?.id || '',
+      name: '',
+      type: moduleType,
+      position: (props.count || 0) + 1
     }
-    return { parent: props.current?.id || '', name: '', type: moduleType } as Module
+    if (activityType) {
+      const activity = createActivity(activityType)
+      if (activity) {
+        return {
+          ...base,
+          activity
+        }
+      }
+    }
+    return base
   }
   const createActivityTypeButton = (type: ActivityType) => (
     <button
