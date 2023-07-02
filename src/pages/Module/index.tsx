@@ -13,6 +13,7 @@ import ActivityForm from "@/pages/Module/compoments/ActivityFormDispatcher";
 import ModulesTreePanel from "@/pages/Module/compoments/ModulesTreePanel";
 import SidePanel from "@/components/SidePanel";
 import ModulesBreadcrumbs from "@/layouts/ModuleBreadcrumbs";
+import CreateModuleWidget from "@pages/Module/compoments/CreateModuleWidget";
 import * as modules from "@/services/modules";
 
 export default function ModulePage(): ReactElement {
@@ -54,19 +55,9 @@ export default function ModulePage(): ReactElement {
     },
     [busy]
   );
-  const createModuleType = ((): ModuleType => {
-    const last = parentModules.at(-1);
-    switch (last?.type) {
-      case "course":
-        return "lesson";
-      case "lesson":
-        return "activity";
-      default:
-        return "course";
-    }
-  })();
-  const create = () => {
-    setEditingModule({ type: createModuleType, parent: id, name: "" });
+  const lastModule = parentModules.at(-1)
+  const create = (module: Module) => {
+    setEditingModule(module);
     showEditor('create');
   };
   const editModule = (id: string) => {
@@ -153,14 +144,7 @@ export default function ModulePage(): ReactElement {
           onDelete={deleteModule}
           onSort={sortDebounced}
         />
-        <button
-          className="btn btn-primary mt-3 w-100"
-          disabled={!createModuleType}
-          type="button"
-          onClick={create}
-        >
-          Create {createModuleType}
-        </button>
+        <CreateModuleWidget current={lastModule} onCreate={create} /> 
       </div>
       <SidePanel
         position="right"

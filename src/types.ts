@@ -31,6 +31,7 @@ export type SlideActivity = {
 }
 
 export type Activity = WordActivity | PhraseActivity | SlideActivity
+export type ActivityType = 'word' | 'phrase' | 'slide'
 export type ModuleType = 'course' | 'lesson' | 'activity'
 export type Module = {
   id?: string;
