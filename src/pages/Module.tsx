@@ -16,9 +16,9 @@ import * as modules from "@/services/modules";
 
 export default function ModulePage(): ReactElement {
   const [childrenModules, setChildrenModules] = useState<Module[]>([]);
-  const [currentModule, setCurrentModule] = useState<Module | null>(null);
   const [parentModules, setParentModules] = useState<Module[]>([]);
-  const [editorVisible, showEditor] = useState<boolean>(false);
+  const [editingModule, setEditingModule] = useState<Module | null>(null);
+  const [editorAction, showEditor] = useState<false | 'create' | 'edit'>(false);
 
   //const alert = useAlert();
   const busy = useBusy();
@@ -69,16 +69,16 @@ export default function ModulePage(): ReactElement {
     }
   };
   const create = () => {
-    setCurrentModule({ type: availableCreateType(), parent: id, name: "" });
-    showEditor(true);
+    setEditingModule({ type: availableCreateType(), parent: id, name: "" });
+    showEditor('create');
   };
   const editModule = (id: string) => {
     const module = childrenModules.find((e) => e.id === id);
     if (!module) {
       return;
     }
-    setCurrentModule(module);
-    showEditor(true);
+    setEditingModule(module);
+    showEditor('edit');
   };
   const deleteModule = (id: string) => {
     const module = childrenModules.find((e) => e.id === id);
@@ -97,21 +97,19 @@ export default function ModulePage(): ReactElement {
       .catch(console.error)
       .finally(() => busy(false));
   };
-  const saveModule = (module: Module) => {
+  const saveModule = (module: Module | null) => {
     if (!module) {
       return;
-    }
-    const updated = { ...currentModule, ...module } as Module;
-
-    const action = updated.id
-      ? modules.update(updated)
-      : modules.create(updated);
+    }    
+    const action = module.id
+      ? modules.update(module)
+      : modules.create(module);
     busy(true);
     action
-      .then(() => setCurrentModule(updated))
+      .then(() => setEditingModule(module))
       .then(() => {
         showEditor(false);
-        reload(updated.parent);
+        reload(module.parent);
       })
       .catch(console.error)
       .finally(() => busy(false));
@@ -161,14 +159,15 @@ export default function ModulePage(): ReactElement {
       <SidePanel
         position="right"
         width={600}
-        show={editorVisible}
+        show={Boolean(editorAction)}
         onClose={() => showEditor(false)}
       >
         <h4>
-          {currentModule?.id ? 'Edit' : 'Create'} {!currentModule?.id && "new"} {currentModule?.type}
+          {editorAction === 'create' && `Create ${editingModule?.type}}`}
+          {editorAction === 'edit' && `Edit ${editingModule?.type}}`}
         </h4>
-        {currentModule && (
-          <ModuleForm module={currentModule} onSubmit={saveModule} />
+        {editingModule && (
+          <ModuleForm module={editingModule} onSubmit={saveModule} />
         )}
       </SidePanel>
     </div>
