@@ -144,7 +144,7 @@ export default function ModulePage(): ReactElement {
           onDelete={deleteModule}
           onSort={sortDebounced}
         />
-        <CreateModuleWidget current={lastModule} onCreate={create} /> 
+        {lastModule && <CreateModuleWidget current={lastModule} onCreate={create} />}
       </div>
       <SidePanel
         position="right"
@@ -153,10 +153,15 @@ export default function ModulePage(): ReactElement {
         onClose={() => showEditor(false)}
       >
         <h4>
-          <span className="capitalize">{editorAction}</span>
+          <span className="text-capitalize">{editorAction}</span>
+          &nbsp;
           {editingModule?.type}
         </h4>
-        {EditorForm && editingModule && <EditorForm module={editingModule} onSubmit={saveModule} />}
+        {
+          EditorForm &&
+          editingModule &&
+          <EditorForm module={editingModule} onSubmit={saveModule} key={editingModule.id} />
+        }
       </SidePanel>
     </div>
   );
