@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useState, useCallback } from "react";
-import type { Module } from "@/types";
+import type { Module, ModuleType } from "@/types";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import debounce from "lodash.debounce";
@@ -9,6 +9,7 @@ import "@/pages/Module.scss";
 //import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
 import ModuleForm from "@/components/ModuleForm";
+import ActivityForm from "@/components/ActivityFormDispatcher";
 import ModulesTreePanel from "@/components/ModulesTreePanel";
 import SidePanel from "@/components/SidePanel";
 import ModulesBreadcrumbs from "@/components/ModuleBreadcrumbs";
@@ -57,7 +58,7 @@ export default function ModulePage(): ReactElement {
     const last = parentModules.at(-1);
     return last?.type !== "activity";
   };
-  const availableCreateType = (): string => {
+  const availableCreateType = (): ModuleType => {
     const last = parentModules.at(-1);
     switch (last?.type) {
       case "course":
@@ -100,7 +101,7 @@ export default function ModulePage(): ReactElement {
   const saveModule = (module: Module | null) => {
     if (!module) {
       return;
-    }    
+    }
     const action = module.id
       ? modules.update(module)
       : modules.create(module);
@@ -135,6 +136,15 @@ export default function ModulePage(): ReactElement {
   useEffect(() => {
     reload(id);
   }, [reload, id]);
+
+
+  const EditorForm = (() => {
+    if (editingModule?.type === 'activity') {
+      return ActivityForm
+    } else if (editingModule) {
+      return ModuleForm
+    }
+  })()
   return (
     <div className="container-fluid module-page">
       <h1>Modules</h1>
@@ -163,12 +173,10 @@ export default function ModulePage(): ReactElement {
         onClose={() => showEditor(false)}
       >
         <h4>
-          {editorAction === 'create' && `Create ${editingModule?.type}}`}
-          {editorAction === 'edit' && `Edit ${editingModule?.type}}`}
+          <span className="capitalize">{editorAction}</span>
+          {editingModule?.type}
         </h4>
-        {editingModule && (
-          <ModuleForm module={editingModule} onSubmit={saveModule} />
-        )}
+        {EditorForm && editingModule && <EditorForm module={editingModule} onSubmit={saveModule} />}
       </SidePanel>
     </div>
   );
