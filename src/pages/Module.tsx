@@ -97,11 +97,11 @@ export default function ModulePage(): ReactElement {
       .catch(console.error)
       .finally(() => busy(false));
   };
-  const saveModule = () => {
-    if (!currentModule) {
+  const saveModule = (module: Module) => {
+    if (!module) {
       return;
     }
-    const updated = { ...currentModule } as Module;
+    const updated = { ...currentModule, ...module } as Module;
 
     const action = updated.id
       ? modules.update(updated)
@@ -165,21 +165,11 @@ export default function ModulePage(): ReactElement {
         onClose={() => showEditor(false)}
       >
         <h4>
-          Edit {!currentModule?.id && "new"} {currentModule?.type}
+          {currentModule?.id ? 'Edit' : 'Create'} {!currentModule?.id && "new"} {currentModule?.type}
         </h4>
         {currentModule && (
-          <ModuleForm module={currentModule} onChange={setCurrentModule} />
+          <ModuleForm module={currentModule} onSubmit={saveModule} />
         )}
-        <div className="mt-3 d-flex justify-content-end">
-          <button
-            disabled={Boolean(currentModule?.name) === false}
-            className="btn btn-primary w-100"
-            type="button"
-            onClick={saveModule}
-          >
-            Save
-          </button>
-        </div>
       </SidePanel>
     </div>
   );

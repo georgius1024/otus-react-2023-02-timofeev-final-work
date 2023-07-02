@@ -1,28 +1,35 @@
+import Form from 'react-formal';
+import * as yup from 'yup';
+
 import FormGroup from "@/components/FormGroup";
 import FormInput from "@/components/FormInput";
 
 import type { Module } from "@/types";
 
-type OnChange = (module: Module) => void;
+//@ts-nocheck
+const moduleSchema: any = yup.object({
+  name: yup.string().required()
+});
+
+type OnSubmit = (module: Module) => void;
 
 type ModuleFormProps = {
   module: Module;
-  onChange: OnChange;
+  onSubmit: OnSubmit;
 };
 
 export default function ModuleForm(props: ModuleFormProps) {
-  const nameChanged = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    props.onChange({ ...props.module, name: event.target.value });
-  };
-
   return (
-    <FormGroup label="Name">
-      <FormInput
-        type="text"
-        placeholder="enter name here..."
-        value={props.module.name}
-        onInput={nameChanged}
-      />
-    </FormGroup>
+    <Form schema={moduleSchema} onSubmit={props.onSubmit} value={props.module}>
+      <FormGroup label="Name">
+        <Form.Field as={FormInput} name="name" type="text"
+          placeholder="enter module name here..."
+        />
+        <Form.Message for="name" className="text-fanger mb-3 p-1 d-block" />
+      </FormGroup>
+      <Form.Submit className="btn btn-primary light-text me-3">
+        Save
+      </Form.Submit>
+    </Form>
   );
 }
