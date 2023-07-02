@@ -1,6 +1,6 @@
-import WordAcrivityForm from '@/components/WordActivityForm';
-import PhraseActivityForm from '@/components/PhraseActivityForm';
-import SlideActivityForm from '@/components/SlideActivityForm';
+import WordAcrivityForm from '@/pages/Module/compoments/WordActivityForm';
+import PhraseActivityForm from '@/pages/Module/compoments/PhraseActivityForm';
+import SlideActivityForm from '@/pages/Module/compoments/SlideActivityForm';
 
 import type { Module, Activity, WordActivity, PhraseActivity, SlideActivity } from "@/types";
 type OnSubmit = (module: Module) => void;

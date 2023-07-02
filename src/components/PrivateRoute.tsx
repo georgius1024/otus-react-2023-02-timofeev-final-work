@@ -9,7 +9,7 @@ function PrivateRoute(props: PropsWithChildren) {
     (state: RootState) => state.auth?.user
   );
   if (user) {
-    return props.children;
+    return <> {props.children} </>;
   }
   return <Navigate to="/login" />;
 }

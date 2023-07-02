@@ -2,11 +2,11 @@ import { createBrowserRouter } from "react-router-dom";
 import DefaultLayout from "@/layouts/default";
 import PrivateRoute from "@/components/PrivateRoute";
 
-import HomePage from "@/pages/Home.tsx";
-import LoginPage from "@/pages/Login.tsx";
-import ForgotPage from "@/pages/Forgot.tsx";
-import ModulePage from "@/pages/Module.tsx";
-import ErrorPage from "@/pages/Error.tsx";
+import HomePage from "@/pages/Home";
+import LoginPage from "@/pages/Login";
+import ForgotPage from "@/pages/Forgot";
+import ModulePage from "@/pages/Module";
+import ErrorPage from "@/pages/Error";
 
 const routes = [
   {

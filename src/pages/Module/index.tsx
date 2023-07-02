@@ -4,15 +4,15 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import debounce from "lodash.debounce";
 
-import "@/pages/Module.scss";
+import "@/pages/module/index.scss";
 
 //import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
-import ModuleForm from "@/components/ModuleForm";
-import ActivityForm from "@/components/ActivityFormDispatcher";
-import ModulesTreePanel from "@/components/ModulesTreePanel";
+import ModuleForm from "@/pages/Module/compoments/ModuleForm";
+import ActivityForm from "@/pages/Module/compoments/ActivityFormDispatcher";
+import ModulesTreePanel from "@/pages/Module/compoments/ModulesTreePanel";
 import SidePanel from "@/components/SidePanel";
-import ModulesBreadcrumbs from "@/components/ModuleBreadcrumbs";
+import ModulesBreadcrumbs from "@/layouts/ModuleBreadcrumbs";
 import * as modules from "@/services/modules";
 
 export default function ModulePage(): ReactElement {
