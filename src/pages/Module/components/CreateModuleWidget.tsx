@@ -4,7 +4,8 @@ type OnCreate = (module: Module) => void;
 
 type CreateModuleWidgetProps = {
   current: Module | null;
-  onCreate: OnCreate;
+  count?: number;
+  onCreate: OnCreate
 };
 
 export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
@@ -60,6 +61,7 @@ export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
         name: "",
         type: moduleType,
         activity: createActivity(activityType),
+        position: (props.count || 0) + 1
       } as Module;
     }
     return {

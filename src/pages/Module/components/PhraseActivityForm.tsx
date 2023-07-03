@@ -25,13 +25,13 @@ export default function PhraseActivityForm(props: ActivityFormProps) {
         <Form.Field className="form-control shadow-none w-100" name="phrase" type="text"
           placeholder="enter foreign phrase here..."
         />
-        <Form.Message for="phrase" className="text-fanger mb-3 p-1 d-block" />
+        <Form.Message for="phrase" className="text-danger mb-3 p-1 d-block" />
       </FormGroup>
       <FormGroup label="Translation">
         <Form.Field className="form-control shadow-none w-100" name="translation" type="text"
           placeholder="enter translation here..."
         />
-        <Form.Message for="translation" className="text-fanger mb-3 p-1 d-block" />
+        <Form.Message for="translation" className="text-danger mb-3 p-1 d-block" />
       </FormGroup>
       <Form.Submit className="btn btn-primary light-text me-3">
         Save

@@ -16,12 +16,14 @@ import ModulesBreadcrumbs from "@/pages/Module/components/ModuleBreadcrumbs";
 import CreateModuleWidget from "@/pages/Module/components/CreateModuleWidget";
 import * as modules from "@/services/modules";
 
+type EditorActionType = 'none' | 'create' | 'edit'
+
 export default function ModulePage(): ReactElement {
   const [childrenModules, setChildrenModules] = useState<Module[]>([]);
   const [parentModules, setParentModules] = useState<Module[]>([]);
   const [editingModule, setEditingModule] = useState<Module | null>(null);
-  const [editorAction, showEditor] = useState<false | 'create' | 'edit'>(false);
-
+  const [editorAction, showEditor] = useState<EditorActionType>('none');
+  const [maxPosition, setMaxPosition] = useState<number>(0)
   //const alert = useAlert();
   const busy = useBusy();
   const { id = "" } = useParams();
@@ -45,10 +47,10 @@ export default function ModulePage(): ReactElement {
       };
 
       Promise.all([fetchChildren(parent), fetchPath(parent)])
-        .then((response) => {
-          setChildrenModules(response[0]);
-          const path = response[1] || [];
+        .then(([children, path]) => {
+          setChildrenModules(children);
           setParentModules(path);
+          setMaxPosition(children.at(-1)?.position || 0)
           busy(false);
         })
         .catch(console.error);
@@ -56,7 +58,7 @@ export default function ModulePage(): ReactElement {
     [busy]
   );
   const lastModule = parentModules.at(-1) || null
-  const formDomKey = [editingModule?.id, editingModule?.parent, lastModule?.type, 'key'].filter(Boolean).join('-')
+  const formDomKey = (module: Module) => ([module.id, module.type, 'key'].join('-'))
   const create = (module: Module) => {
     setEditingModule(module);
     showEditor('create');
@@ -86,19 +88,19 @@ export default function ModulePage(): ReactElement {
       .catch(console.error)
       .finally(() => busy(false));
   };
-  const saveModule = (module: Module | null) => {
-    if (!module) {
+  const saveModule = (module: Module | null, editorAction: EditorActionType) => {
+    if (!module || editorAction === 'none') {
       return;
     }
     // @ts-ignore
-    const action = showEditor === "edit"
+    const action = editorAction === "edit"
       ? modules.update(module)
       : modules.create(module);
     busy(true);
     action
       .then(() => setEditingModule(module))
       .then(() => {
-        showEditor(false);
+        showEditor('none');
         reload(module.parent);
       })
       .catch(console.error)
@@ -146,13 +148,13 @@ export default function ModulePage(): ReactElement {
           onDelete={deleteModule}
           onSort={sortDebounced}
         />
-        {<CreateModuleWidget current={lastModule} onCreate={create} />}
+        {<CreateModuleWidget current={lastModule} count={maxPosition} onCreate={create} />}
       </div>
       <SidePanel
         position="right"
         width={600}
-        show={Boolean(editorAction)}
-        onClose={() => showEditor(false)}
+        show={editorAction !== 'none'}
+        onClose={() => showEditor('none')}
       >
         <h4>
           <span className="text-capitalize">{editorAction}</span>
@@ -162,7 +164,11 @@ export default function ModulePage(): ReactElement {
         {
           EditorForm &&
           editingModule &&
-          <EditorForm module={editingModule} onSubmit={saveModule} key={formDomKey} />
+          <EditorForm
+            module={editingModule}
+            onSubmit={(module) => saveModule(module, editorAction)}
+            key={formDomKey(editingModule)}
+          />
         }
       </SidePanel>
     </div>

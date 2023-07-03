@@ -24,7 +24,7 @@ export default function ModuleForm(props: ModuleFormProps) {
         <Form.Field className="form-control shadow-none w-100" name="name" type="text"
           placeholder={`enter ${props.module.type} name here...`}
         />
-        <Form.Message for="name" className="text-fanger mb-3 p-1 d-block" />
+        <Form.Message for="name" className="text-danger mb-3 p-1 d-block" />
       </FormGroup>
       <Form.Submit className="btn btn-primary light-text me-3">
         Save

@@ -27,13 +27,13 @@ export default function WordAcrivityForm(props: ActivityFormProps) {
         <Form.Field className="form-control shadow-none w-100" name="word" type="text"
           placeholder="enter foreign word here..."
         />
-        <Form.Message for="word" className="text-fanger mb-3 p-1 d-block" />
+        <Form.Message for="word" className="text-danger mb-3 p-1 d-block" />
       </FormGroup>
       <FormGroup label="Translation">
         <Form.Field className="form-control shadow-none w-100" name="translation" type="text"
           placeholder="enter translation here..."
         />
-        <Form.Message for="translation" className="text-fanger mb-3 p-1 d-block" />
+        <Form.Message for="translation" className="text-danger mb-3 p-1 d-block" />
       </FormGroup>
       <FormGroup label="Context">
         <Form.Field as="textarea" className="form-control shadow-none w-100" name="context" type="text" rows={4}

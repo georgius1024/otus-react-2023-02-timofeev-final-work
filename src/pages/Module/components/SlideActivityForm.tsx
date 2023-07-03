@@ -25,13 +25,13 @@ export default function SlideActivityForm(props: ActivityFormProps) {
         <Form.Field className="form-control shadow-none w-100" name="header" type="text"
           placeholder="enter header here..."
         />
-        <Form.Message for="header" className="text-fanger mb-3 p-1 d-block" />
+        <Form.Message for="header" className="text-danger mb-3 p-1 d-block" />
       </FormGroup>
       <FormGroup label="Slide">
         <Form.Field className="form-control shadow-none w-100" name="slide" type="text"
           placeholder="enter slide here..."
         />
-        <Form.Message for="slide" className="text-fanger mb-3 p-1 d-block" />
+        <Form.Message for="slide" className="text-danger mb-3 p-1 d-block" />
       </FormGroup>
       <Form.Submit className="btn btn-primary light-text me-3">
         Save
