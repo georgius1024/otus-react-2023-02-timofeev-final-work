@@ -6,12 +6,33 @@ import HomePage from "@/pages/Home";
 import LoginPage from "@/pages/Login";
 import ForgotPage from "@/pages/Forgot";
 import ModulePage from "@/pages/Module";
+import LearningPage from "@/pages/Learning";
+import CoursePage from "@/pages/Learning/CoursePage";
+import LessonPage from "@/pages/Learning/LessonPage";
 import ErrorPage from "@/pages/Error";
 
 const routes = [
   {
     path: "/",
     element: HomePage,
+    layout: DefaultLayout,
+    private: true,
+  },
+  {
+    path: "/learning",
+    element: LearningPage,
+    layout: DefaultLayout,
+    private: true,
+  },
+  {
+    path: "/learning/course/:id",
+    element: CoursePage,
+    layout: DefaultLayout,
+    private: true,
+  },
+  {
+    path: "/learning/course/:course/lesson/:id",
+    element: LessonPage,
     layout: DefaultLayout,
     private: true,
   },

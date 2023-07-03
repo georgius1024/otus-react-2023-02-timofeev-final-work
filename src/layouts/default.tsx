@@ -15,7 +15,11 @@ export default function DefaultLayout(props: PropsWithChildren) {
     if (user) {
       return (
         <li className="nav-item me-2">
-          <Link className="text-light" to="/login" onClick={() => dispatch(logout())}>
+          <Link
+            className="text-light"
+            to="/login"
+            onClick={() => dispatch(logout())}
+          >
             Logout
           </Link>
         </li>
@@ -24,10 +28,14 @@ export default function DefaultLayout(props: PropsWithChildren) {
       return (
         <>
           <li className="nav-item me-2">
-            <Link className="text-light" to="/login">Login</Link>
+            <Link className="text-light" to="/login">
+              Login
+            </Link>
           </li>
           <li className="nav-item me-2">
-            <Link className="text-light" to="/register">Register</Link>
+            <Link className="text-light" to="/register">
+              Register
+            </Link>
           </li>
         </>
       );
@@ -41,11 +49,23 @@ export default function DefaultLayout(props: PropsWithChildren) {
           <Link className="navbar-brand" to="/">
             Start
           </Link>
-          <ul className="navbar-nav flex-row">{ProfileLinks(user)}</ul>
+          <ul className="navbar-nav flex-row flex-grow-1">
+            <li className="nav-item me-3">
+              <Link className="text-light" to="/module">
+                Modules
+              </Link>
+            </li>
+            <li className="nav-item me-3">
+              <Link className="text-light" to="/learning">
+                Learning
+              </Link>
+            </li>
+          </ul>
+          <ul className="navbar-nav ">{ProfileLinks(user)}</ul>
         </div>
       </nav>
-      <AlertsPanel/>
-      <BusyStatePanel/>
+      <AlertsPanel />
+      <BusyStatePanel />
       {props.children}
       <nav
         className="navbar bg-secondary position-absolute"
