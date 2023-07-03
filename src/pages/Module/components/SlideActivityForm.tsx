@@ -2,7 +2,6 @@ import Form from 'react-formal';
 import * as yup from 'yup';
 
 import FormGroup from "@/components/FormGroup";
-import FormInput from "@/components/FormInput";
 
 import type { Activity, SlideActivity } from "@/types";
 
@@ -23,13 +22,13 @@ export default function SlideActivityForm(props: ActivityFormProps) {
   return (
     <Form schema={ActivitySchema} onSubmit={props.onSubmit} defaultValue={props.activity as SlideActivity}>
       <FormGroup label="Header">
-        <Form.Field as={FormInput} name="header" type="text"
+        <Form.Field className="form-control shadow-none w-100" name="header" type="text"
           placeholder="enter header here..."
         />
         <Form.Message for="header" className="text-fanger mb-3 p-1 d-block" />
       </FormGroup>
       <FormGroup label="Slide">
-        <Form.Field as={FormInput} name="slide" type="text"
+        <Form.Field className="form-control shadow-none w-100" name="slide" type="text"
           placeholder="enter slide here..."
         />
         <Form.Message for="slide" className="text-fanger mb-3 p-1 d-block" />

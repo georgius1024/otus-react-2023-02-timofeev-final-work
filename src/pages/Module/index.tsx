@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import debounce from "lodash.debounce";
 
-import "@/pages/module/index.scss";
+import "@/pages/Module/index.scss";
 
 //import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
@@ -12,7 +12,7 @@ import ModuleForm from "@/pages/Module/components/ModuleForm";
 import ActivityForm from "@/pages/Module/components/ActivityFormDispatcher";
 import ModulesTreePanel from "@/pages/Module/components/ModulesTreePanel";
 import SidePanel from "@/components/SidePanel";
-import ModulesBreadcrumbs from "@/layouts/ModuleBreadcrumbs";
+import ModulesBreadcrumbs from "@/pages/Module/components/ModuleBreadcrumbs";
 import CreateModuleWidget from "@/pages/Module/components/CreateModuleWidget";
 import * as modules from "@/services/modules";
 

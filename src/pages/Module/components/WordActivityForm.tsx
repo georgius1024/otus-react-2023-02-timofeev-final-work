@@ -2,7 +2,6 @@ import Form from 'react-formal';
 import * as yup from 'yup';
 
 import FormGroup from "@/components/FormGroup";
-import FormInput from "@/components/FormInput";
 
 import type { Activity, WordActivity } from "@/types";
 
@@ -23,13 +22,13 @@ export default function WordAcrivityForm(props: ActivityFormProps) {
   return (
     <Form schema={ActivitySchema} onSubmit={props.onSubmit} defaultValue={props.activity as WordActivity}>
       <FormGroup label="Word">
-        <Form.Field as={FormInput} name="word" type="text"
+        <Form.Field className="form-control shadow-none w-100" name="word" type="text"
           placeholder="enter foreign word here..."
         />
         <Form.Message for="word" className="text-fanger mb-3 p-1 d-block" />
       </FormGroup>
       <FormGroup label="Translation">
-        <Form.Field as={FormInput} name="translation" type="text"
+        <Form.Field className="form-control shadow-none w-100" name="translation" type="text"
           placeholder="enter translation here..."
         />
         <Form.Message for="translation" className="text-fanger mb-3 p-1 d-block" />
