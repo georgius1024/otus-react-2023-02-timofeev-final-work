@@ -28,7 +28,7 @@ export default function SlideActivityForm(props: ActivityFormProps) {
         <Form.Message for="header" className="text-danger mb-3 p-1 d-block" />
       </FormGroup>
       <FormGroup label="Slide">
-        <Form.Field className="form-control shadow-none w-100" name="slide" type="text"
+        <Form.Field as="textarea" className="form-control shadow-none w-100" name="slide" type="text" rows={8}
           placeholder="enter slide here..."
         />
         <Form.Message for="slide" className="text-danger mb-3 p-1 d-block" />
