@@ -36,6 +36,9 @@ export default function PhraseActivityForm(props: ActivityFormProps) {
       <Form.Submit className="btn btn-primary light-text me-3">
         Save
       </Form.Submit>
+      <Form.Reset className="btn btn-outline-primary">
+        Reset
+      </Form.Reset>
     </Form>
   );
 }
