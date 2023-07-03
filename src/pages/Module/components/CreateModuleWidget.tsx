@@ -1,11 +1,10 @@
-
 import { nanoid } from "nanoid";
 import type { Module, ModuleType, ActivityType, Activity } from "@/types";
 type OnCreate = (module: Module) => void;
 
 type CreateModuleWidgetProps = {
   current: Module | null;
-  onCreate: OnCreate
+  onCreate: OnCreate;
 };
 
 export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
@@ -18,9 +17,9 @@ export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
         return "lesson";
       case "lesson":
         return "activity";
-      case 'activity':
+      case "activity":
       default:
-        return null
+        return null;
     }
   })();
   if (!createModuleType) {
@@ -28,38 +27,47 @@ export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
   }
   const createActivity = (type: ActivityType): Activity | null => {
     switch (type) {
-      case 'word':
+      case "word":
         return {
           type,
-          word: '',
-          translation: ''
-        }
-      case 'phrase':
+          word: "",
+          translation: "",
+          context: "",
+          synonyms: "",
+        };
+      case "phrase":
         return {
           type,
-          phrase: '',
-          translation: ''
-        }
-      case 'slide':
+          phrase: "",
+          translation: "",
+        };
+      case "slide":
         return {
           type,
-          header: '',
-          slide: ''
-        }
+          header: "",
+          slide: "",
+        };
     }
-  }
-  const createModule = (moduleType: ModuleType, activityType?: ActivityType): Module => {
+  };
+  const createModule = (
+    moduleType: ModuleType,
+    activityType?: ActivityType
+  ): Module => {
     if (activityType) {
       return {
         id: nanoid(),
-        parent: props.current?.id || '', 
-        name: '', 
+        parent: props.current?.id || "",
+        name: "",
         type: moduleType,
-        activity: createActivity(activityType)
-      } as Module
+        activity: createActivity(activityType),
+      } as Module;
     }
-    return { parent: props.current?.id || '', name: '', type: moduleType } as Module
-  }
+    return {
+      parent: props.current?.id || "",
+      name: "",
+      type: moduleType,
+    } as Module;
+  };
   const createActivityTypeButton = (type: ActivityType) => (
     <button
       className="btn btn-primary"
@@ -69,16 +77,14 @@ export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
     >
       Create {type} activity
     </button>
-  )
-  const acivityTypes: ActivityType[] = ['word', 'phrase', 'slide']
-  if (createModuleType === 'activity') {
+  );
+  const acivityTypes: ActivityType[] = ["word", "phrase", "slide"];
+  if (createModuleType === "activity") {
     return (
       <div className="btn-group mt-3">
-        {
-          acivityTypes.map(createActivityTypeButton)
-        }
+        {acivityTypes.map(createActivityTypeButton)}
       </div>
-    )
+    );
   }
   return (
     <button
@@ -88,7 +94,5 @@ export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
     >
       Create {createModuleType}
     </button>
-
-  )
-
+  );
 }
