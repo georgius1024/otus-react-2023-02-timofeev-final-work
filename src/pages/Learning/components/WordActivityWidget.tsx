@@ -94,11 +94,11 @@ function WordActivityTranslateDirectStep(props: WordActivityProps) {
       </h5>
       <p>{props.activity.word}</p>
       <ul
-        className={classNames("list-group", { "animated-rejected": rejected })}
+        className={classNames("list-group", "list-group-flush", { "animated-rejected": rejected })}
       >
         {translations.map((translation) => (
           <li
-            className={classNames("list-group-item", {
+            className={classNames("list-group-item", "list-group-item-action", {
               active: selected === translation,
             })}
             key={translation}
@@ -133,6 +133,10 @@ function WordActivityDispatcher(props: WordActivityDispatcherProps) {
 export default function WordActivityWidget(props: WordActivityWidgetProps) {
   const [enabled, setEnabled] = useState(false);
   const [step, setStep] = useState<StepType>("learn");
+  useEffect(() => {
+    setEnabled(false);
+    setStep('learn');
+  }, [props])
   const goNext = () => {
     const next = nextStep(step);
     if (next) {

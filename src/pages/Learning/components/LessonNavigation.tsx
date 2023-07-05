@@ -38,7 +38,7 @@ export default function LessonNavigation(props: LessonNavigationProps) {
         className={classNames("page-item", { disabled: !prevEnabled })}
         onClick={prevActivity}
       >
-        <span className="page-link">Previous</span>
+        <span className="page-link">&laquo;</span>
       </li>
       {Array(props.count > 2 ? props.count : 0)
         .fill(0)
@@ -57,7 +57,7 @@ export default function LessonNavigation(props: LessonNavigationProps) {
         className={classNames("page-item", { disabled: !nextEnabled })}
         onClick={nextActivity}
       >
-        <span className="page-link">Next</span>
+        <span className="page-link">&raquo;</span>
       </li>
     </ul>
   );
