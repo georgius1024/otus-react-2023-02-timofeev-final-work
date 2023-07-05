@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
+import classNames from "classnames";
+
 import type { WordActivity } from "@/types";
 import * as modules from "@/services/modules";
+import useBusy from "@/utils/BusyHook";
 
-type OnDone = () => void;
+type OnDone = (force?: boolean) => void;
 
 type StepType =
   | "learn"
@@ -13,11 +16,10 @@ type StepType =
 
 type WordActivityProps = {
   activity: WordActivity;
-};
-
-type WordActivityWidgetProps = WordActivityProps & {
   onDone: OnDone;
 };
+
+type WordActivityWidgetProps = WordActivityProps;
 
 type WordActivityDispatcherProps = WordActivityProps & {
   step: StepType;
@@ -40,6 +42,10 @@ const nextStep = (step: StepType): StepType | null => {
 };
 
 function WordActivityLearnStep(props: WordActivityProps) {
+  useEffect(() => {
+    const timeout = setTimeout(props.onDone, 1000);
+    return () => clearTimeout(timeout);
+  }, [props]);
   return (
     <>
       <h5 className="card-title">Please remember meaning of the word</h5>
@@ -57,23 +63,51 @@ function WordActivityLearnStep(props: WordActivityProps) {
 }
 
 function WordActivityTranslateDirectStep(props: WordActivityProps) {
+  const busy = useBusy();
   const [translations, setTranslations] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [rejected, setRejected] = useState<boolean>(false);
   useEffect(() => {
-    modules.findTranslations(6).then(setTranslations).catch(console.error);
-  }, []);
+    busy(true);
+    modules
+      .findTranslations(6)
+      .then(setTranslations)
+      .catch(console.error)
+      .finally(() => busy(false));
+  }, [busy]);
+
+  const listSelectHandler = (selection: string) => {
+    if (selection === props.activity.translation) {
+      setSelected(selection);
+      props.onDone(true);
+    } else {
+      const timer = setTimeout(() => setRejected(false), 1000);
+      setRejected(true);
+      return () => clearTimeout(timer);
+    }
+  };
+
   return (
     <>
       <h5 className="card-title">
         Please select proper translationfor the word
       </h5>
       <p>{props.activity.word}</p>
-      <p className="card-text">
-        <ul className="list-group">
-          {translations.map((translation) => (
-            <li className="list-group-item" key={translation}>{translation}</li>
-          ))}
-        </ul>
-      </p>
+      <ul
+        className={classNames("list-group", { "animated-rejected": rejected })}
+      >
+        {translations.map((translation) => (
+          <li
+            className={classNames("list-group-item", {
+              active: selected === translation,
+            })}
+            key={translation}
+            onClick={() => listSelectHandler(translation)}
+          >
+            {translation}
+          </li>
+        ))}
+      </ul>
     </>
   );
 }
@@ -81,9 +115,19 @@ function WordActivityTranslateDirectStep(props: WordActivityProps) {
 function WordActivityDispatcher(props: WordActivityDispatcherProps) {
   switch (props.step) {
     case "learn":
-      return <WordActivityLearnStep activity={props.activity} />;
+      return (
+        <WordActivityLearnStep
+          activity={props.activity}
+          onDone={props.onDone}
+        />
+      );
     case "translate-direct":
-      return <WordActivityTranslateDirectStep activity={props.activity} />;
+      return (
+        <WordActivityTranslateDirectStep
+          activity={props.activity}
+          onDone={props.onDone}
+        />
+      );
   }
 }
 export default function WordActivityWidget(props: WordActivityWidgetProps) {
@@ -96,16 +140,23 @@ export default function WordActivityWidget(props: WordActivityWidgetProps) {
     } else {
       props.onDone();
     }
+    setEnabled(false);
   };
-
-  useEffect(() => {
-    setTimeout(() => setEnabled(true), 100);
-  }, []);
+  const doneHandler = (force?: boolean) => {
+    setEnabled(true);
+    if (force) {
+      setTimeout(goNext, 300);
+    }
+  };
   return (
     <div className="card">
       <div className="card-body">
         {step}
-        <WordActivityDispatcher activity={props.activity} step={step} />
+        <WordActivityDispatcher
+          activity={props.activity}
+          step={step}
+          onDone={doneHandler}
+        />
         <hr />
         <button
           className="btn btn-primary"
