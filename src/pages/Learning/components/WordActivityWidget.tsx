@@ -8,10 +8,44 @@ type WordActivityWidgetProps = {
   onDone: OnDone;
 };
 
+type StepType =
+  | "learn"
+  | "translate-direct"
+  | "translate-reverse"
+  | "assemble"
+  | "spell";
+
+const nextStep = (step: StepType): StepType | null => {
+  switch (step) {
+    case "learn":
+      return "translate-direct";
+    case "translate-direct":
+      return "translate-reverse";
+    case "translate-reverse":
+      return "assemble";
+    case "assemble":
+      return "spell";
+    case "spell":
+    default:
+      return null;
+  }
+};
+
 export default function WordActivityWidget(props: WordActivityWidgetProps) {
   const [enabled, setEnabled] = useState(false);
+  const [step, setStep] = useState<StepType>("learn");
+  const goNext = () => {
+    const next = nextStep(step) 
+    if (next) {
+      setStep(next)
+    } else {
+      props.onDone()
+    }
+
+  }
+
   useEffect(() => {
-    setTimeout(() => setEnabled(true), 1000);
+    setTimeout(() => setEnabled(true), 100);
   }, []);
   return (
     <div className="card">
@@ -24,10 +58,12 @@ export default function WordActivityWidget(props: WordActivityWidgetProps) {
           </footer>
         </blockquote>
         <p className="card-text"><cite>{props.activity.context}</cite></p>
+        {step}
+
         <hr />
         <button
           className="btn btn-primary"
-          onClick={props.onDone}
+          onClick={goNext}
           disabled={!enabled}
         >
           Continue
