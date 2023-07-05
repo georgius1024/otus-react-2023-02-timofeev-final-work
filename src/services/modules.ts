@@ -1,6 +1,7 @@
 import type { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 import sortBy from "lodash.sortby";
 import omit from "lodash.omit";
+import pluck from "lodash.pluck";
 import {
   collection,
   doc,
@@ -12,6 +13,7 @@ import {
   query,
   where,
   writeBatch,
+  limit,
 } from "firebase/firestore";
 
 import { db } from "@/firebase";
@@ -79,4 +81,27 @@ export async function destroy(module: Module): Promise<void> {
   if (!module.id) return;
 
   return deleteDoc(moduleRef(module.id));
+}
+
+export async function findWords(count: number): Promise<string[]> {
+  const response = await getDocs(
+    query(
+      modulesTableRef,
+      where("activity.type", "==", "word"),
+      limit(count)
+    )
+  );
+
+  return pluck(response.docs, "activity.word");
+}
+
+export async function findTranslations(count: number): Promise<string[]> {
+  const response = await getDocs(
+    query(
+      modulesTableRef,
+      where("activity.type", "==", "word"),
+      limit(count)
+    )
+  );
+  return pluck(response.docs.map(withId), "activity.translation");
 }

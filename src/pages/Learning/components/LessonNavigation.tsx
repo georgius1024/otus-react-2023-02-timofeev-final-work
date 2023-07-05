@@ -44,6 +44,7 @@ export default function LessonNavigation(props: LessonNavigationProps) {
         .fill(0)
         .map((_e, index) => (
           <li
+            key={index}
             className={classNames("page-item", {
               active: index === props.position,
             })}
