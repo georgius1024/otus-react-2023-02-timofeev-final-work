@@ -181,7 +181,7 @@ function WordActivityPuzzleStep(props: WordActivityProps) {
     if (puzzle.length && !letters.length) {
       props.onDone()
     }
-  }, [props, letters])
+  }, [props, letters, puzzle])
 
   function typeLetter(letter: string) {
     setPuzzle([...puzzle, letter]);
