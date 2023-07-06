@@ -92,7 +92,7 @@ export async function findWords(count: number): Promise<string[]> {
     )
   );
 
-  return pluck(response.docs, "activity.word");
+  return pluck(response.docs.map(withId), "activity.word");
 }
 
 export async function findTranslations(count: number): Promise<string[]> {

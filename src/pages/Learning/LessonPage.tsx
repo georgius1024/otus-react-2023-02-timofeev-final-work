@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
 import useBusy from "@/utils/BusyHook";
 import * as modules from "@/services/modules";
 import type {
@@ -15,6 +14,8 @@ import LessonNavigation from "@/pages/Learning/components/LessonNavigation";
 import SlideActivityWidget from "@/pages/Learning/components/SlideActivityWidget";
 import WordActivityWidget from "@/pages/Learning/components/WordActivityWidget";
 import PhraseActivityWidget from "@/pages/Learning/components/PhraseActivityWidget";
+
+import "@/pages/Learning/LessonPage.scss"
 
 export default function LessonPage() {
   const { id = "" } = useParams();

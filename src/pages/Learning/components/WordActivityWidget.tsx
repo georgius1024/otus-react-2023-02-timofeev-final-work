@@ -11,8 +11,7 @@ type StepType =
   | "learn"
   | "translate-direct"
   | "translate-reverse"
-  | "assemble"
-  | "spell";
+  | "puzzle"
 
 type WordActivityProps = {
   activity: WordActivity;
@@ -32,10 +31,8 @@ const nextStep = (step: StepType): StepType | null => {
     case "translate-direct":
       return "translate-reverse";
     case "translate-reverse":
-      return "assemble";
-    case "assemble":
-      return "spell";
-    case "spell":
+      return "puzzle";
+    case "puzzle":
     default:
       return null;
   }
@@ -62,7 +59,7 @@ function WordActivityLearnStep(props: WordActivityProps) {
   );
 }
 
-function WordActivityTranslateDirectStep(props: WordActivityProps) {
+function WordActivityDirectTranslateDirectStep(props: WordActivityProps) {
   const busy = useBusy();
   const [translations, setTranslations] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
@@ -70,11 +67,18 @@ function WordActivityTranslateDirectStep(props: WordActivityProps) {
   useEffect(() => {
     busy(true);
     modules
-      .findTranslations(6)
-      .then(setTranslations)
+      .findTranslations(900)
+      .then(list => {
+        const translations = [
+          props.activity.translation,
+          ...list.sort(() => Math.random() - 0.5)
+        ]
+          .slice(0, 6).sort(() => Math.random() - 0.5)
+        setTranslations(translations)
+      })
       .catch(console.error)
       .finally(() => busy(false));
-  }, [busy]);
+  }, [busy, props.activity.translation]);
 
   const listSelectHandler = (selection: string) => {
     if (selection === props.activity.translation) {
@@ -90,7 +94,7 @@ function WordActivityTranslateDirectStep(props: WordActivityProps) {
   return (
     <>
       <h5 className="card-title">
-        Please select proper translationfor the word
+        Please select proper translation for the word
       </h5>
       <p>{props.activity.word}</p>
       <ul
@@ -112,6 +116,115 @@ function WordActivityTranslateDirectStep(props: WordActivityProps) {
   );
 }
 
+function WordActivityReverseTranslateDirectStep(props: WordActivityProps) {
+  const busy = useBusy();
+  const [words, setWords] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [rejected, setRejected] = useState<boolean>(false);
+  useEffect(() => {
+    busy(true);
+    modules
+      .findWords(900)
+      .then(list => {
+        const words = [
+          props.activity.word,
+          ...list.sort(() => Math.random() - 0.5)]
+          .slice(0, 6).sort(() => Math.random() - 0.5)
+        setWords(words)
+      })
+      .catch(console.error)
+      .finally(() => busy(false));
+  }, [busy, props.activity.word]);
+
+  const listSelectHandler = (selection: string) => {
+    if (selection === props.activity.word) {
+      setSelected(selection);
+      props.onDone(true);
+    } else {
+      const timer = setTimeout(() => setRejected(false), 1000);
+      setRejected(true);
+      return () => clearTimeout(timer);
+    }
+  };
+
+  return (
+    <>
+      <h5 className="card-title">
+        Please select proper meaning for the word
+      </h5>
+      <p>{props.activity.translation}</p>
+      <ul
+        className={classNames("list-group", "list-group-flush", { "animated-rejected": rejected })}
+      >
+        {words.map((word) => (
+          <li
+            className={classNames("list-group-item", "list-group-item-action", {
+              active: selected === word,
+            })}
+            key={word}
+            onClick={() => listSelectHandler(word)}
+          >
+            {word}
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
+function WordActivityPuzzleStep(props: WordActivityProps) {
+  const [letters, setLetters] = useState<string[]>([])
+  const [puzzle, setPuzzle] = useState<string[]>([])
+  useEffect(() => {
+    setLetters(props.activity.word.split('').sort(() => Math.random() - 0.5))
+  }, [props])
+  const submit = () => {
+    props.onDone(true);
+  }
+
+  function typeLetter(letter: string) {
+    setPuzzle([...puzzle, letter]);
+    const letterIndex = letters.indexOf(letter);
+    // @ts-ignore
+    setLetters(letters.toSpliced(letterIndex, 1))
+    if (letters.length === 1) {
+      submit()
+    }
+  }
+  function backspace() {
+    const letter = puzzle.slice(-1)[0];
+    setPuzzle(puzzle.slice(0, -1));
+    setLetters([...letters, letter]);
+  }
+  const keyDown = (e) => {
+    e.preventDefault();
+    if (letters.includes(e.key)) {
+      typeLetter(e.key);
+    }
+    if (e.key === "Backspace") {
+      backspace();
+    }
+    if (e.key === "Enter") {
+      submit();
+    }
+  };
+
+  return (
+    <>
+      <h5 className="card-title">
+        Please spell the word "{props.activity.translation}"
+      </h5>
+      <div className="card-text" tabIndex={0} onKeyDown={keyDown}>
+        <ul className="puzzle">
+          {puzzle.map(letter => <li onClick={backspace} key={letter}>{letter}</li>)}
+        </ul>
+        <ul className="letters">
+          {letters.map(letter => <li onClick={() => typeLetter(letter)}>{letter}</li>)}
+        </ul>
+      </div>
+    </>
+  )
+}
 function WordActivityDispatcher(props: WordActivityDispatcherProps) {
   switch (props.step) {
     case "learn":
@@ -123,12 +236,27 @@ function WordActivityDispatcher(props: WordActivityDispatcherProps) {
       );
     case "translate-direct":
       return (
-        <WordActivityTranslateDirectStep
+        <WordActivityDirectTranslateDirectStep
+          activity={props.activity}
+          onDone={props.onDone}
+        />
+      );
+    case "translate-reverse":
+      return (
+        <WordActivityReverseTranslateDirectStep
+          activity={props.activity}
+          onDone={props.onDone}
+        />
+      );
+    case "puzzle":
+      return (
+        <WordActivityPuzzleStep
           activity={props.activity}
           onDone={props.onDone}
         />
       );
   }
+  return null
 }
 export default function WordActivityWidget(props: WordActivityWidgetProps) {
   const [enabled, setEnabled] = useState(false);
@@ -153,7 +281,7 @@ export default function WordActivityWidget(props: WordActivityWidgetProps) {
     }
   };
   return (
-    <div className="card">
+    <div className="card word-activty">
       <div className="card-body">
         {step}
         <WordActivityDispatcher
