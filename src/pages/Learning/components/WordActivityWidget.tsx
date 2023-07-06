@@ -4,14 +4,11 @@ import classNames from "classnames";
 import type { WordActivity } from "@/types";
 import * as modules from "@/services/modules";
 import useBusy from "@/utils/BusyHook";
+import uniq from "lodash.uniq";
 
 type OnDone = (force?: boolean) => void;
 
-type StepType =
-  | "learn"
-  | "translate-direct"
-  | "translate-reverse"
-  | "puzzle"
+type StepType = "learn" | "translate-direct" | "translate-reverse" | "puzzle";
 
 type WordActivityProps = {
   activity: WordActivity;
@@ -45,7 +42,7 @@ function WordActivityLearnStep(props: WordActivityProps) {
   }, [props]);
   return (
     <>
-      <h5 className="card-title">Please remember meaning of the word</h5>
+      <h5 className="card-title">Please remember translation of the word "{props.activity.word}"</h5>
       <blockquote className="blockquote mb-0">
         <p>{props.activity.word}</p>
         <footer className="blockquote-footer">
@@ -67,14 +64,13 @@ function WordActivityDirectTranslateDirectStep(props: WordActivityProps) {
   useEffect(() => {
     busy(true);
     modules
-      .findTranslations(900)
-      .then(list => {
-        const translations = [
+      .findTranslations()
+      .then((list) => {
+        const translations = uniq([
           props.activity.translation,
-          ...list.sort(() => Math.random() - 0.5)
-        ]
-          .slice(0, 6).sort(() => Math.random() - 0.5)
-        setTranslations(translations)
+          ...modules.similarWords(props.activity.translation, list, 100),
+        ]).slice(0, 6);
+        setTranslations(modules.shuffle<string>(translations));
       })
       .catch(console.error)
       .finally(() => busy(false));
@@ -94,11 +90,12 @@ function WordActivityDirectTranslateDirectStep(props: WordActivityProps) {
   return (
     <>
       <h5 className="card-title">
-        Please select proper translation for the word
+        Please select proper translation for the word "{props.activity.word}"
       </h5>
-      <p>{props.activity.word}</p>
       <ul
-        className={classNames("list-group", "list-group-flush", { "animated-rejected": rejected })}
+        className={classNames("list-group", "list-group-flush", {
+          "animated-rejected": rejected,
+        })}
       >
         {translations.map((translation) => (
           <li
@@ -124,13 +121,14 @@ function WordActivityReverseTranslateDirectStep(props: WordActivityProps) {
   useEffect(() => {
     busy(true);
     modules
-      .findWords(900)
-      .then(list => {
-        const words = [
+      .findWords()
+      .then((list) => {
+        const words = uniq([
           props.activity.word,
-          ...list.sort(() => Math.random() - 0.5)]
-          .slice(0, 6).sort(() => Math.random() - 0.5)
-        setWords(words)
+          ...modules.similarWords(props.activity.word, list, 100),
+        ]).slice(0, 6);
+
+        setWords(modules.shuffle<string>(words));
       })
       .catch(console.error)
       .finally(() => busy(false));
@@ -149,12 +147,11 @@ function WordActivityReverseTranslateDirectStep(props: WordActivityProps) {
 
   return (
     <>
-      <h5 className="card-title">
-        Please select proper meaning for the word
-      </h5>
-      <p>{props.activity.translation}</p>
+      <h5 className="card-title">Please select proper translation for the word "{props.activity.translation}"</h5>
       <ul
-        className={classNames("list-group", "list-group-flush", { "animated-rejected": rejected })}
+        className={classNames("list-group", "list-group-flush", {
+          "animated-rejected": rejected,
+        })}
       >
         {words.map((word) => (
           <li
@@ -173,22 +170,22 @@ function WordActivityReverseTranslateDirectStep(props: WordActivityProps) {
 }
 
 function WordActivityPuzzleStep(props: WordActivityProps) {
-  const [letters, setLetters] = useState<string[]>([])
-  const [puzzle, setPuzzle] = useState<string[]>([])
+  const [letters, setLetters] = useState<string[]>([]);
+  const [puzzle, setPuzzle] = useState<string[]>([]);
   useEffect(() => {
-    setLetters(props.activity.word.split('').sort(() => Math.random() - 0.5))
-  }, [props])
+    setLetters(props.activity.word.split("").sort(() => Math.random() - 0.5));
+  }, [props]);
   const submit = () => {
-    props.onDone(true);
-  }
+    props.onDone();
+  };
 
   function typeLetter(letter: string) {
     setPuzzle([...puzzle, letter]);
     const letterIndex = letters.indexOf(letter);
     // @ts-ignore
-    setLetters(letters.toSpliced(letterIndex, 1))
+    setLetters(letters.toSpliced(letterIndex, 1));
     if (letters.length === 1) {
-      submit()
+      submit();
     }
   }
   function backspace() {
@@ -208,7 +205,8 @@ function WordActivityPuzzleStep(props: WordActivityProps) {
       submit();
     }
   };
-
+  const len = letters.length + puzzle.length;
+  const plottable = [...puzzle, ...Array(len).fill('')].slice(0, len)
   return (
     <>
       <h5 className="card-title">
@@ -216,14 +214,20 @@ function WordActivityPuzzleStep(props: WordActivityProps) {
       </h5>
       <div className="card-text" tabIndex={0} onKeyDown={keyDown}>
         <ul className="puzzle">
-          {puzzle.map(letter => <li onClick={backspace} key={letter}>{letter}</li>)}
+          {plottable.map((letter, index) => (
+            <li onClick={backspace} key={`${letter}-${index}`}>
+              {letter}
+            </li>
+          ))}
         </ul>
         <ul className="letters">
-          {letters.map(letter => <li onClick={() => typeLetter(letter)}>{letter}</li>)}
+          {letters.map((letter) => (
+            <li onClick={() => typeLetter(letter)} key={letter}>{letter}</li>
+          ))}
         </ul>
       </div>
     </>
-  )
+  );
 }
 function WordActivityDispatcher(props: WordActivityDispatcherProps) {
   switch (props.step) {
@@ -256,15 +260,15 @@ function WordActivityDispatcher(props: WordActivityDispatcherProps) {
         />
       );
   }
-  return null
+  return null;
 }
 export default function WordActivityWidget(props: WordActivityWidgetProps) {
   const [enabled, setEnabled] = useState(false);
   const [step, setStep] = useState<StepType>("learn");
   useEffect(() => {
     setEnabled(false);
-    setStep('learn');
-  }, [props])
+    setStep("puzzle");
+  }, [props]);
   const goNext = () => {
     const next = nextStep(step);
     if (next) {
