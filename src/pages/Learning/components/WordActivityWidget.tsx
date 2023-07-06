@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import classNames from "classnames";
 
 import type { WordActivity } from "@/types";
@@ -174,35 +174,34 @@ function WordActivityPuzzleStep(props: WordActivityProps) {
   const [puzzle, setPuzzle] = useState<string[]>([]);
   useEffect(() => {
     setLetters(props.activity.word.split("").sort(() => Math.random() - 0.5));
-  }, [props]);
-  const submit = () => {
-    props.onDone();
-  };
+    setPuzzle([])
+  }, [props.activity.word]);
+
+  useEffect(() => {
+    if (puzzle.length && !letters.length) {
+      props.onDone()
+    }
+  }, [props, letters])
 
   function typeLetter(letter: string) {
     setPuzzle([...puzzle, letter]);
     const letterIndex = letters.indexOf(letter);
     // @ts-ignore
     setLetters(letters.toSpliced(letterIndex, 1));
-    if (letters.length === 1) {
-      submit();
-    }
   }
   function backspace() {
-    const letter = puzzle.slice(-1)[0];
+    const letter = puzzle.slice(-1);
     setPuzzle(puzzle.slice(0, -1));
-    setLetters([...letters, letter]);
+    setLetters([...letters, ...letter]);
+    console.log(letters, letter)
   }
-  const keyDown = (e) => {
+  const keyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (letters.includes(e.key)) {
       typeLetter(e.key);
     }
     if (e.key === "Backspace") {
       backspace();
-    }
-    if (e.key === "Enter") {
-      submit();
     }
   };
   const len = letters.length + puzzle.length;
@@ -212,7 +211,7 @@ function WordActivityPuzzleStep(props: WordActivityProps) {
       <h5 className="card-title">
         Please spell the word "{props.activity.translation}"
       </h5>
-      <div className="card-text" tabIndex={0} onKeyDown={keyDown}>
+      <div className="card-text keyboard-catcher" tabIndex={0} onKeyDown={keyDown}>
         <ul className="puzzle">
           {plottable.map((letter, index) => (
             <li onClick={backspace} key={`${letter}-${index}`}>
@@ -221,8 +220,10 @@ function WordActivityPuzzleStep(props: WordActivityProps) {
           ))}
         </ul>
         <ul className="letters">
-          {letters.map((letter) => (
-            <li onClick={() => typeLetter(letter)} key={letter}>{letter}</li>
+          {letters.map((letter, index) => (
+            <li onClick={() => typeLetter(letter)} key={`${letter}-${index}`}>
+              {letter}
+            </li>
           ))}
         </ul>
       </div>
@@ -269,7 +270,7 @@ export default function WordActivityWidget(props: WordActivityWidgetProps) {
     setEnabled(false);
     setStep("puzzle");
   }, [props]);
-  const goNext = () => {
+  const goNext = useCallback(() => {
     const next = nextStep(step);
     if (next) {
       setStep(next);
@@ -277,20 +278,21 @@ export default function WordActivityWidget(props: WordActivityWidgetProps) {
       props.onDone();
     }
     setEnabled(false);
-  };
-  const doneHandler = (force?: boolean) => {
+  }, [props, step]);
+  const doneHandler = useCallback((force?: boolean) => {
     setEnabled(true);
     if (force) {
       setTimeout(goNext, 300);
     }
-  };
+  }, [goNext]);
   return (
     <div className="card word-activty">
-      <div className="card-body">
+      <div className={classNames("card-body", `${step}-step`)}>
         {step}
         <WordActivityDispatcher
           activity={props.activity}
           step={step}
+          key={step}
           onDone={doneHandler}
         />
         <hr />
