@@ -1,0 +1,40 @@
+.word-activty {
+  .puzzle {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-width: 32px;
+    min-height: 32px;
+    border: 1px dotted #777;
+    li {
+      list-style: none;
+      padding: 12px 6px;
+      border: 1px dotted #777;
+      margin: 6px;
+      min-width: 2rem;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+  }
+  .letters {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    li {
+      list-style: none;
+      padding: 12px 6px;
+      border: 1px dotted #777;
+      margin: 6px;
+      min-width: 2rem;
+      text-transform: uppercase;
+      cursor: pointer;    
+    }
+  }
+}

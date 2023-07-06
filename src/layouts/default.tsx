@@ -61,7 +61,7 @@ export default function DefaultLayout(props: PropsWithChildren) {
               </Link>
             </li>
           </ul>
-          <ul className="navbar-nav ">{ProfileLinks(user)}</ul>
+          <ul className="navbar-nav flex-row">{ProfileLinks(user)}</ul>
         </div>
       </nav>
       <AlertsPanel />

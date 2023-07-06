@@ -103,7 +103,7 @@ export async function findWords(): Promise<string[]> {
     )
   );
 
-  return pluck(response.docs, "activity.word");
+  return pluck(response.docs.map(withId), "activity.word");
 }
 
 export async function findTranslations(): Promise<string[]> {
