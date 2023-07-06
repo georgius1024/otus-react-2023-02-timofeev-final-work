@@ -1,7 +1,11 @@
 import type { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 import sortBy from "lodash.sortby";
 import omit from "lodash.omit";
+// @ts-ignore
 import pluck from "lodash.pluck";
+// @ts-ignore
+import stringSimilarity from 'string-similarity' 
+
 import {
   collection,
   doc,
@@ -13,7 +17,6 @@ import {
   query,
   where,
   writeBatch,
-  limit,
 } from "firebase/firestore";
 
 import { db } from "@/firebase";
@@ -83,24 +86,31 @@ export async function destroy(module: Module): Promise<void> {
   return deleteDoc(moduleRef(module.id));
 }
 
-export async function findWords(count: number): Promise<string[]> {
+export function shuffle<T>(list: T[]): T[] {
+  return list.sort(() => Math.random() - 0.5)
+}
+
+export function similarWords(sample: string, list: string[], count: number) {
+  const sorted = list.sort((a, b) => stringSimilarity.compareTwoStrings(b, sample) - stringSimilarity.compareTwoStrings(a, sample))
+  return sorted.slice(0, count)
+}
+
+export async function findWords(): Promise<string[]> {
   const response = await getDocs(
     query(
       modulesTableRef,
-      where("activity.type", "==", "word"),
-      limit(count)
+      where("activity.type", "==", "word")
     )
   );
 
   return pluck(response.docs, "activity.word");
 }
 
-export async function findTranslations(count: number): Promise<string[]> {
+export async function findTranslations(): Promise<string[]> {
   const response = await getDocs(
     query(
       modulesTableRef,
       where("activity.type", "==", "word"),
-      limit(count)
     )
   );
   return pluck(response.docs.map(withId), "activity.translation");
