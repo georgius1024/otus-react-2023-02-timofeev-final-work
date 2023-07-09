@@ -20,7 +20,8 @@ import "@/pages/Learning/LessonPage.scss";
 import classNames from "classnames";
 
 export default function LessonPage() {
-  const { course, id = "", step = "" } = useParams();
+  const { course = "", id = "", step = "" } = useParams();
+  const [parent, setParent] = useState<Module | null>(null);
   const [lesson, setLesson] = useState<Module | null>(null);
   const [activities, setActivities] = useState<Module[]>([]);
   const [currentActivity, setCurrentActivity] = useState<string>(step);
@@ -58,6 +59,12 @@ export default function LessonPage() {
   }, [busy, id]);
 
   useEffect(() => {
+    modules.fetchOne(course).then((parent) => {
+      setParent(parent);
+    });
+  }, [course]);
+
+  useEffect(() => {
     if (
       activities.length &&
       !activities.some((e) => e.id === currentActivity)
@@ -90,15 +97,14 @@ export default function LessonPage() {
       if (!currentProgress) {
         return;
       }
-      if (!currentProgress.finishedAt){
+      if (!currentProgress.finishedAt) {
         const current = { ...currentProgress, finishedAt: dayjs().valueOf() };
         progress.update(current);
         setCurrentProgress(current);
-        showModal(true);        
+        showModal(true);
       } else {
-        completeLesson()
+        completeLesson();
       }
-      
     }
   };
 
@@ -138,15 +144,34 @@ export default function LessonPage() {
   const lessonIsCompleted = Boolean(currentProgress.finishedAt);
   return (
     <div className="container-fluid">
-      {lessonIsCompleted && <h1>Repeating {lesson.name}</h1> }
-      {!lessonIsCompleted && <h1>{lesson.name} in progress</h1> }
-      <div className={classNames("progress", "my-2", { "d-none": lessonIsCompleted })} style={{height: '4px'}}>
+      <nav aria-label="breadcrumb" className=" mt-2">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item " aria-current="page">
+            {parent?.name}
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {lesson?.name}
+          </li>
+        </ol>
+      </nav>
+      {lessonIsCompleted && <h1>Repeating {lesson.name}</h1>}
+      {!lessonIsCompleted && <h1>{lesson.name} in progress</h1>}
+      <div
+        className={classNames("progress", "my-2", {
+          "d-none": lessonIsCompleted,
+        })}
+        style={{ height: "4px" }}
+      >
         <div
           className="progress-bar"
-          style={{ width: `${((position + 1) * 100 - 1) / activities.length}%` }}
+          style={{
+            width: `${((position + 1) * 100 - 1) / activities.length}%`,
+          }}
         ></div>
       </div>
-      <div className={classNames("row", "my-2", { "d-none": !lessonIsCompleted })}>
+      <div
+        className={classNames("row", "my-2", { "d-none": !lessonIsCompleted })}
+      >
         <div className="col">
           <LessonNavigation
             count={activities.length}
@@ -165,7 +190,7 @@ export default function LessonPage() {
       </div>
       <Outlet context={{ activity: activity, onDone: nextActivity }} />
       <ModalPanel show={modal} onClose={() => showModal(false)}>
-        <h1>Congratulation!</h1>
+        <h1>Congratulations</h1>
         <p>You completed the lesson. Click button to exit</p>
         <button
           className="btn btn-primary w-100"

@@ -24,9 +24,7 @@ export default function CoursePage() {
   const { id = "" } = useParams();
   const [course, setCourse] = useState<Module | null>(null);
   const [lessons, setLessons] = useState<Module[]>([]);
-  const [statuses, setStatuses] = useState<StatusesMap>(
-    new Map<string, ProgressRecord>()
-  );
+  const [statuses, setStatuses] = useState<StatusesMap | null>(null);
   const [currentProgress, setCurrentProgress] = useState<ProgressRecord | null>(
     null
   );
@@ -80,7 +78,7 @@ export default function CoursePage() {
   }, [course, uid, navigate, alert]);
 
   const checkStatus = (lesson: Module): "new" | "progress" | "finished" => {
-    const status = statuses.get(lesson?.id || "");
+    const status = statuses?.get(lesson?.id || "");
     if (status?.finishedAt) {
       return "finished";
     }
@@ -90,25 +88,6 @@ export default function CoursePage() {
     return "new";
   };
 
-  useEffect(() => {
-    if (!lessons.length) {
-      return 
-    }
-    if (!statuses.size) {
-      return 
-    }
-    if (!currentProgress) {
-      return 
-    }
-    if (lessons.every(e => {
-      const status = statuses.get(e?.id || "");
-      return Boolean(status?.finishedAt)
-    }) && !currentProgress.finishedAt)  {
-      progress.update({ ...currentProgress, finishedAt: dayjs().valueOf() });
-      showModal(true);
-    }
-  }, [lessons, statuses, currentProgress])
-
   const openLessonPage = (lessonId: string) => {
     navigate(`/learning/course/${id}/lesson/${lessonId}`);
   };
@@ -117,7 +96,7 @@ export default function CoursePage() {
     if (!lesson || !lesson.id) {
       return;
     }
-    const status = statuses.get(lesson.id);
+    const status = statuses?.get(lesson.id);
     busy(true);
     if (!status) {
       await progress.create({
@@ -129,6 +108,43 @@ export default function CoursePage() {
     busy(false);
     openLessonPage(lesson.id);
   };
+
+  useEffect(() => {
+    if (!lessons.length) {
+      return;
+    }
+    if (!currentProgress) {
+      return;
+    }
+    if (!statuses) {
+      return
+    }
+    if (!statuses.size) {
+      const lesson = lessons.at(0);
+      if (!lesson?.id) {
+        return;
+      }
+      progress
+        .create({
+          moduleId: lesson.id,
+          userId: uid || "",
+          startedAt: dayjs().valueOf(),
+        })
+        .then(() => navigate(`/learning/course/${id}/lesson/${lesson?.id}`))
+        .catch(console.error);
+      return
+    }
+    if (
+      lessons.every((e) => {
+        const status = statuses.get(e?.id || "");
+        return Boolean(status?.finishedAt);
+      }) &&
+      !currentProgress.finishedAt
+    ) {
+      progress.update({ ...currentProgress, finishedAt: dayjs().valueOf() });
+      showModal(true);
+    }
+  }, [lessons, statuses, currentProgress, id, navigate, uid]);
 
   const lessonToContinueFrom = lessons.find((e) =>
     ["progress", "new"].includes(checkStatus(e))
@@ -144,7 +160,7 @@ export default function CoursePage() {
 
   const exitCourse = () => {
     navigate("/learning/");
-  }
+  };
 
   if (!uid) {
     return (
@@ -218,18 +234,12 @@ export default function CoursePage() {
       <div className="row mt-3">
         <div className="col">
           {canContinue && (
-            <button
-              className="btn btn-primary w-100"
-              onClick={continueLesson}
-            >
+            <button className="btn btn-primary w-100" onClick={continueLesson}>
               Continue course
             </button>
           )}
           {!canContinue && (
-            <button
-              className="btn btn-success w-100"
-              onClick={exitCourse}
-            >
+            <button className="btn btn-success w-100" onClick={exitCourse}>
               Exit course
             </button>
           )}
