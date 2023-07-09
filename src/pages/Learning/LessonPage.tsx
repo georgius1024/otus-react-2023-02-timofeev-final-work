@@ -15,11 +15,14 @@ export default function LessonPage() {
   const { course, id = "", step = "" } = useParams();
   const [lesson, setLesson] = useState<Module | null>(null);
   const [activities, setActivities] = useState<Module[]>([]);
-  const [position, setPosition] = useState<number>(+step);
+  const [position, setPosition] = useState<string>(step);
 
   const navigate = useNavigate();
 
-  const navigateToStep = useCallback( (step: number) => {
+  const navigateToStep = useCallback( (step?: string) => {
+    if (!step) {
+      return 
+    }
     setPosition(step);
     navigate(`/learning/course/${course}/lesson/${id}/step/${step}`);
   }, [course, id, navigate]);
@@ -38,12 +41,21 @@ export default function LessonPage() {
   }, [busy, id]);
 
   useEffect(() => {
-    step || navigateToStep(0)    
-  }, [step, activities, navigateToStep])
+    if (activities.length && !activities.some(e => e.id === position)) {
+      const first = activities.at(0)
+      first?.id && navigateToStep(first.id)
+    }
+  }, [position, activities, navigateToStep])
 
   const nextActivity = () => {
-    position < activities.length - 1 && navigateToStep(position + 1);
-    position === activities.length - 1 && alert("Done");
+    const index = activities.findIndex(e => e.id === position)
+    const next = activities[index+1]?.id
+
+    if (next) {
+      navigateToStep(next);
+    } else {
+      alert("Done");
+    }
   };
 
   if (!lesson) {
@@ -52,14 +64,15 @@ export default function LessonPage() {
   if (!activities.length) {
     return <div>Loading...</div>;
   }
-  const activity = activities[position].activity
+  const activity = activities.find(e => e.id === position)?.activity
+    
   return (
     <div className="container-fluid">
       <h1>Lesson {lesson.name} in progress</h1>
       <LessonNavigation
-        count={activities.length}
-        position={position}
-        onNavigate={navigateToStep}
+        count = {activities.length}
+        position={activities.findIndex(e => e.id === position)}
+        onNavigate={(position) => navigateToStep(activities[position]?.id)}
       />
       <Outlet context={{activity: activity, onDone: nextActivity}}/>
     </div>
