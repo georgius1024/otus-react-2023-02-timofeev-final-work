@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate, Outlet } from "react-router-dom";
 import useBusy from "@/utils/BusyHook";
@@ -19,10 +19,11 @@ export default function LessonPage() {
 
   const navigate = useNavigate();
 
-  const navigateToStep = (step: number) => {
+  const navigateToStep = useCallback( (step: number) => {
     setPosition(step);
     navigate(`/learning/course/${course}/lesson/${id}/step/${step}`);
-  };
+  }, [course, id, navigate]);
+  
   const busy = useBusy();
 
   useEffect(() => {
@@ -36,9 +37,10 @@ export default function LessonPage() {
       );
     });
     Promise.all([fetchLesson, fetchActivities])
+      .then(() => step || navigateToStep(0))
       .catch(console.error)
       .finally(() => busy(false));
-  }, [busy, id]);
+  }, [busy, id, step, navigateToStep]);
 
   const nextActivity = () => {
     position < activities.length - 1 && navigateToStep(position + 1);
