@@ -165,13 +165,13 @@ export default function LessonPage() {
       </div>
       <Outlet context={{ activity: activity, onDone: nextActivity }} />
       <ModalPanel show={modal} onClose={() => showModal(false)}>
-        <h1>Congrats!</h1>
-        <p>Click button to complete lesson</p>
+        <h1>Congratulation!</h1>
+        <p>You completed the lesson. Click button to exit</p>
         <button
           className="btn btn-primary w-100"
           onClick={() => completeLesson()}
         >
-          Complete lesson
+          Exit lesson
         </button>
       </ModalPanel>
     </div>

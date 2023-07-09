@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 
 import dayjs from "dayjs";
 
+import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
 import * as modules from "@/services/modules";
 import * as progress from "@/services/progress";
@@ -36,6 +37,7 @@ export default function CoursePage() {
   const navigate = useNavigate();
 
   const busy = useBusy();
+  const alert = useAlert();
 
   useEffect(() => {
     busy(true);
@@ -65,23 +67,47 @@ export default function CoursePage() {
   }, [lessons, uid]);
 
   useEffect(() => {
-    if (statuses.size > 0 && statuses.size === lessons.length && [...statuses.values()].every(e => e.finishedAt)) {
-      showModal(true)
-    }
-  }, [statuses, lessons])
-
-  useEffect(() => {
     if (!course?.id) {
       return;
     }
     progress.find(uid || "", course.id).then((response) => {
       if (!response) {
         navigate(`/learning/courses`);
-        // TODO Add alert
+        alert("Your training was interrupted", "error");
       }
       setCurrentProgress(response);
     });
-  }, [course, uid, navigate]);
+  }, [course, uid, navigate, alert]);
+
+  const checkStatus = (lesson: Module): "new" | "progress" | "finished" => {
+    const status = statuses.get(lesson?.id || "");
+    if (status?.finishedAt) {
+      return "finished";
+    }
+    if (status?.startedAt) {
+      return "progress";
+    }
+    return "new";
+  };
+
+  useEffect(() => {
+    if (!lessons.length) {
+      return 
+    }
+    if (!statuses.size) {
+      return 
+    }
+    if (!currentProgress) {
+      return 
+    }
+    if (lessons.every(e => {
+      const status = statuses.get(e?.id || "");
+      return Boolean(status?.finishedAt)
+    }) && !currentProgress.finishedAt)  {
+      progress.update({ ...currentProgress, finishedAt: dayjs().valueOf() });
+      showModal(true);
+    }
+  }, [lessons, statuses, currentProgress])
 
   const openLessonPage = (lessonId: string) => {
     navigate(`/learning/course/${id}/lesson/${lessonId}`);
@@ -104,39 +130,21 @@ export default function CoursePage() {
     openLessonPage(lesson.id);
   };
 
-  const incompleted = [...statuses.values()].find(
-    (e) => e.startedAt && !e.finishedAt
+  const lessonToContinueFrom = lessons.find((e) =>
+    ["progress", "new"].includes(checkStatus(e))
   );
-  const canContinue = Boolean(incompleted || lessons.length);
+
+  const canContinue = Boolean(lessonToContinueFrom);
 
   const continueLesson = () => {
-    if (incompleted) {
-      const lesson = lessons.find((e) => e.id === incompleted?.moduleId);
-      if (lesson) {
-        startLesson(lesson);
-        return
-      }
-    }
-    if (lessons.length) {
-      const skippedLesson = lessons.find(e => !statuses.get(e.id || ''));
-      if (skippedLesson) {
-        startLesson(skippedLesson);
-      }
-      const firstLesson = lessons.at(0);
-      if (firstLesson) {
-        startLesson(firstLesson);
-      }
+    if (lessonToContinueFrom) {
+      startLesson(lessonToContinueFrom);
     }
   };
 
-  const completeCourse = async () => {
-    if (!currentProgress) {
-      return;
-    }
-    progress.update({ ...currentProgress, finishedAt: dayjs().valueOf() });
-
-    navigate('/learning/');
-  };
+  const exitCourse = () => {
+    navigate("/learning/");
+  }
 
   if (!uid) {
     return (
@@ -162,20 +170,9 @@ export default function CoursePage() {
     );
   }
 
-  const checkStatus = (lesson: Module): 'new' | 'progress' | 'finished' => {
-    const status = statuses.get(lesson?.id || "");
-    if (status?.finishedAt) {
-      return 'finished'
-    }
-    if (status?.startedAt) {
-      return 'progress'
-    }
-    return 'new'
-  }
-
   const lessonItem = (lesson: Module) => {
     const status = checkStatus(lesson);
-    if (status === 'finished') {
+    if (status === "finished") {
       return (
         <span className="text-success">
           <Tick />
@@ -184,7 +181,7 @@ export default function CoursePage() {
         </span>
       );
     }
-    if (status === 'progress') {
+    if (status === "progress") {
       return (
         <span className="text-primary">
           <CaretRightFilled />
@@ -210,7 +207,7 @@ export default function CoursePage() {
             type="button"
             className="list-group-item list-group-item-action"
             key={lesson.id}
-            disabled = {checkStatus(lesson) === 'new'}
+            disabled={checkStatus(lesson) === "new"}
             onClick={() => startLesson(lesson)}
           >
             {lessonItem(lesson)}
@@ -220,13 +217,22 @@ export default function CoursePage() {
 
       <div className="row mt-3">
         <div className="col">
-          <button
-            className="btn btn-primary w-100"
-            disabled={!canContinue}
-            onClick={continueLesson}
-          >
-            Continue course
-          </button>
+          {canContinue && (
+            <button
+              className="btn btn-primary w-100"
+              onClick={continueLesson}
+            >
+              Continue course
+            </button>
+          )}
+          {!canContinue && (
+            <button
+              className="btn btn-success w-100"
+              onClick={exitCourse}
+            >
+              Exit course
+            </button>
+          )}
         </div>
         <div className="col">
           <button className="btn btn-outline-primary w-100">
@@ -241,17 +247,11 @@ export default function CoursePage() {
         </div>
       </div>
 
-      <ModalPanel
-        show={modal}
-        onClose={() => showModal(false)}
-      >
-        <h1>You're finished course</h1>
-        <p>Click button to complete course</p>
-        <button
-          className="btn btn-primary w-100"
-          onClick={completeCourse}
-        >
-          Complete course
+      <ModalPanel show={modal} onClose={() => showModal(false)}>
+        <h1>Congratulations</h1>
+        <p>You're finished the course. Click button to exit course</p>
+        <button className="btn btn-primary w-100" onClick={exitCourse}>
+          Exit course
         </button>
       </ModalPanel>
     </div>

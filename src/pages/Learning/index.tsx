@@ -82,21 +82,35 @@ export default function LearningIndex() {
     openCoursePage(course.id);
   };
 
+  const checkStatus = (course: Module): 'new' | 'progress' | 'finished' => {
+    const status = statuses.get(course?.id || "");
+    if (status?.finishedAt) {
+      return 'finished'
+    }
+    if (status?.startedAt) {
+      return 'progress'
+    }
+    return 'new'
+  }
+
+
   const resolveCourseAction = (course: Module) => {
     if (!course || !course.id) {
       return;
     }
-    const status = statuses.get(course?.id || "");
-    if (status?.startedAt && !status.finishedAt) {
-      openCoursePage(course.id);
-    } else {
+    const status = checkStatus(course);
+    if (status === 'new') {
       setConfirm(course);
+    } else {
+      openCoursePage(course.id);
     }
   };
 
+
+
   const courseItem = (course: Module) => {
-    const status = statuses.get(course?.id || "");
-    if (status?.finishedAt) {
+    const status = checkStatus(course);
+    if (status === 'finished') {
       return (
         <span className="text-success">
           <Tick />
@@ -105,7 +119,7 @@ export default function LearningIndex() {
         </span>
       );
     }
-    if (status?.startedAt) {
+    if (status === 'progress') {
       return (
         <span className="text-primary">
           <CaretRightFilled />
