@@ -45,6 +45,9 @@ export default function WordActivityWidget(props: WordActivityProps) {
     }
   }, [props, step, correct]);
 
+  const restart = useCallback(() => {
+    setStep('learn');
+  }, [])
   const solvedHandler = useCallback((correct: boolean) => {
     setEnabled(true);
     setCorrect(correct);
@@ -58,7 +61,8 @@ export default function WordActivityWidget(props: WordActivityProps) {
           key={step}
           onSolved={solvedHandler}
         />
-        <hr />
+      </div>
+      <div className="card-footer d-flex justify-content-between">
         <button
           className={classNames("btn btn-primary", {
             "animated-rejected": rejected,
@@ -68,6 +72,13 @@ export default function WordActivityWidget(props: WordActivityProps) {
         >
           Continue
         </button>
+        <button
+          className={classNames("btn btn-outline-danger", {'d-none': step === 'learn'})}
+          onClick={restart}
+        >
+          Restart word
+        </button>
+
       </div>
     </div>
   );
