@@ -95,22 +95,22 @@ export function similarWords(sample: string, list: string[], count: number) {
   return sorted.slice(0, count)
 }
 
-export async function findWords(): Promise<string[]> {
+export async function findWords(type: "word" | "phrase"): Promise<string[]> {
   const response = await getDocs(
     query(
       modulesTableRef,
-      where("activity.type", "==", "word")
+      where("activity.type", "==", type)
     )
   );
 
-  return pluck(response.docs.map(withId), "activity.word");
+  return pluck(response.docs.map(withId), `activity.${type}`);
 }
 
-export async function findTranslations(): Promise<string[]> {
+export async function findTranslations(type: "word" | "phrase"): Promise<string[]> {
   const response = await getDocs(
     query(
       modulesTableRef,
-      where("activity.type", "==", "word"),
+      where("activity.type", "==", type),
     )
   );
   return pluck(response.docs.map(withId), "activity.translation");

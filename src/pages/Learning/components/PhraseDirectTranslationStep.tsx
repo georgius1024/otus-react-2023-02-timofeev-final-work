@@ -5,10 +5,10 @@ import classNames from "classnames";
 import useBusy from "@/utils/BusyHook";
 import * as modules from "@/services/modules";
 
-import { WordActivityStepProps } from "@/pages/Learning/components/ActivityTypes";
+import { PhraseActivityStepProps } from "@/pages/Learning/components/ActivityTypes";
 
-export default function WordDirectTranslationStep(
-  props: WordActivityStepProps
+export default function PhraseDirectTranslationStep(
+  props: PhraseActivityStepProps
 ) {
   const busy = useBusy();
   const [translations, setTranslations] = useState<string[]>([]);
@@ -16,7 +16,7 @@ export default function WordDirectTranslationStep(
   useEffect(() => {
     busy(true);
     modules
-      .findTranslations('word')
+      .findTranslations('phrase')
       .then((list) => {
         const translations = uniq([
           props.activity.translation,
@@ -37,8 +37,9 @@ export default function WordDirectTranslationStep(
   return (
     <>
       <h5 className="card-title">
-        Please select proper translation for the word "{props.activity.word}"
+        Please select proper translation for the phrase
       </h5>
+      <p>{props.activity.phrase}</p>
       <ul className="list-group list-group-flush">
         {translations.map((translation) => (
           <li

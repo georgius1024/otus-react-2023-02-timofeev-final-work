@@ -15,7 +15,7 @@ export default function WordReverseTranslationStep(props: WordActivityStepProps)
   useEffect(() => {
     busy(true);
     modules
-      .findWords()
+      .findWords("word")
       .then((list) => {
         const words = uniq([
           props.activity.word,

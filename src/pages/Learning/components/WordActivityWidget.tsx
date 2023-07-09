@@ -52,7 +52,6 @@ export default function WordActivityWidget(props: WordActivityProps) {
   return (
     <div className="card word-activty">
       <div className={classNames("card-body", `${step}-step`)}>
-        {step}
         <WordActivityDispatcher
           activity={props.activity}
           step={step}
