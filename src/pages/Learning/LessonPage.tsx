@@ -1,28 +1,28 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import useBusy from "@/utils/BusyHook";
 import * as modules from "@/services/modules";
 import type {
   Module,
   Activity,
-  SlideActivity,
-  WordActivity,
-  PhraseActivity,
 } from "@/types";
 
 import LessonNavigation from "@/pages/Learning/components/LessonNavigation";
-import SlideActivityWidget from "@/pages/Learning/components/SlideActivityWidget";
-import WordActivityWidget from "@/pages/Learning/components/WordActivityWidget";
-import PhraseActivityWidget from "@/pages/Learning/components/PhraseActivityWidget";
-
-import "@/pages/Learning/LessonPage.scss"
+import "@/pages/Learning/LessonPage.scss";
 
 export default function LessonPage() {
-  const { id = "" } = useParams();
+  const { course, id = "", step = "" } = useParams();
   const [lesson, setLesson] = useState<Module | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [position, setPosition] = useState<number>(0);
+  const [position, setPosition] = useState<number>(+step);
 
+  const navigate = useNavigate();
+
+  const navigateToStep = (step: number) => {
+    setPosition(step);
+    navigate(`/learning/course/${course}/lesson/${id}/step/${step}`);
+  };
   const busy = useBusy();
 
   useEffect(() => {
@@ -41,8 +41,8 @@ export default function LessonPage() {
   }, [busy, id]);
 
   const nextActivity = () => {
-    position < activities.length - 1 && setPosition(position + 1);
-    position === activities.length - 1 && alert('Done');
+    position < activities.length - 1 && navigateToStep(position + 1);
+    position === activities.length - 1 && alert("Done");
   };
 
   if (!lesson) {
@@ -57,26 +57,9 @@ export default function LessonPage() {
       <LessonNavigation
         count={activities.length}
         position={position}
-        onNavigate={setPosition}
+        onNavigate={navigateToStep}
       />
-      {activities[position].type === "slide" && (
-        <SlideActivityWidget
-          activity={activities[position] as SlideActivity}
-          onDone={nextActivity}
-        />
-      )}
-      {activities[position].type === "word" && (
-        <WordActivityWidget
-          activity={activities[position] as WordActivity}
-          onDone={nextActivity}
-        />
-      )}
-      {activities[position].type === "phrase" && (
-        <PhraseActivityWidget
-          activity={activities[position] as PhraseActivity}
-          onDone={nextActivity}
-        />
-      )}
+      <Outlet context={{activity: activities[position], onDone: nextActivity}}/>
     </div>
   );
 }

@@ -9,6 +9,7 @@ import ModulePage from "@/pages/Module";
 import LearningPage from "@/pages/Learning";
 import CoursePage from "@/pages/Learning/CoursePage";
 import LessonPage from "@/pages/Learning/LessonPage";
+import LessonStepPage from "@/pages/Learning/LessonStepPage";
 import ErrorPage from "@/pages/Error";
 
 const routes = [
@@ -35,6 +36,13 @@ const routes = [
     element: LessonPage,
     layout: DefaultLayout,
     private: true,
+    children: [
+      {
+        path: "step/:step",
+        element: <LessonStepPage/>,
+        private: true,
+      },
+    ],
   },
   {
     path: "/module/:id?",
@@ -58,6 +66,7 @@ const routes = [
     layout: DefaultLayout,
   },
 ].map((route) => {
+  const children = route.children
   const Layout = route.layout || DefaultLayout;
   if (route.private) {
     return {
@@ -69,6 +78,7 @@ const routes = [
           </Layout>
         </PrivateRoute>
       ),
+      children
     };
   }
   return {
@@ -78,6 +88,7 @@ const routes = [
         <route.element />
       </Layout>
     ),
+    children
   };
 });
 
