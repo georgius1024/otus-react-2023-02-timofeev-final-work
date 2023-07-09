@@ -5,7 +5,7 @@ import classNames from "classnames";
 import useBusy from "@/utils/BusyHook";
 import * as modules from "@/services/modules";
 
-import { WordActivityStepProps } from "./WordActivityTypes";
+import { WordActivityStepProps } from "@/pages/Learning/components/ActivityTypes";
 
 export default function WordDirectTranslationStep(
   props: WordActivityStepProps

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { WordActivityStepProps } from "./WordActivityTypes";
+import { WordActivityStepProps } from "@/pages/Learning/components/ActivityTypes";
 
 export default function WordPuzzleStep(props: WordActivityStepProps) {
   const [letters, setLetters] = useState<string[]>([]);

@@ -1,16 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import classNames from "classnames";
 
-import {
-  StepType,
-  WordActivityProps,
-  WordActivityDispatcherProps,
-} from "./WordActivityTypes";
+import { StepType, WordActivityProps } from "@/pages/Learning/components/ActivityTypes";
 
-import WordLearnStep from "@/pages/Learning/components/WordLearnStep";
-import WordDirectTranslationStep from "@/pages/Learning/components/WordDirectTranslationStep";
-import WordReverseTranslationStep from "@/pages/Learning/components/WordReverseTranslationStep";
-import WordPuzzleStep from "@/pages/Learning/components/WordPuzzleStep";
+import WordActivityDispatcher from "@/pages/Learning/components/WordActivityDispatcher";
 
 const nextStep = (step: StepType): StepType | null => {
   switch (step) {
@@ -26,33 +19,6 @@ const nextStep = (step: StepType): StepType | null => {
   }
 };
 
-function WordActivityDispatcher(props: WordActivityDispatcherProps) {
-  switch (props.step) {
-    case "learn":
-      return (
-        <WordLearnStep activity={props.activity} onSolved={props.onSolved} />
-      );
-    case "translate-direct":
-      return (
-        <WordDirectTranslationStep
-          activity={props.activity}
-          onSolved={props.onSolved}
-        />
-      );
-    case "translate-reverse":
-      return (
-        <WordReverseTranslationStep
-          activity={props.activity}
-          onSolved={props.onSolved}
-        />
-      );
-    case "puzzle":
-      return (
-        <WordPuzzleStep activity={props.activity} onSolved={props.onSolved} />
-      );
-  }
-  return null;
-}
 export default function WordActivityWidget(props: WordActivityProps) {
   const [enabled, setEnabled] = useState(false);
   const [correct, setCorrect] = useState(false);

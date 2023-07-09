@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { WordActivityStepProps } from "./WordActivityTypes";
+import { WordActivityStepProps } from "@/pages/Learning/components/ActivityTypes";
 
 export default function WordLearnStep(props: WordActivityStepProps) {
   useEffect(() => {
