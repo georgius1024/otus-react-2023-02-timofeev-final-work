@@ -1,27 +1,16 @@
 import { useState, useEffect, useCallback } from "react";
 import classNames from "classnames";
 
-import type { WordActivity } from "@/types";
+import {
+  StepType,
+  WordActivityProps,
+  WordActivityDispatcherProps,
+} from "./WordActivityTypes";
 
-type OnDone = (force?: boolean) => void;
-
-type StepType = "learn" | "translate-direct" | "translate-reverse" | "puzzle";
-
-type WordActivityProps = {
-  activity: WordActivity;
-  onDone: OnDone;
-};
-
-type WordActivityWidgetProps = WordActivityProps;
-
-type WordActivityDispatcherProps = WordActivityProps & {
-  step: StepType;
-};
-
-import WordLearn from "@/pages/Learning/components/WordLearn";
-import WordPuzzle from "@/pages/Learning/components/WordPuzzle";
-import WordDirectTranslation from "@/pages/Learning/components/WordDirectTranslation";
-import WordReverseTranslation from "@/pages/Learning/components/WordReverseTranslation";
+import WordLearnStep from "@/pages/Learning/components/WordLearnStep";
+import WordDirectTranslationStep from "@/pages/Learning/components/WordDirectTranslationStep";
+import WordReverseTranslationStep from "@/pages/Learning/components/WordReverseTranslationStep";
+import WordPuzzleStep from "@/pages/Learning/components/WordPuzzleStep";
 
 const nextStep = (step: StepType): StepType | null => {
   switch (step) {
@@ -41,57 +30,59 @@ function WordActivityDispatcher(props: WordActivityDispatcherProps) {
   switch (props.step) {
     case "learn":
       return (
-        <WordLearn
-          activity={props.activity}
-          onDone={props.onDone}
-        />
+        <WordLearnStep activity={props.activity} onSolved={props.onSolved} />
       );
     case "translate-direct":
       return (
-        <WordDirectTranslation
+        <WordDirectTranslationStep
           activity={props.activity}
-          onDone={props.onDone}
+          onSolved={props.onSolved}
         />
       );
     case "translate-reverse":
       return (
-        <WordReverseTranslation
+        <WordReverseTranslationStep
           activity={props.activity}
-          onDone={props.onDone}
+          onSolved={props.onSolved}
         />
       );
     case "puzzle":
       return (
-        <WordPuzzle
-          activity={props.activity}
-          onDone={props.onDone}
-        />
+        <WordPuzzleStep activity={props.activity} onSolved={props.onSolved} />
       );
   }
   return null;
 }
-export default function WordActivityWidget(props: WordActivityWidgetProps) {
+export default function WordActivityWidget(props: WordActivityProps) {
   const [enabled, setEnabled] = useState(false);
+  const [correct, setCorrect] = useState(false);
+  const [rejected, setRejected] = useState<boolean>(false);
   const [step, setStep] = useState<StepType>("learn");
   useEffect(() => {
     setEnabled(false);
     setStep("learn");
   }, [props]);
+
   const goNext = useCallback(() => {
-    const next = nextStep(step);
-    if (next) {
-      setStep(next);
+    if (correct) {
+      const next = nextStep(step);
+      if (next) {
+        setStep(next);
+      } else {
+        props.onDone();
+      }
+      setEnabled(false);
     } else {
-      props.onDone();
+      const timer = setTimeout(() => setRejected(false), 1000);
+      setRejected(true);
+      return () => clearTimeout(timer);
     }
-    setEnabled(false);
-  }, [props, step]);
-  const doneHandler = useCallback((force?: boolean) => {
+  }, [props, step, correct]);
+
+  const solvedHandler = useCallback((correct: boolean) => {
     setEnabled(true);
-    if (force) {
-      setTimeout(goNext, 300);
-    }
-  }, [goNext]);
+    setCorrect(correct);
+  }, []);
   return (
     <div className="card word-activty">
       <div className={classNames("card-body", `${step}-step`)}>
@@ -100,11 +91,13 @@ export default function WordActivityWidget(props: WordActivityWidgetProps) {
           activity={props.activity}
           step={step}
           key={step}
-          onDone={doneHandler}
+          onSolved={solvedHandler}
         />
         <hr />
         <button
-          className="btn btn-primary"
+          className={classNames("btn btn-primary", {
+            "animated-rejected": rejected,
+          })}
           onClick={goNext}
           disabled={!enabled}
         >

@@ -1,17 +1,10 @@
 import { useEffect } from "react";
 
-import type { WordActivity } from "@/types";
+import { WordActivityStepProps } from "./WordActivityTypes";
 
-type OnDone = (force?: boolean) => void;
-
-type WordActivityProps = {
-  activity: WordActivity;
-  onDone: OnDone;
-};
-
-export default function WordLearn(props: WordActivityProps) {
+export default function WordLearnStep(props: WordActivityStepProps) {
   useEffect(() => {
-    const timeout = setTimeout(props.onDone, 1000);
+    const timeout = setTimeout(() => props.onSolved(true), 1000);
     return () => clearTimeout(timeout);
   }, [props]);
   return (

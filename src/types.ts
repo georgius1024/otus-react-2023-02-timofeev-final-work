@@ -42,3 +42,4 @@ export type Module = {
   position?: number;
   activity?: Activity;
 };
+

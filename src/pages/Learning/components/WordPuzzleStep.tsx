@@ -1,17 +1,11 @@
 import { useState, useEffect } from "react";
 
-import type { WordActivity } from "@/types";
+import { WordActivityStepProps } from "./WordActivityTypes";
 
-type OnDone = (force?: boolean) => void;
-
-type WordActivityProps = {
-  activity: WordActivity;
-  onDone: OnDone;
-};
-
-export default function WordPuzzle(props: WordActivityProps) {
+export default function WordPuzzleStep(props: WordActivityStepProps) {
   const [letters, setLetters] = useState<string[]>([]);
   const [puzzle, setPuzzle] = useState<string[]>([]);
+
   useEffect(() => {
     setLetters(props.activity.word.split("").sort(() => Math.random() - 0.5));
     setPuzzle([])
@@ -19,7 +13,8 @@ export default function WordPuzzle(props: WordActivityProps) {
 
   useEffect(() => {
     if (puzzle.length && !letters.length) {
-      props.onDone()
+      const solved = puzzle.join('') === props.activity.word
+      props.onSolved(solved)
     }
   }, [props, letters, puzzle])
 
