@@ -7,6 +7,7 @@ type OnClose = () => void;
 type ModalPanelProps = {
   show: boolean;
   width?: number;
+  clickClose?: boolean;
   closeControl?: boolean;
   onClose: OnClose;
 };
@@ -16,6 +17,10 @@ export default function ModalPanel(props: PropsWithChildren<ModalPanelProps>) {
   const checkClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (!props.show) {
       return;
+    }
+
+    if (!props.clickClose) {
+      return
     }
 
     const wrongKeys = [

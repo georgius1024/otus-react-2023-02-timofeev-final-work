@@ -64,19 +64,15 @@ export default function LearningIndex() {
     const status = statuses.get(course.id);
     busy(true);
     if (status?.finishedAt) {
-      console.log({
-        ...status,
-        startedAt: dayjs().valueOf(),
-        finishedAt: null
-      })
-      progress.update({
+      await progress.update({
         ...status,
         startedAt: dayjs().valueOf(),
         finishedAt: null
       });
+      // TODO - discard all lessons&activities progress
     }
     if (!status) {
-      progress.create({
+      await progress.create({
         moduleId: course?.id || "",
         userId: uid || "",
         startedAt: dayjs().valueOf(),
@@ -134,7 +130,6 @@ export default function LearningIndex() {
     if (course) {
       resolveCourseAction(course)
     }
-   
   }
 
   if (!uid) {

@@ -18,6 +18,14 @@ import PhraseActivityWidget from "@/pages/Learning/components/PhraseActivityWidg
 
 export default function LessonPageStep() {
   const {activity, onDone} = useOutletContext<ContextType>()
+  if (!activity) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        Activity is missed
+      </div>
+    );
+  }
+
   return (
     <div>
       {activity.type === "slide" && (
