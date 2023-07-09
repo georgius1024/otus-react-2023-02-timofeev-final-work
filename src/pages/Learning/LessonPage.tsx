@@ -14,7 +14,7 @@ import "@/pages/Learning/LessonPage.scss";
 export default function LessonPage() {
   const { course, id = "", step = "" } = useParams();
   const [lesson, setLesson] = useState<Module | null>(null);
-  const [activities, setActivities] = useState<Activity[]>([]);
+  const [activities, setActivities] = useState<Module[]>([]);
   const [position, setPosition] = useState<number>(+step);
 
   const navigate = useNavigate();
@@ -31,11 +31,7 @@ export default function LessonPage() {
     const fetchLesson = modules.fetchOne(id).then((lesson) => {
       setLesson(lesson);
     });
-    const fetchActivities = modules.fetchChildren(id).then((modules) => {
-      setActivities(
-        modules.map((m) => m.activity).filter(Boolean) as Activity[]
-      );
-    });
+    const fetchActivities = modules.fetchChildren(id).then(setActivities);
     Promise.all([fetchLesson, fetchActivities])
       .catch(console.error)
       .finally(() => busy(false));
@@ -44,7 +40,7 @@ export default function LessonPage() {
   useEffect(() => {
     step || navigateToStep(0)    
   }, [step, activities, navigateToStep])
-  
+
   const nextActivity = () => {
     position < activities.length - 1 && navigateToStep(position + 1);
     position === activities.length - 1 && alert("Done");
@@ -56,6 +52,7 @@ export default function LessonPage() {
   if (!activities.length) {
     return <div>Loading...</div>;
   }
+  const activity = activities[position].activity
   return (
     <div className="container-fluid">
       <h1>Lesson {lesson.name} in progress</h1>
@@ -64,7 +61,7 @@ export default function LessonPage() {
         position={position}
         onNavigate={navigateToStep}
       />
-      <Outlet context={{activity: activities[position], onDone: nextActivity}}/>
+      <Outlet context={{activity: activity, onDone: nextActivity}}/>
     </div>
   );
 }
