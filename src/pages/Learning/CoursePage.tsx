@@ -108,6 +108,7 @@ export default function CoursePage() {
     (e) => e.startedAt && !e.finishedAt
   );
   const canContinue = Boolean(incompleted || lessons.length);
+
   const continueLesson = () => {
     if (incompleted) {
       const lesson = lessons.find((e) => e.id === incompleted?.moduleId);
@@ -161,9 +162,20 @@ export default function CoursePage() {
     );
   }
 
-  const lessonItem = (lesson: Module) => {
+  const checkStatus = (lesson: Module): 'new' | 'progress' | 'finished' => {
     const status = statuses.get(lesson?.id || "");
     if (status?.finishedAt) {
+      return 'finished'
+    }
+    if (status?.startedAt) {
+      return 'progress'
+    }
+    return 'new'
+  }
+
+  const lessonItem = (lesson: Module) => {
+    const status = checkStatus(lesson);
+    if (status === 'finished') {
       return (
         <span className="text-success">
           <Tick />
@@ -172,7 +184,7 @@ export default function CoursePage() {
         </span>
       );
     }
-    if (status?.startedAt) {
+    if (status === 'progress') {
       return (
         <span className="text-primary">
           <CaretRightFilled />
@@ -182,7 +194,7 @@ export default function CoursePage() {
       );
     }
     return (
-      <span className="text-dark">
+      <span className="text-muted">
         <CaretRightEmpty />
         <span className="mx-1">{lesson.name}</span>
       </span>
@@ -198,6 +210,7 @@ export default function CoursePage() {
             type="button"
             className="list-group-item list-group-item-action"
             key={lesson.id}
+            disabled = {checkStatus(lesson) === 'new'}
             onClick={() => startLesson(lesson)}
           >
             {lessonItem(lesson)}
