@@ -37,11 +37,14 @@ export default function LessonPage() {
       );
     });
     Promise.all([fetchLesson, fetchActivities])
-      .then(() => step || navigateToStep(0))
       .catch(console.error)
       .finally(() => busy(false));
-  }, [busy, id, step, navigateToStep]);
+  }, [busy, id]);
 
+  useEffect(() => {
+    step || navigateToStep(0)    
+  }, [step, activities, navigateToStep])
+  
   const nextActivity = () => {
     position < activities.length - 1 && navigateToStep(position + 1);
     position === activities.length - 1 && alert("Done");
