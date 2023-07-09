@@ -249,7 +249,7 @@ export default function CoursePage() {
 
       <ModalPanel show={modal} onClose={() => showModal(false)}>
         <h1>Congratulations</h1>
-        <p>You're finished the course. Click button to exit course</p>
+        <p>You're completed the course. Click button to exit</p>
         <button className="btn btn-primary w-100" onClick={exitCourse}>
           Exit course
         </button>
