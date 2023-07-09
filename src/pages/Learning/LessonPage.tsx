@@ -5,7 +5,6 @@ import useBusy from "@/utils/BusyHook";
 import * as modules from "@/services/modules";
 import type {
   Module,
-  Activity,
 } from "@/types";
 
 import LessonNavigation from "@/pages/Learning/components/LessonNavigation";

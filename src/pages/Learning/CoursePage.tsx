@@ -3,8 +3,8 @@ import useBusy from "@/utils/BusyHook";
 import * as modules from "@/services/modules";
 import type { Module } from "@/types";
 import { Link } from "react-router-dom";
-
 import { useParams } from "react-router-dom";
+
 export default function CoursePage() {
   const {id = ''} = useParams()
   const [course, setCourse] = useState<Module | null>(null)

@@ -4,6 +4,7 @@ import { ReactSortable } from "react-sortablejs";
 import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
 import SidePanel from "@/components/SidePanel";
+import ModalPanel from "@/components/ModalPanel";
 type Item = {
   id: number;
   name: string;
@@ -16,7 +17,8 @@ export default function HomePage(): ReactElement {
   ]);
   console.log("dom rendered");
   const [count, setCount] = useState(0);
-  const [show, setShow] = useState(false);
+  const [side, setSide] = useState(false);
+  const [modal, setModal] = useState(false);
   const alert = useAlert();
   const busy = useBusy();
 
@@ -37,8 +39,11 @@ export default function HomePage(): ReactElement {
       <button className="btn btn-secondary" onClick={raiseBusy}>
         Busy
       </button>
-      <button className="btn btn-secondary" onClick={() => setShow(true)}>
-        Show
+      <button className="btn btn-secondary" onClick={() => setSide(true)}>
+        Show side
+      </button>
+      <button className="btn btn-secondary" onClick={() => setModal(true)}>
+        Show modal
       </button>
       <Link className="btn btn-secondary" to="/module">
         Modules
@@ -57,9 +62,12 @@ export default function HomePage(): ReactElement {
         ))}
       </ReactSortable>
       <pre>{JSON.stringify(items)}</pre>
-      <SidePanel position="left" show={show} onClose={() => setShow(false)}>
-        <h1>Side panel contenss</h1>
+      <SidePanel position="left" show={side} onClose={() => setSide(false)}>
+        <h1>Side panel contents</h1>
       </SidePanel>
+      <ModalPanel show={modal} onClose={() => setModal(false)}>
+        <h1>Modal panel contents</h1>
+      </ModalPanel>
     </>
   );
 }

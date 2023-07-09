@@ -1,13 +1,13 @@
-import {
-  PhraseActivityDispatcherProps,
-} from "@/pages/Learning/components/ActivityTypes";
+import { PhraseActivityDispatcherProps } from "@/pages/Learning/components/ActivityTypes";
 
 import PhraseLearnStep from "@/pages/Learning/components/PhraseLearnStep";
 import PhraseDirectTranslationStep from "@/pages/Learning/components/PhraseDirectTranslationStep";
 import PhraseReverseTranslationStep from "@/pages/Learning/components/PhraseReverseTranslationStep";
 import PhrasePuzzleStep from "@/pages/Learning/components/PhrasePuzzleStep";
 
-export default function PhraseActivityDispatcher(props: PhraseActivityDispatcherProps) {
+export default function PhraseActivityDispatcher(
+  props: PhraseActivityDispatcherProps
+) {
   switch (props.step) {
     case "learn":
       return (

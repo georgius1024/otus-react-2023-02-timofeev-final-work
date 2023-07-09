@@ -43,3 +43,10 @@ export type Module = {
   activity?: Activity;
 };
 
+export type ProgressRecord = {
+  id?: string;
+  moduleId: string;
+  userId: string;
+  startedAt: number;
+  finishedAt?: number | null;
+};
