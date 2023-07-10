@@ -25,9 +25,6 @@ export default function CoursePage() {
   const [course, setCourse] = useState<Module | null>(null);
   const [lessons, setLessons] = useState<Module[]>([]);
   const [statuses, setStatuses] = useState<StatusesMap | null>(null);
-  const [currentProgress, setCurrentProgress] = useState<ProgressRecord | null>(
-    null
-  );
   const [modal, showModal] = useState<boolean>(false);
 
   const uid = useSelector((state: RootState) => state.auth?.user?.uid);
@@ -98,7 +95,6 @@ export default function CoursePage() {
     setCourse(course);
     setLessons(lessons);
     setStatuses(statuses);
-    setCurrentProgress(currentProgress);
   }, [alert, id, uid, navigate]);
 
   useEffect(() => {
