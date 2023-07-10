@@ -88,15 +88,15 @@ export async function register(userId: string,
   const interval = [1, 1, 1]
   const span = 'minute'
 
-  if (current.scheduledAt && dayjs(current.scheduledAt).isAfter(dayjs())) {
-    return current; // Can't repeat before scheduled time
-  }
-
   if (current.finishedAt) {
     return current; // Can't repeat finished
   }
 
-  if (interval.length < current.repeatCount) {
+  if (current.scheduledAt && dayjs(current.scheduledAt).isAfter(dayjs())) {
+    return current; // Can't repeat before scheduled time
+  }
+
+  if (current.repeatCount < interval.length) {
     const next = interval[current.repeatCount]
     current.scheduledAt = dayjs().add(next, span).startOf(span).valueOf()
     current.repeatCount += 1

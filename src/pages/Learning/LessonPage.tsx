@@ -102,25 +102,29 @@ export default function LessonPage() {
   }, [busy, fetchEverything]);
 
   const nextActivity = () => {
+
+    if (!currentProgress?.finishedAt) {
+      if (
+        ["word", "phrase"].includes(
+          activities.find((e) => e.id === currentActivity)?.activity?.type ||
+            ""
+        ) &&
+        uid
+      ) {
+        repetition.register(uid, currentActivity);
+      }
+    }
+
     const index = activities.findIndex((e) => e.id === currentActivity);
     const next = activities[index + 1]?.id;
+    if (!currentProgress) {
+      return;
+    }
 
     if (next) {
       navigateToStep(next);
     } else {
-      if (!currentProgress) {
-        return;
-      }
       if (!currentProgress.finishedAt) {
-        if (
-          ["word", "phrase"].includes(
-            activities.find((e) => e.id === currentActivity)?.activity?.type ||
-              ""
-          ) &&
-          uid
-        ) {
-          repetition.register(uid, currentActivity);
-        }
         const current = { ...currentProgress, finishedAt: dayjs().valueOf() };
         progress.update(current);
         setCurrentProgress(current);

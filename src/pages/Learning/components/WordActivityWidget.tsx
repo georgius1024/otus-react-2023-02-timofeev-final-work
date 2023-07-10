@@ -47,10 +47,12 @@ export default function WordActivityWidget(props: WordActivityProps) {
   const restart = useCallback(() => {
     setStep('learn');
   }, [])
+
   const solvedHandler = useCallback((correct: boolean) => {
     setEnabled(true);
     setCorrect(correct);
   }, []);
+
   return (
     <div className="card word-activty">
       <div className={classNames("card-body", `${step}-step`)}>
