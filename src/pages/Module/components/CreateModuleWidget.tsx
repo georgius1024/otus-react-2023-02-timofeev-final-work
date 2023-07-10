@@ -1,11 +1,16 @@
 import { nanoid } from "nanoid";
+
+import Folder from "@/components/icons/Folder";
+import File from "@/components/icons/File";
+import Easel from "@/components/icons/Easel";
+
 import type { Module, ModuleType, ActivityType, Activity } from "@/types";
 type OnCreate = (module: Module) => void;
 
 type CreateModuleWidgetProps = {
   current: Module | null;
   count?: number;
-  onCreate: OnCreate
+  onCreate: OnCreate;
 };
 
 export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
@@ -61,7 +66,7 @@ export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
         name: "",
         type: moduleType,
         activity: createActivity(activityType),
-        position: (props.count || 0) + 1
+        position: (props.count || 0) + 1,
       } as Module;
     }
     return {
@@ -77,13 +82,16 @@ export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
       key={type}
       onClick={() => props.onCreate(createModule(createModuleType, type))}
     >
+      <span className="me-2">
+        <Easel />
+      </span>
       Create {type} activity
     </button>
   );
   const acivityTypes: ActivityType[] = ["word", "phrase", "slide"];
   if (createModuleType === "activity") {
     return (
-      <div className="btn-group mt-3">
+      <div className="btn-group mt-3 w-100">
         {acivityTypes.map(createActivityTypeButton)}
       </div>
     );
@@ -94,6 +102,10 @@ export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
       type="button"
       onClick={() => props.onCreate(createModule(createModuleType))}
     >
+      <span className="me-2">
+        {createModuleType === "course" && <Folder />}
+        {createModuleType === "lesson" && <File />}
+      </span>
       Create {createModuleType}
     </button>
   );
