@@ -50,3 +50,13 @@ export type ProgressRecord = {
   startedAt: number;
   finishedAt?: number | null;
 };
+
+export type RepetitionRecord = {
+  id?: string;
+  activityId: string;
+  userId: string;
+  startedAt: number;
+  repeatCount: 0;
+  scheduledAt?: number | null;
+  finishedAt?: number | null;
+};

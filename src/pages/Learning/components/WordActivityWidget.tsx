@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import classNames from "classnames";
-
 import { StepType, WordActivityProps } from "@/pages/Learning/components/ActivityTypes";
 
 import WordActivityDispatcher from "@/pages/Learning/components/WordActivityDispatcher";

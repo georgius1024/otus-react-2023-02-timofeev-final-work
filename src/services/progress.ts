@@ -9,11 +9,9 @@ import {
   addDoc,
   updateDoc,
   getDocs,
-  getDoc,
   deleteDoc,
   query,
   where,
-  writeBatch,
 } from "firebase/firestore";
 
 import { db } from "@/firebase";
@@ -62,6 +60,6 @@ export async function find(
       where("moduleId", "==", moduleId)
     )
   );
-  const variants = response.docs.map(withId);
-  return variants.at(0) || null;
+  const [first] = response.docs.map(withId);
+  return first || null;
 }

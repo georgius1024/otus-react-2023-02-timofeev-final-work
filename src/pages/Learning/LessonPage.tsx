@@ -9,6 +9,7 @@ import useBusy from "@/utils/BusyHook";
 
 import * as modules from "@/services/modules";
 import * as progress from "@/services/progress";
+import * as repetition from "@/services/repetition";
 
 import ModalPanel from "@/components/ModalPanel";
 
@@ -80,18 +81,17 @@ export default function LessonPage() {
     const currentActivity = activities.find((e) => e.id === step);
 
     if (!currentActivity) {
-      const firstActivityId = activities.at(0)?.id || '';
+      const firstActivityId = activities.at(0)?.id || "";
       navigate(
         `/learning/course/${course}/lesson/${id}/step/${firstActivityId}`
       );
-      setCurrentActivity(firstActivityId)
+      setCurrentActivity(firstActivityId);
     }
 
-    setParent(parent)
-    setLesson(lesson)
-    setActivities(activities)
-    setCurrentProgress(currentProgress)
-    
+    setParent(parent);
+    setLesson(lesson);
+    setActivities(activities);
+    setCurrentProgress(currentProgress);
   }, [uid, id, course, step, navigate, alert]);
 
   useEffect(() => {
@@ -112,6 +112,15 @@ export default function LessonPage() {
         return;
       }
       if (!currentProgress.finishedAt) {
+        if (
+          ["word", "phrase"].includes(
+            activities.find((e) => e.id === currentActivity)?.activity?.type ||
+              ""
+          ) &&
+          uid
+        ) {
+          repetition.register(uid, currentActivity);
+        }
         const current = { ...currentProgress, finishedAt: dayjs().valueOf() };
         progress.update(current);
         setCurrentProgress(current);
