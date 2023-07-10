@@ -4,6 +4,7 @@ import PrivateRoute from "@/components/PrivateRoute";
 
 import HomePage from "@/pages/Home";
 import LoginPage from "@/pages/Login";
+import RegisterPage from "@/pages/Register";
 import ForgotPage from "@/pages/Forgot";
 import ModulePage from "@/pages/Module";
 import LearningPage from "@/pages/Learning";
@@ -53,6 +54,11 @@ const routes = [
   {
     path: "/login",
     element: LoginPage,
+    layout: DefaultLayout,
+  },
+  {
+    path: "/register",
+    element: RegisterPage,
     layout: DefaultLayout,
   },
   {

@@ -1,6 +1,7 @@
 import { PropsWithChildren } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import classNames from "classnames";
 import AlertsPanel from "@/components/AlertsPanel";
 import BusyStatePanel from "@/components/BusyStatePanel";
 import type { RootState } from "@/store";
@@ -9,7 +10,7 @@ import { logout } from "@/store/auth";
 
 export default function DefaultLayout(props: PropsWithChildren) {
   const user = useSelector((state: RootState) => state.auth?.user);
-
+  const admin = useSelector((state: RootState) => state.auth?.user?.access);
   function ProfileLinks(user: User | undefined) {
     const dispatch = useDispatch();
     if (user) {
@@ -50,12 +51,12 @@ export default function DefaultLayout(props: PropsWithChildren) {
             Start
           </Link>
           <ul className="navbar-nav flex-row flex-grow-1">
-            <li className="nav-item me-3">
+            <li className={classNames("nav-item me-3", { "d-none": !admin })}>
               <Link className="text-light" to="/module">
                 Modules
               </Link>
             </li>
-            <li className="nav-item me-3">
+            <li className={classNames("nav-item me-3", { "d-none": !user })}>
               <Link className="text-light" to="/learning">
                 Learning
               </Link>
