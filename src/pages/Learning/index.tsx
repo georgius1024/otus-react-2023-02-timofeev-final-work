@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -28,53 +28,39 @@ export default function LearningIndex() {
   const navigate = useNavigate();
   const busy = useBusy();
 
-  useEffect(() => {
-    busy(true);
-    modules
-      .fetchChildren("")
-      .then((modules) => {
-        setCourses(modules);
-      })
-      .catch(console.error)
-      .finally(() => busy(false));
-  }, [busy]);
+  const fetchAll = useCallback(async () => {
+    const courses = await modules.fetchChildren("");
+    const promises = courses.map((e) => progress.find(uid || "", e.id || ""));
+    const responses = await Promise.all(promises);
+    const entries = responses
+      .filter(Boolean)
+      .map((e) => [e?.moduleId || "", e]);
+    // @ts-ignore
+    setStatuses(new Map<string, ProgressRecord>(entries));
+    setCourses(courses);
+  }, [uid]);
 
   useEffect(() => {
-    if (!courses.length) {
-      return;
-    }
-    const promises = courses.map((e) => progress.find(uid || "", e.id || ""));
-    Promise.all(promises).then((responses) => {
-      const entries = responses
-        .filter(Boolean)
-        .map((e) => [e?.moduleId || "", e]);
-      // @ts-ignore
-      setStatuses(new Map<string, ProgressRecord>(entries));
-    });
-  }, [courses, uid]);
+    busy(true);
+    fetchAll()
+      .catch(console.error)
+      .finally(() => busy(false));
+  }, [busy, fetchAll]);
 
   const openCoursePage = (id: string) => {
     navigate(`/learning/course/${id}`);
   };
 
   const startCourse = async (course: Module | null) => {
-    if (!course || !course.id) {
+    if (!course || !course.id || !uid) {
       return;
     }
     const status = statuses.get(course.id);
     busy(true);
-    if (status?.finishedAt) {
-      await progress.update({
-        ...status,
-        startedAt: dayjs().valueOf(),
-        finishedAt: null
-      });
-      // TODO - discard all lessons&activities progress
-    }
     if (!status) {
       await progress.create({
-        moduleId: course?.id || "",
-        userId: uid || "",
+        moduleId: course.id,
+        userId: uid,
         startedAt: dayjs().valueOf(),
       });
     }
@@ -82,35 +68,32 @@ export default function LearningIndex() {
     openCoursePage(course.id);
   };
 
-  const checkStatus = (course: Module): 'new' | 'progress' | 'finished' => {
+  const checkStatus = (course: Module): "new" | "progress" | "finished" => {
     const status = statuses.get(course?.id || "");
     if (status?.finishedAt) {
-      return 'finished'
+      return "finished";
     }
     if (status?.startedAt) {
-      return 'progress'
+      return "progress";
     }
-    return 'new'
-  }
-
+    return "new";
+  };
 
   const resolveCourseAction = (course: Module) => {
     if (!course || !course.id) {
       return;
     }
     const status = checkStatus(course);
-    if (status === 'new') {
+    if (status === "new") {
       setConfirm(course);
     } else {
       openCoursePage(course.id);
     }
   };
 
-
-
   const courseItem = (course: Module) => {
     const status = checkStatus(course);
-    if (status === 'finished') {
+    if (status === "finished") {
       return (
         <span className="text-success">
           <Tick />
@@ -119,7 +102,7 @@ export default function LearningIndex() {
         </span>
       );
     }
-    if (status === 'progress') {
+    if (status === "progress") {
       return (
         <span className="text-primary">
           <CaretRightFilled />
@@ -134,17 +117,18 @@ export default function LearningIndex() {
         <span className="mx-1">{course.name}</span>
       </span>
     );
-    
   };
 
-  const incompleted = [...statuses.values()].find(e => e.startedAt && !e.finishedAt) 
-  const canContinue = Boolean(incompleted)
+  const incompleted = [...statuses.values()].find(
+    (e) => e.startedAt && !e.finishedAt
+  );
+  const canContinue = Boolean(incompleted);
   const continueCourse = () => {
-    const course = courses.find(e => e.id === incompleted?.moduleId)
+    const course = courses.find((e) => e.id === incompleted?.moduleId);
     if (course) {
-      resolveCourseAction(course)
+      resolveCourseAction(course);
     }
-  }
+  };
 
   if (!uid) {
     return (
@@ -152,6 +136,10 @@ export default function LearningIndex() {
         Need to be logged in to start course!!!
       </div>
     );
+  }
+
+  if (!courses) {
+    return <p>Loading...</p>;
   }
 
   return (
@@ -172,7 +160,13 @@ export default function LearningIndex() {
 
       <div className="row mt-3">
         <div className="col">
-          <button className="btn btn-primary w-100" disabled={!canContinue} onClick={continueCourse}>Continue training</button>
+          <button
+            className="btn btn-primary w-100"
+            disabled={!canContinue}
+            onClick={continueCourse}
+          >
+            Continue training
+          </button>
         </div>
         <div className="col">
           <button className="btn btn-outline-primary w-100">
