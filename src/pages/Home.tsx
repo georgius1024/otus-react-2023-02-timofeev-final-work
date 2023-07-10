@@ -11,7 +11,7 @@ import { ReactElement } from "react";
 //   name: string;
 // };
 export default function HomePage(): ReactElement {
-  return <p>Just mome page</p>
+  return <p>Just home page</p>
   // const [items, setItems] = useState<Item[]>([
   //   { id: 1, name: "H1" },
   //   { id: 2, name: "H2" },

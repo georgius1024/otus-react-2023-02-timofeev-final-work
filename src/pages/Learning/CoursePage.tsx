@@ -43,7 +43,9 @@ export default function CoursePage() {
     const responses = await Promise.all(
       lessons.map((e) => progress.find(uid || "", e.id || ""))
     );
-    const statusEntries = responses.map((e) => [e?.moduleId || "", e]);
+    const statusEntries = responses
+      .filter(Boolean)
+      .map((e) => [e?.moduleId || "", e]);
     // @ts-ignore
     const statuses = new Map<string, ProgressRecord>(statusEntries);
     const currentProgress = await progress.find(uid || "", course?.id || "");
@@ -123,7 +125,7 @@ export default function CoursePage() {
     if (!lesson || !lesson.id) {
       return;
     }
-    const lessonId = lesson.id
+    const lessonId = lesson.id;
     const status = statuses?.get(lesson.id);
     if (!status) {
       busy(true);

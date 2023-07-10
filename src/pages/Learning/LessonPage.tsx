@@ -47,45 +47,59 @@ export default function LessonPage() {
   const busy = useBusy();
   const alert = useAlert();
 
-  useEffect(() => {
-    busy(true);
-    const fetchLesson = modules.fetchOne(id).then((lesson) => {
-      setLesson(lesson);
-    });
-    const fetchActivities = modules.fetchChildren(id).then(setActivities);
-    Promise.all([fetchLesson, fetchActivities])
-      .catch(console.error)
-      .finally(() => busy(false));
-  }, [busy, id]);
+  const fetchEverything = useCallback(async () => {
+    const fetchParent = modules.fetchOne(course);
+    const fetchLesson = modules.fetchOne(id);
+    const fetchActivities = modules.fetchChildren(id);
+    const fetchCurrentProgress = await progress.find(uid || "", id);
 
-  useEffect(() => {
-    modules.fetchOne(course).then((parent) => {
-      setParent(parent);
-    });
-  }, [course]);
+    const [parent, lesson, activities, currentProgress] = await Promise.all([
+      fetchParent,
+      fetchLesson,
+      fetchActivities,
+      fetchCurrentProgress,
+    ]);
 
-  useEffect(() => {
-    if (
-      activities.length &&
-      !activities.some((e) => e.id === currentActivity)
-    ) {
-      const first = activities.at(0);
-      first?.id && navigateToStep(first.id);
-    }
-  }, [currentActivity, activities, navigateToStep]);
-
-  useEffect(() => {
-    if (!lesson?.id) {
+    if (!parent) {
+      navigate(`/learning/courses`);
+      alert("Your should choose course first", "error");
       return;
     }
-    progress.find(uid || "", lesson.id).then((response) => {
-      if (!response) {
-        navigate(`/learning/course/${course}`);
-        alert("Your training was interrupted", "error");
-      }
-      setCurrentProgress(response);
-    });
-  }, [course, uid, lesson, navigate, alert]);
+
+    if (!lesson) {
+      navigate(`/learning/course/${course}`);
+      alert("Your should choose lesson first", "error");
+      return;
+    }
+
+    if (!currentProgress) {
+      navigate(`/learning/course/${course}`);
+      alert("Your training was interrupted", "error");
+    }
+
+    const currentActivity = activities.find((e) => e.id === step);
+
+    if (!currentActivity) {
+      const firstActivityId = activities.at(0)?.id || '';
+      navigate(
+        `/learning/course/${course}/lesson/${id}/step/${firstActivityId}`
+      );
+      setCurrentActivity(firstActivityId)
+    }
+
+    setParent(parent)
+    setLesson(lesson)
+    setActivities(activities)
+    setCurrentProgress(currentProgress)
+    
+  }, [uid, id, course, step, navigate, alert]);
+
+  useEffect(() => {
+    busy(true);
+    fetchEverything()
+      .catch(console.error)
+      .finally(() => busy(false));
+  }, [busy, fetchEverything]);
 
   const nextActivity = () => {
     const index = activities.findIndex((e) => e.id === currentActivity);
@@ -112,36 +126,13 @@ export default function LessonPage() {
     navigate(`/learning/course/${course}`);
   };
 
-  if (!uid) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        Need to be logged in to start course
-      </div>
-    );
-  }
-
-  if (!lesson) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        Need to choose lesson first
-      </div>
-    );
-  }
-
-  if (!currentProgress) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        Need to start course and lesson first
-      </div>
-    );
-  }
   if (!activities.length) {
     return <div>Loading...</div>;
   }
 
   const activity = activities.find((e) => e.id === currentActivity)?.activity;
   const position = activities.findIndex((e) => e.id === currentActivity);
-  const lessonIsCompleted = Boolean(currentProgress.finishedAt);
+  const lessonIsCompleted = Boolean(currentProgress?.finishedAt);
   return (
     <div className="container-fluid">
       <nav aria-label="breadcrumb" className=" mt-2">
@@ -154,8 +145,8 @@ export default function LessonPage() {
           </li>
         </ol>
       </nav>
-      {lessonIsCompleted && <h1>Repeating {lesson.name}</h1>}
-      {!lessonIsCompleted && <h1>{lesson.name} in progress</h1>}
+      {lessonIsCompleted && <h1>Repeating {lesson?.name}</h1>}
+      {!lessonIsCompleted && <h1>{lesson?.name} in progress</h1>}
       <div
         className={classNames("progress", "my-2", {
           "d-none": lessonIsCompleted,
