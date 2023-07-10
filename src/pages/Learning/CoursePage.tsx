@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -37,45 +37,76 @@ export default function CoursePage() {
   const busy = useBusy();
   const alert = useAlert();
 
+  const fetchEverything = useCallback(async () => {
+    const fetchCourse = modules.fetchOne(id);
+    const fetchLessons = modules.fetchChildren(id);
+
+    const [course, lessons] = await Promise.all([fetchCourse, fetchLessons]);
+
+    const responses = await Promise.all(
+      lessons.map((e) => progress.find(uid || "", e.id || ""))
+    );
+    const statusEntries = responses.map((e) => [e?.moduleId || "", e]);
+    // @ts-ignore
+    const statuses = new Map<string, ProgressRecord>(statusEntries);
+    const currentProgress = await progress.find(uid || "", course?.id || "");
+
+    if (!course) {
+      navigate(`/learning/courses`);
+      alert("Your should choose course first", "error");
+      return;
+    }
+
+    if (!lessons) {
+      navigate(`/learning/courses`);
+      alert("This course have no lessons", "error");
+      return;
+    }
+
+    if (!currentProgress) {
+      navigate(`/learning/courses`);
+      alert("Your training was interrupted", "error");
+      return;
+    }
+
+    if (!statuses.size) {
+      const firstLesson = lessons.at(0);
+      progress
+        .create({
+          moduleId: firstLesson?.id || "",
+          userId: uid || "",
+          startedAt: dayjs().valueOf(),
+        })
+        .then(() =>
+          navigate(`/learning/course/${id}/lesson/${firstLesson?.id}`)
+        )
+        .catch(console.error);
+      return;
+    }
+
+    if (
+      lessons.every((e) => {
+        const status = statuses.get(e?.id || "");
+        return Boolean(status?.finishedAt);
+      }) &&
+      !currentProgress.finishedAt
+    ) {
+      progress.update({ ...currentProgress, finishedAt: dayjs().valueOf() });
+      showModal(true);
+    }
+
+    setCourse(course);
+    setLessons(lessons);
+    setStatuses(statuses);
+    setCurrentProgress(currentProgress);
+  }, [alert, id, uid, navigate]);
+
   useEffect(() => {
     busy(true);
-    const fetchCourse = modules.fetchOne(id).then((course) => {
-      setCourse(course);
-    });
-    const fetchLessons = modules.fetchChildren(id).then((lessons) => {
-      setLessons(lessons);
-    });
-    Promise.all([fetchCourse, fetchLessons])
+    fetchEverything()
       .catch(console.error)
       .finally(() => busy(false));
-  }, [busy, id]);
-
-  useEffect(() => {
-    if (!lessons.length) {
-      return;
-    }
-    const promises = lessons.map((e) => progress.find(uid || "", e.id || ""));
-    Promise.all(promises).then((responses) => {
-      const entries = responses
-        .filter(Boolean)
-        .map((e) => [e?.moduleId || "", e]);
-      // @ts-ignore
-      setStatuses(new Map<string, ProgressRecord>(entries));
-    });
-  }, [lessons, uid]);
-
-  useEffect(() => {
-    if (!course?.id) {
-      return;
-    }
-    progress.find(uid || "", course.id).then((response) => {
-      if (!response) {
-        navigate(`/learning/courses`);
-        alert("Your training was interrupted", "error");
-      }
-      setCurrentProgress(response);
-    });
-  }, [course, uid, navigate, alert]);
+  }, [busy, fetchEverything]);
 
   const checkStatus = (lesson: Module): "new" | "progress" | "finished" => {
     const status = statuses?.get(lesson?.id || "");
@@ -92,59 +123,29 @@ export default function CoursePage() {
     navigate(`/learning/course/${id}/lesson/${lessonId}`);
   };
 
-  const startLesson = async (lesson: Module) => {
+  const startLesson = (lesson: Module) => {
     if (!lesson || !lesson.id) {
       return;
     }
+    const lessonId = lesson.id
     const status = statuses?.get(lesson.id);
-    busy(true);
     if (!status) {
-      await progress.create({
-        moduleId: lesson.id,
-        userId: uid || "",
-        startedAt: dayjs().valueOf(),
-      });
-    }
-    busy(false);
-    openLessonPage(lesson.id);
-  };
-
-  useEffect(() => {
-    if (!lessons.length) {
-      return;
-    }
-    if (!currentProgress) {
-      return;
-    }
-    if (!statuses) {
-      return
-    }
-    if (!statuses.size) {
-      const lesson = lessons.at(0);
-      if (!lesson?.id) {
-        return;
-      }
+      busy(true);
       progress
         .create({
           moduleId: lesson.id,
           userId: uid || "",
           startedAt: dayjs().valueOf(),
         })
-        .then(() => navigate(`/learning/course/${id}/lesson/${lesson?.id}`))
+        .then(() => {
+          busy(false);
+          openLessonPage(lessonId);
+        })
         .catch(console.error);
-      return
+    } else {
+      openLessonPage(lessonId);
     }
-    if (
-      lessons.every((e) => {
-        const status = statuses.get(e?.id || "");
-        return Boolean(status?.finishedAt);
-      }) &&
-      !currentProgress.finishedAt
-    ) {
-      progress.update({ ...currentProgress, finishedAt: dayjs().valueOf() });
-      showModal(true);
-    }
-  }, [lessons, statuses, currentProgress, id, navigate, uid]);
+  };
 
   const lessonToContinueFrom = lessons.find((e) =>
     ["progress", "new"].includes(checkStatus(e))
@@ -162,28 +163,8 @@ export default function CoursePage() {
     navigate("/learning/");
   };
 
-  if (!uid) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        Need to be logged in to start course
-      </div>
-    );
-  }
-
-  if (!course) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        Need to choose course first
-      </div>
-    );
-  }
-
-  if (!currentProgress) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        Need to start course and lesson first
-      </div>
-    );
+  if (!lessons.length) {
+    return "Loading...";
   }
 
   const lessonItem = (lesson: Module) => {
@@ -216,7 +197,7 @@ export default function CoursePage() {
 
   return (
     <div className="container-fluid">
-      <h1>{course.name}</h1>
+      <h1>{course?.name}</h1>
       <div className="list-group">
         {lessons.map((lesson) => (
           <button
