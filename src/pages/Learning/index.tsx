@@ -7,10 +7,12 @@ import dayjs from "dayjs";
 import useBusy from "@/utils/BusyHook";
 import * as modules from "@/services/modules";
 import * as progress from "@/services/progress";
-import ModalPanel from "@/components/ModalPanel";
+
 import CaretRightEmpty from "@/components/icons/CaretRightEmpty";
 import CaretRightFilled from "@/components/icons/CaretRightFilled";
 import Tick from "@/components/icons/Tick";
+import ModalPanel from "@/components/ModalPanel";
+import LearningPageLoading from "@/pages/Learning/components/LearningPageLoading";
 
 import type { RootState } from "@/store";
 import type { Module, ProgressRecord } from "@/types";
@@ -18,6 +20,7 @@ import type { Module, ProgressRecord } from "@/types";
 type StatusesMap = Map<string, ProgressRecord>;
 
 export default function LearningIndex() {
+  const [loading, setLoading] = useState<boolean>(false);
   const [courses, setCourses] = useState<Module[]>([]);
   const [confirm, setConfirm] = useState<Module | null>(null);
   const [statuses, setStatuses] = useState<StatusesMap>(
@@ -41,11 +44,11 @@ export default function LearningIndex() {
   }, [uid]);
 
   useEffect(() => {
-    busy(true);
+    setLoading(true);
     fetchAll()
       .catch(console.error)
-      .finally(() => busy(false));
-  }, [busy, fetchAll]);
+      .finally(() => setLoading(false));
+  }, [fetchAll]);
 
   const openCoursePage = (id: string) => {
     navigate(`/learning/course/${id}`);
@@ -56,15 +59,15 @@ export default function LearningIndex() {
       return;
     }
     const status = statuses.get(course.id);
-    busy(true);
     if (!status) {
+      busy(true);
       await progress.create({
         moduleId: course.id,
         userId: uid,
         startedAt: dayjs().valueOf(),
-      });
+      }).catch(console.error)
+      busy(false);
     }
-    busy(false);
     openCoursePage(course.id);
   };
 
@@ -129,6 +132,10 @@ export default function LearningIndex() {
       resolveCourseAction(course);
     }
   };
+  if (loading) {
+    return <LearningPageLoading/>
+  }
+
 
   if (!uid) {
     return (
@@ -136,10 +143,6 @@ export default function LearningIndex() {
         Need to be logged in to start course!!!
       </div>
     );
-  }
-
-  if (!courses) {
-    return <p>Loading...</p>;
   }
 
   return (
@@ -182,8 +185,8 @@ export default function LearningIndex() {
       </div>
 
       <ModalPanel show={Boolean(confirm)} onClose={() => setConfirm(null)}>
-        <h1>Start course confirmation</h1>
-        <p>You are going to start course "{confirm?.name}"?</p>
+        <h1>Start course</h1>
+        <p>Press button below to start course "{confirm?.name}"</p>
         <button
           className="btn btn-primary w-100"
           onClick={() => startCourse(confirm)}

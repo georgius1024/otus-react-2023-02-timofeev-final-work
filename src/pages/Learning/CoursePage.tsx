@@ -10,6 +10,8 @@ import useBusy from "@/utils/BusyHook";
 import * as modules from "@/services/modules";
 import * as progress from "@/services/progress";
 
+import CoursePageLoading from "@/pages/Learning/components/LearningPageLoading";
+
 import CaretRightEmpty from "@/components/icons/CaretRightEmpty";
 import CaretRightFilled from "@/components/icons/CaretRightFilled";
 import Tick from "@/components/icons/Tick";
@@ -22,6 +24,7 @@ type StatusesMap = Map<string, ProgressRecord>;
 
 export default function CoursePage() {
   const { id = "" } = useParams();
+  const [loading, setLoading] = useState<boolean>(false);
   const [course, setCourse] = useState<Module | null>(null);
   const [lessons, setLessons] = useState<Module[]>([]);
   const [statuses, setStatuses] = useState<StatusesMap | null>(null);
@@ -100,11 +103,11 @@ export default function CoursePage() {
   }, [alert, id, uid, navigate]);
 
   useEffect(() => {
-    busy(true);
+    setLoading(true);
     fetchEverything()
       .catch(console.error)
-      .finally(() => busy(false));
-  }, [busy, fetchEverything]);
+      .finally(() => setLoading(false));
+  }, [fetchEverything]);
 
   const checkStatus = (lesson: Module): "new" | "progress" | "finished" => {
     const status = statuses?.get(lesson?.id || "");
@@ -161,8 +164,8 @@ export default function CoursePage() {
     navigate("/learning/");
   };
 
-  if (!lessons.length) {
-    return "Loading...";
+  if (loading) {
+    return <CoursePageLoading />
   }
 
   const lessonItem = (lesson: Module) => {
