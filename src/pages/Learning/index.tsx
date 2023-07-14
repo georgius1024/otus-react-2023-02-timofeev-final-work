@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import useBusy from "@/utils/BusyHook";
 import * as modules from "@/services/modules";
 import * as progress from "@/services/progress";
+import * as repetition from "@/services/repetition";
 
 import CaretRightEmpty from "@/components/icons/CaretRightEmpty";
 import CaretRightFilled from "@/components/icons/CaretRightFilled";
@@ -26,13 +27,20 @@ export default function LearningIndex() {
   const [statuses, setStatuses] = useState<StatusesMap>(
     new Map<string, ProgressRecord>()
   );
+  const [wordsToRepeat, setWordsToRepeat] = useState(0);
+
   const uid = useSelector((state: RootState) => state.auth?.user?.uid);
 
   const navigate = useNavigate();
   const busy = useBusy();
 
   const fetchAll = useCallback(async () => {
-    const courses = await modules.fetchChildren("");
+    const loadCoursesPromise = modules.fetchChildren("");
+    const loadAgenda = repetition.agenda(uid || "");
+    const [courses, agenda] = await Promise.all([
+      loadCoursesPromise,
+      loadAgenda,
+    ]);
     const promises = courses.map((e) => progress.find(uid || "", e.id || ""));
     const responses = await Promise.all(promises);
     const entries = responses
@@ -41,6 +49,7 @@ export default function LearningIndex() {
     // @ts-ignore
     setStatuses(new Map<string, ProgressRecord>(entries));
     setCourses(courses);
+    setWordsToRepeat(agenda.length);
   }, [uid]);
 
   useEffect(() => {
@@ -61,11 +70,13 @@ export default function LearningIndex() {
     const status = statuses.get(course.id);
     if (!status) {
       busy(true);
-      await progress.create({
-        moduleId: course.id,
-        userId: uid,
-        startedAt: dayjs().valueOf(),
-      }).catch(console.error)
+      await progress
+        .create({
+          moduleId: course.id,
+          userId: uid,
+          startedAt: dayjs().valueOf(),
+        })
+        .catch(console.error);
       busy(false);
     }
     openCoursePage(course.id);
@@ -133,9 +144,8 @@ export default function LearningIndex() {
     }
   };
   if (loading) {
-    return <LearningPageLoading/>
+    return <LearningPageLoading />;
   }
-
 
   if (!uid) {
     return (
@@ -172,9 +182,14 @@ export default function LearningIndex() {
           </button>
         </div>
         <div className="col">
-          <button className="btn btn-outline-primary w-100">
+          <button
+            className="btn btn-outline-primary w-100"
+            disabled={!wordsToRepeat}
+          >
             Repeat words
-            <span className="badge bg-primary rounded-pill ms-3">12</span>
+            <span className="badge bg-primary rounded-pill ms-3">
+              {wordsToRepeat}
+            </span>
           </button>
         </div>
         <div className="col">
