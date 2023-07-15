@@ -5,7 +5,7 @@ import { RouterProvider } from "react-router-dom";
 import router from "@/router";
 import { store } from "@/store";
 import "@/main.scss";
-import "bootstrap";
+import 'bootstrap';
 import "@popperjs/core"
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

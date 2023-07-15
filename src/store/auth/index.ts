@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { AuthState } from "@/store/auth/types";
 import reducers from "@/store/auth/reducers";
-import thunks, { login, register, forgot } from "@/store/auth/thunks";
-import { restore } from "@/store/auth/utils";
-const initialState: AuthState = { auth: restore() };
+import thunks, { login, register, forgot, updateProfile } from "@/store/auth/thunks";
+import { restoreAuth, restoreUser } from "@/store/auth/utils";
+const initialState: AuthState = { auth: restoreAuth(), user: restoreUser() };
 
 export const authSlice = createSlice({
   name: "store/auth",
@@ -14,5 +14,5 @@ export const authSlice = createSlice({
 
 const { logout } = authSlice.actions;
 
-export { logout, login, register, forgot };
+export { logout, login, register, forgot, updateProfile };
 export default authSlice.reducer;

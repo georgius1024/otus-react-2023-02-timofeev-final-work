@@ -6,6 +6,7 @@ import HomePage from "@/pages/Home";
 import LoginPage from "@/pages/Login";
 import RegisterPage from "@/pages/Register";
 import ForgotPage from "@/pages/Forgot";
+import ProfilePage from "@/pages/ProfilePage";
 import ModulePage from "@/pages/Module";
 import StudentsPage from "@/pages/Students";
 import LearningPage from "@/pages/Learning";
@@ -70,6 +71,12 @@ const routes = [
   {
     path: "/students",
     element: StudentsPage,
+    layout: DefaultLayout,
+    private: true,
+  },
+  {
+    path: "/profile",
+    element: ProfilePage,
     layout: DefaultLayout,
     private: true,
   },

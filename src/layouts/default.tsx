@@ -10,19 +10,41 @@ import { logout } from "@/store/auth";
 
 export default function DefaultLayout(props: PropsWithChildren) {
   const auth = useSelector((state: RootState) => state.auth?.auth);
+  const user = useSelector((state: RootState) => state.auth?.user);
   const admin = useSelector((state: RootState) => state.auth?.auth?.access);
   function ProfileLinks(auth: Auth | undefined) {
+    const profileName = user?.name || auth?.email
     const dispatch = useDispatch();
     if (auth) {
       return (
-        <li className="nav-item me-2">
-          <Link
-            className="text-light"
-            to="/login"
-            onClick={() => dispatch(logout())}
+        <li className="nav-item dropdown me-2">
+          <a
+            className="nav-link dropdown-toggle text-light"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
           >
-            Logout
-          </Link>
+            {profileName}
+          </a>
+          <div className="dropdown-menu bg-primary">
+          <Link
+              className="dropdown-item text-light"
+              to="/profile"
+              >
+              Profile
+            </Link>
+            <div className="dropdown-divider"></div>
+            <Link
+              className="dropdown-item text-light"
+              to="/login"
+              onClick={() => dispatch(logout())}
+            >
+              Logout
+            </Link>
+          </div>
         </li>
       );
     } else {

@@ -1,14 +1,14 @@
 export type Auth = {
   uid: string | null;
   email: string | null;
-  access?: string;
+  access?: string | null;
   providerData?: unknown;
 };
 
-export type Student = {
+export type User = {
   id?: string;
   uid: string;
-  email: string;
+  name: string;
 };
 
 export type ErrorResponse = {

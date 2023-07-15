@@ -1,4 +1,5 @@
 import { createAsyncThunk, ActionReducerMapBuilder } from "@reduxjs/toolkit";
+import * as users from "@/services/users"
 
 import {
   signInWithEmailAndPassword,
@@ -6,21 +7,19 @@ import {
   sendPasswordResetEmail,
 } from "firebase/auth";
 
-import { collection, query, limit, getDocs, where } from "firebase/firestore";
-
 import { auth } from "@/firebase";
-import { db } from "@/firebase";
 
 import type {
   AuthState,
   AuthPayload,
   RecoverPayload,
+  ProfilePayload
 } from "@/store/auth/types";
-import type { Auth } from "@/types";
-import { store, cleanup } from "@/store/auth/utils";
+import type { Auth, User } from "@/types";
+import { storeAuth, cleanupAuth, storeUser, cleanupUser } from "@/store/auth/utils";
 
 export const login = createAsyncThunk<
-  Auth,
+  { auth: Auth; user?: User },
   AuthPayload,
   { rejectValue: string }
 >("auth/login", async (payload: AuthPayload) => {
@@ -32,12 +31,19 @@ export const login = createAsyncThunk<
     const { uid, email, providerData } = userCredentials.user;
     return { uid, email, providerData } as Auth;
   });
-  const accessRef = collection(db, "access");
-  const response = await getDocs(
-    query(accessRef, where("uid", "==", userAuth.uid), limit(1))
-  );
-  const access = response.docs.at(0)?.data()?.access;
-  return { ...userAuth, access };
+
+  const fetchAccess = () => {
+    return users.fechAccess(userAuth.uid || '')
+  };
+  const fetchUser = () => {
+    return users.findWithUid(userAuth.uid || '')
+  };
+  const [access, user] = await Promise.all([fetchAccess(), fetchUser()]);
+  if (user) {
+    return { auth: { ...userAuth, access }, user };
+  }
+  return { auth: { ...userAuth, access } };
+  
 });
 
 export const register = createAsyncThunk(
@@ -61,6 +67,21 @@ export const forgot = createAsyncThunk(
   }
 );
 
+export const updateProfile = createAsyncThunk(
+  "auth/update",
+  async (payload: ProfilePayload) => {
+    const profile = payload.profile;
+
+    const user = await users.findWithUid(profile.uid)
+    if (user) {
+      await users.update(profile)
+      return profile
+    } else {
+      return await users.create(profile)
+    }
+  }
+);
+
 export default function (builder: ActionReducerMapBuilder<AuthState>) {
   builder
     .addCase(login.pending, (state: AuthState) => {
@@ -70,13 +91,17 @@ export default function (builder: ActionReducerMapBuilder<AuthState>) {
     })
     .addCase(login.fulfilled, (state: AuthState, action) => {
       state.busy = false;
-      state.auth = action.payload as unknown as Auth;
-      store(state.auth);
+      const { auth, user } = action.payload;
+      state.auth = auth as unknown as Auth;
+      state.user = user as unknown as User;
+      storeAuth(state.auth);
+      storeUser(state.user)
     })
     .addCase(login.rejected, (state: AuthState, action) => {
       state.busy = false;
       state.error = action.error.message;
-      cleanup();
+      cleanupAuth();
+      cleanupUser()
     })
     .addCase(register.pending, (state: AuthState) => {
       state.busy = true;
@@ -86,12 +111,12 @@ export default function (builder: ActionReducerMapBuilder<AuthState>) {
     .addCase(register.fulfilled, (state: AuthState, action) => {
       state.busy = false;
       state.auth = action.payload as unknown as Auth;
-      store(state.auth);
+      storeAuth(state.auth);
     })
     .addCase(register.rejected, (state: AuthState, action) => {
       state.busy = false;
       state.error = action.error.message;
-      cleanup();
+      cleanupAuth();
     })
     .addCase(forgot.pending, (state: AuthState) => {
       state.busy = true;
@@ -103,5 +128,19 @@ export default function (builder: ActionReducerMapBuilder<AuthState>) {
     .addCase(forgot.rejected, (state: AuthState, action) => {
       state.busy = false;
       state.error = action.error.message;
-    });
+    })
+    .addCase(updateProfile.pending, (state: AuthState) => {
+      state.busy = true;
+      state.error = undefined;
+    })
+    .addCase(updateProfile.fulfilled, (state: AuthState, action) => {
+      state.user = action.payload as unknown as User;
+      state.busy = false;
+      storeUser(state.user)
+    })
+    .addCase(updateProfile.rejected, (state: AuthState, action) => {
+      state.busy = false;
+      state.error = action.error.message;
+    })
+    ;
 }
