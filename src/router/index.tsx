@@ -12,6 +12,7 @@ import CoursePage from "@/pages/Learning/CoursePage";
 import LessonPage from "@/pages/Learning/LessonPage";
 import LessonStepPage from "@/pages/Learning/LessonStepPage";
 import RepetitionPage from "@/pages/Learning/RepetitionPage";
+import RepeatPage from "@/pages/Learning/RepeatPage";
 import ErrorPage from "@/pages/Error";
 
 const routes = [
@@ -51,6 +52,13 @@ const routes = [
     element: RepetitionPage,
     layout: DefaultLayout,
     private: true,
+    children: [
+      {
+        path: ":activity",
+        element: <RepeatPage/>,
+        private: true,
+      },
+    ],
   },
   {
     path: "/module/:id?",

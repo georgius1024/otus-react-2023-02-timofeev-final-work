@@ -20,7 +20,6 @@ import ModalPanel from "@/components/ModalPanel";
 
 import type { Module, ProgressRecord } from "@/types";
 import type { RootState } from "@/store";
-import { render } from "@testing-library/react";
 
 type StatusesMap = Map<string, ProgressRecord>;
 
