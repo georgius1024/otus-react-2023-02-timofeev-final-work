@@ -9,6 +9,7 @@ import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
 import * as modules from "@/services/modules";
 import * as progress from "@/services/progress";
+import * as repetition from "@/services/repetition";
 
 import CoursePageLoading from "@/pages/Learning/components/LearningPageLoading";
 
@@ -28,6 +29,8 @@ export default function CoursePage() {
   const [course, setCourse] = useState<Module | null>(null);
   const [lessons, setLessons] = useState<Module[]>([]);
   const [statuses, setStatuses] = useState<StatusesMap | null>(null);
+  const [wordsToRepeat, setWordsToRepeat] = useState(0);
+
   const [modal, showModal] = useState<boolean>(false);
 
   const uid = useSelector((state: RootState) => state.auth?.user?.uid);
@@ -37,11 +40,17 @@ export default function CoursePage() {
   const busy = useBusy();
   const alert = useAlert();
 
-  const fetchEverything = useCallback(async () => {
+  const fetchAndCheckEverything = useCallback(async () => {
     const fetchCourse = modules.fetchOne(id);
     const fetchLessons = modules.fetchChildren(id);
-
-    const [course, lessons] = await Promise.all([fetchCourse, fetchLessons]);
+    const loadCurrentProcess = progress.find(uid || "", id);
+    const loadAgenda = repetition.agenda(uid || "");
+    const [course, lessons, currentProgress, agenda] = await Promise.all([
+      fetchCourse,
+      fetchLessons,
+      loadCurrentProcess,
+      loadAgenda,
+    ]);
 
     const responses = await Promise.all(
       lessons.map((e) => progress.find(uid || "", e.id || ""))
@@ -51,7 +60,10 @@ export default function CoursePage() {
       .map((e) => [e?.moduleId || "", e]);
     // @ts-ignore
     const statuses = new Map<string, ProgressRecord>(statusEntries);
-    const currentProgress = await progress.find(uid || "", course?.id || "");
+    setCourse(course);
+    setLessons(lessons);
+    setStatuses(statuses);
+    setWordsToRepeat(agenda.length);
 
     if (!course) {
       navigate(`/learning/courses`);
@@ -96,18 +108,14 @@ export default function CoursePage() {
       progress.update({ ...currentProgress, finishedAt: dayjs().valueOf() });
       showModal(true);
     }
-
-    setCourse(course);
-    setLessons(lessons);
-    setStatuses(statuses);
   }, [alert, id, uid, navigate]);
 
   useEffect(() => {
     setLoading(true);
-    fetchEverything()
+    fetchAndCheckEverything()
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, [fetchEverything]);
+  }, [fetchAndCheckEverything]);
 
   const checkStatus = (lesson: Module): "new" | "progress" | "finished" => {
     const status = statuses?.get(lesson?.id || "");
@@ -165,7 +173,7 @@ export default function CoursePage() {
   };
 
   if (loading) {
-    return <CoursePageLoading />
+    return <CoursePageLoading />;
   }
 
   const lessonItem = (lesson: Module) => {
@@ -227,9 +235,14 @@ export default function CoursePage() {
           )}
         </div>
         <div className="col">
-          <button className="btn btn-outline-primary w-100">
+          <button
+            className="btn btn-outline-primary w-100"
+            disabled={!wordsToRepeat}
+          >
             Repeat words
-            <span className="badge bg-primary rounded-pill ms-3">12</span>
+            <span className="badge bg-primary rounded-pill ms-3">
+              {wordsToRepeat}
+            </span>
           </button>
         </div>
         <div className="col">
