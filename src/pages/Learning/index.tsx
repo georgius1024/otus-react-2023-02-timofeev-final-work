@@ -63,6 +63,10 @@ export default function LearningIndex() {
     navigate(`/learning/course/${id}`);
   };
 
+  const openRepetitionPage = () => {
+    navigate('/learning/repetition');
+  }
+
   const startCourse = async (course: Module | null) => {
     if (!course || !course.id || !uid) {
       return;
@@ -185,6 +189,7 @@ export default function LearningIndex() {
           <button
             className="btn btn-outline-primary w-100"
             disabled={!wordsToRepeat}
+            onClick={openRepetitionPage}
           >
             Repeat words
             <span className="badge bg-primary rounded-pill ms-3">

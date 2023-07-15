@@ -11,6 +11,7 @@ import LearningPage from "@/pages/Learning";
 import CoursePage from "@/pages/Learning/CoursePage";
 import LessonPage from "@/pages/Learning/LessonPage";
 import LessonStepPage from "@/pages/Learning/LessonStepPage";
+import RepetitionPage from "@/pages/Learning/RepetitionPage";
 import ErrorPage from "@/pages/Error";
 
 const routes = [
@@ -44,6 +45,12 @@ const routes = [
         private: true,
       },
     ],
+  },
+  {
+    path: "/learning/repetition",
+    element: RepetitionPage,
+    layout: DefaultLayout,
+    private: true,
   },
   {
     path: "/module/:id?",

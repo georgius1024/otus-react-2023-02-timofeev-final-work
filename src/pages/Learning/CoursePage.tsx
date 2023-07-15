@@ -132,6 +132,10 @@ export default function CoursePage() {
     navigate(`/learning/course/${id}/lesson/${lessonId}`);
   };
 
+  const openRepetitionPage = () => {
+    navigate("/learning/repetition");
+  };
+
   const startLesson = (lesson: Module) => {
     if (!lesson || !lesson.id) {
       return;
@@ -238,6 +242,7 @@ export default function CoursePage() {
           <button
             className="btn btn-outline-primary w-100"
             disabled={!wordsToRepeat}
+            onClick={openRepetitionPage}
           >
             Repeat words
             <span className="badge bg-primary rounded-pill ms-3">
