@@ -13,7 +13,7 @@ import {
 
 import { db } from "@/firebase";
 
-export async function fetchActivities(lesson:  User): Promise<Todo[]> {
+export async function fetchActivities(lesson:  Auth): Promise<Todo[]> {
   const todosRef = collection(db, "todos");
   const response = await getDocs(
     query(
@@ -24,7 +24,7 @@ export async function fetchActivities(lesson:  User): Promise<Todo[]> {
   return response.docs.map((e) => ({ ...(e.data() as Todo), id: e.id }));
 }
 
-export async function fetchTodo(user: User, id: string): Promise<Todo | null> {
+export async function fetchTodo(user: Auth, id: string): Promise<Todo | null> {
   const todoRef = doc(db, "todos", id);
   const response = await getDoc(todoRef);
   if (response.exists()) {

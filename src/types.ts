@@ -1,4 +1,4 @@
-export type User = {
+export type Auth = {
   uid: string | null;
   email: string | null;
   access?: string;

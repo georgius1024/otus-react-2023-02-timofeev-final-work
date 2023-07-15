@@ -1,8 +1,8 @@
-import type { User } from "@/types";
-export function store(user: User) {
+import type { Auth } from "@/types";
+export function store(user: Auth) {
   sessionStorage["store/auth"] = JSON.stringify(user);
 }
-export function restore(): User | undefined {
+export function restore(): Auth | undefined {
   if ("store/auth" in sessionStorage) {
     try {
       return JSON.parse(sessionStorage["store/auth"]) || {};

@@ -1,7 +1,7 @@
-import type { User } from "@/types";
+import type { Auth } from "@/types";
 
 export interface AuthState {
-  user?: User;
+  user?: Auth;
   busy?: boolean;
   error?: string;
 }

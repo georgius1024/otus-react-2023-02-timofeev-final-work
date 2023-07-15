@@ -5,13 +5,13 @@ import classNames from "classnames";
 import AlertsPanel from "@/components/AlertsPanel";
 import BusyStatePanel from "@/components/BusyStatePanel";
 import type { RootState } from "@/store";
-import type { User } from "@/types";
+import type { Auth } from "@/types";
 import { logout } from "@/store/auth";
 
 export default function DefaultLayout(props: PropsWithChildren) {
   const user = useSelector((state: RootState) => state.auth?.user);
   const admin = useSelector((state: RootState) => state.auth?.user?.access);
-  function ProfileLinks(user: User | undefined) {
+  function ProfileLinks(user: Auth | undefined) {
     const dispatch = useDispatch();
     if (user) {
       return (

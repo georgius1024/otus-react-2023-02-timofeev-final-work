@@ -16,11 +16,11 @@ import type {
   AuthPayload,
   RecoverPayload,
 } from "@/store/auth/types";
-import type { User } from "@/types";
+import type { Auth } from "@/types";
 import { store, cleanup } from "@/store/auth/utils";
 
 export const login = createAsyncThunk<
-  User,
+  Auth,
   AuthPayload,
   { rejectValue: string }
 >("auth/login", async (payload: AuthPayload) => {
@@ -30,7 +30,7 @@ export const login = createAsyncThunk<
     payload.password
   ).then((userCredentials) => {
     const { uid, email, providerData } = userCredentials.user;
-    return { uid, email, providerData } as User;
+    return { uid, email, providerData } as Auth;
   });
   const accessRef = collection(db, "access");
   const response = await getDocs(
@@ -70,7 +70,7 @@ export default function (builder: ActionReducerMapBuilder<AuthState>) {
     })
     .addCase(login.fulfilled, (state: AuthState, action) => {
       state.busy = false;
-      state.user = action.payload as unknown as User;
+      state.user = action.payload as unknown as Auth;
       store(state.user);
     })
     .addCase(login.rejected, (state: AuthState, action) => {
@@ -85,7 +85,7 @@ export default function (builder: ActionReducerMapBuilder<AuthState>) {
     })
     .addCase(register.fulfilled, (state: AuthState, action) => {
       state.busy = false;
-      state.user = action.payload as unknown as User;
+      state.user = action.payload as unknown as Auth;
       store(state.user);
     })
     .addCase(register.rejected, (state: AuthState, action) => {

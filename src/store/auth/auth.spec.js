@@ -7,7 +7,7 @@ import * as firebaseAuth from "firebase/auth";
 vi.mock("firebase/auth", () => ({
   getAuth: vi.fn().mockResolvedValue(true),
   signInWithEmailAndPassword: vi.fn().mockResolvedValue(true),
-  createUserWithEmailAndPassword: vi.fn().mockResolvedValue(true),
+  createAuthWithEmailAndPassword: vi.fn().mockResolvedValue(true),
   sendPasswordResetEmail: vi.fn().mockResolvedValue(true),
 }));
 

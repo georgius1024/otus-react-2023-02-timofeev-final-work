@@ -24,11 +24,11 @@ const studentsTable = "students";
 const studentsTableRef = collection(db, studentsTable);
 const studentRef = (id: string) => doc(db, studentsTable, id);
 
-import type { User } from "@/types";
+import type { Auth } from "@/types";
 
-const withId = (item: QueryDocumentSnapshot<DocumentData>): User =>
-  ({ ...item.data(), id: item.id } as User);
-const withoutId = (item: User): User => {
+const withId = (item: QueryDocumentSnapshot<DocumentData>): Auth =>
+  ({ ...item.data(), id: item.id } as Auth);
+const withoutId = (item: Auth): Auth => {
   return omit(item, ["id"]);
 };
 
