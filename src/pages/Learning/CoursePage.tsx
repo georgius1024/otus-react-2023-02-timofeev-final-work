@@ -20,15 +20,19 @@ import ModalPanel from "@/components/ModalPanel";
 
 import type { Module, ProgressRecord } from "@/types";
 import type { RootState } from "@/store";
+import { render } from "@testing-library/react";
 
 type StatusesMap = Map<string, ProgressRecord>;
 
 export default function CoursePage() {
   const { id = "" } = useParams();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean | null>(null);
   const [course, setCourse] = useState<Module | null>(null);
   const [lessons, setLessons] = useState<Module[]>([]);
   const [statuses, setStatuses] = useState<StatusesMap | null>(null);
+  const [currentProgress, setCurrentProgress] = useState<ProgressRecord | null>(
+    null
+  );
   const [wordsToRepeat, setWordsToRepeat] = useState(0);
 
   const [modal, showModal] = useState<boolean>(false);
@@ -63,8 +67,23 @@ export default function CoursePage() {
     setCourse(course);
     setLessons(lessons);
     setStatuses(statuses);
+    setCurrentProgress(currentProgress);
     setWordsToRepeat(agenda.length);
 
+  }, [id, uid]);
+
+  
+  useEffect(() => {
+    setLoading(true);
+    fetchAndCheckEverything()
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [fetchAndCheckEverything]);
+
+  useEffect(() => {
+    if (loading !== false) {
+      return;
+    }
     if (!course) {
       navigate(`/learning/courses`);
       alert("Your should choose course first", "error");
@@ -83,7 +102,7 @@ export default function CoursePage() {
       return;
     }
 
-    if (!statuses.size) {
+    if (!statuses?.size) {
       const firstLesson = lessons.at(0);
       progress
         .create({
@@ -108,14 +127,17 @@ export default function CoursePage() {
       progress.update({ ...currentProgress, finishedAt: dayjs().valueOf() });
       showModal(true);
     }
-  }, [alert, id, uid, navigate]);
-
-  useEffect(() => {
-    setLoading(true);
-    fetchAndCheckEverything()
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, [fetchAndCheckEverything]);
+  }, [
+    loading,
+    alert,
+    course,
+    id,
+    lessons,
+    currentProgress,
+    statuses,
+    navigate,
+    uid,
+  ]);
 
   const checkStatus = (lesson: Module): "new" | "progress" | "finished" => {
     const status = statuses?.get(lesson?.id || "");
