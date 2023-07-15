@@ -14,7 +14,7 @@ import CoursePage from "@/pages/Learning/CoursePage";
 import LessonPage from "@/pages/Learning/LessonPage";
 import LessonStepPage from "@/pages/Learning/LessonStepPage";
 import RepetitionPage from "@/pages/Learning/RepetitionPage";
-import RepeatPage from "@/pages/Learning/RepeatPage";
+import RepetitionStepPage from "@/pages/Learning/RepetitionStepPage";
 import ErrorPage from "@/pages/Error";
 
 const routes = [
@@ -56,8 +56,8 @@ const routes = [
     private: true,
     children: [
       {
-        path: ":activity",
-        element: <RepeatPage/>,
+        path: ":step",
+        element: <RepetitionStepPage/>,
         private: true,
       },
     ],

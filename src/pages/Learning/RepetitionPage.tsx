@@ -7,98 +7,118 @@ import useAlert from "@/utils/AlertHook";
 import * as modules from "@/services/modules";
 import * as repetition from "@/services/repetition";
 
-import type { Module, RepetitionRecord } from "@/types";
+import type { RepetitionRecord } from "@/types";
 import type { RootState } from "@/store";
-
+import type { RepetitionStep } from "@/pages/Learning/components/ActivityTypes";
 
 export default function RepetitionPage() {
   const uid = useSelector((state: RootState) => state.auth?.auth?.uid);
-  const { activity = "" } = useParams();
+  const { step = "" } = useParams();
 
   const [loading, setLoading] = useState<boolean | null>(null);
-  const [activities, setActivities] = useState<Module[]>([]);
-  const [agenda, setAgenda] = useState<RepetitionRecord[]>([]);
-  const [currentActivity, setCurrentActivity] = useState<string>(activity);
+  const [steps, setSteps] = useState<RepetitionStep[]>([]);
+  const [currentStep, setStep] = useState<string>(step);
 
-  const alert = useAlert()
+  const alert = useAlert();
   const navigate = useNavigate();
 
   const openLearningPage = useCallback(() => {
     navigate("/learning/");
   }, [navigate]);
 
-  const navigateToActivity = useCallback(
-    (activity?: string) => {
-      if (!activity) {
+  const navigateToStep = useCallback(
+    (step?: string) => {
+      if (!step) {
         return;
       }
-      setCurrentActivity(activity);
-      navigate(`/learning/repetition/${activity}`);
+      setStep(step);
+      navigate(`/learning/repetition/${step}`);
     },
     [navigate]
   );
 
   const fetchAll = useCallback(async () => {
-    const agenda = await repetition.agenda(uid || '')
+    const agenda = await repetition.agenda(uid || "");
     const promises = agenda.map((rep: RepetitionRecord) => {
-      return modules.fetchOne(rep.activityId)
-    })
-    const activities = await Promise.all(promises)
+      return modules.fetchOne(rep.activityId);
+    });
+    const activities = await Promise.all(promises);
 
-    setAgenda(agenda)
-    setActivities(activities.filter(Boolean) as Module[])
-  }, [uid])
+    const steps = ["learn", "translate-direct", "translate-reverse", "puzzle"].map(
+      (type) => {
+          return activities.map((activity) => {
+          const repetition = agenda.find((r) => r.activityId == activity?.id);
+          return {
+            id : `${type}-${activity?.id}`,
+            type,
+            repetition,
+            activity,
+          } as RepetitionStep;
+        })
+      })
+      .flat(1);
+    setSteps(steps);
+  }, [uid]);
 
   useEffect(() => {
-    setLoading(true)
-    fetchAll().catch(console.error).finally(() => setLoading(false))
-  }, [fetchAll])
+    setLoading(true);
+    fetchAll()
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [fetchAll]);
 
   useEffect(() => {
     if (loading !== false) {
-      return 
+      return;
     }
-    if (!agenda) {
-      openLearningPage()
-      alert('No words to repeat today', 'warning')
-    }
-
-    const firstActivity = agenda.at(0)?.activityId
-
-    if (!currentActivity && firstActivity) {
-      navigateToActivity(firstActivity)
-      setCurrentActivity(firstActivity)
+    if (!steps) {
+      openLearningPage();
+      alert("No words to repeat today", "warning");
     }
 
-  }, [loading, agenda, currentActivity, navigate, alert, openLearningPage, navigateToActivity])
+    const firstStep = steps.at(0)?.id;
 
-  const nextActivity = () => {
+    if (!step && firstStep) {
+      navigateToStep(firstStep);
+      setStep(firstStep);
+    }
+  }, [
+    loading,
+    steps,
+    step,
+    navigate,
+    alert,
+    openLearningPage,
+    navigateToStep,
+  ]);
 
-    repetition.register(uid || '', currentActivity);
-
-    const index = activities.findIndex((e) => e.id === currentActivity);
-    const nextActivityId = activities[index + 1]?.id;
-    if (nextActivityId) {
-      setCurrentActivity(nextActivityId)
+  const nextStep = () => {
+    const position = steps.findIndex(e => e.id === currentStep)
+    if (position === steps.length - 1) {
+      alert("Done");
+      openLearningPage();
     } else {
-      alert('Done')
-      openLearningPage()
+      navigateToStep(steps[position+1].id)
     }
-  }
+  };
 
   if (loading) {
-    return <p>Loading...</p>
+    return <p>Loading...</p>;
   }
 
-  const current = activities.find((e) => e.id === currentActivity)?.activity;
+  const current = steps.find((e) => e.id === currentStep);
 
   return (
     <div className="container-fluid">
       <h1>Hello repetition</h1>
-      <Outlet context={{ activity: current, onDone: nextActivity }} />
-      <hr/>
-      <button className="btn btn-secondary light-text" onClick={openLearningPage}>
-          Back
+      <div>{steps.findIndex((e) => e.id === currentStep)} / {steps.length}</div>
+      <Outlet context={{ step: current, onDone: nextStep }} />
+      <hr />
+      <button
+        className="btn btn-secondary light-text"
+        onClick={openLearningPage}
+      >
+        Back
       </button>
     </div>
   );

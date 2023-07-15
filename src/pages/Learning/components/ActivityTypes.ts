@@ -1,4 +1,4 @@
-import type { WordActivity, PhraseActivity } from "@/types";
+import type { WordActivity, PhraseActivity, Module, RepetitionRecord } from "@/types";
 
 export type OnDone = () => void;
 export type OnSolved = (correct: boolean) => void;
@@ -32,3 +32,11 @@ export type WordActivityDispatcherProps = ActivityDispatcherProps<WordActivity>
 export type PhraseActivityProps = ActivityProps<PhraseActivity>
 export type PhraseActivityStepProps = ActivityStepProps<PhraseActivity>
 export type PhraseActivityDispatcherProps = ActivityDispatcherProps<PhraseActivity>
+
+
+export type RepetitionStep = {
+  id: string;
+  type: StepType;
+  activity: Module;
+  repetition: RepetitionRecord;
+};
