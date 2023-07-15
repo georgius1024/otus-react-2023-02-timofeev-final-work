@@ -77,7 +77,12 @@ export async function findOrCreate(
   }
 
   return await create({
-    userId, activityId, startedAt: dayjs().valueOf(), repeatCount: 0
+    userId,
+    activityId,
+    startedAt: dayjs().valueOf(),
+    repeatCount: 0,
+    scheduledAt: 0,
+    finishedAt: 0
   })
 }
 
@@ -109,11 +114,12 @@ export async function register(userId: string,
 
 export async function agenda(userId: string): Promise<RepetitionRecord[]> {
   const now = dayjs().valueOf()
+
   const response = await getDocs(
-    query(repetitionTableRef, 
-      where("userId", "==", userId), 
+    query(repetitionTableRef,
+      where("userId", "==", userId),
       where("scheduledAt", '<=', now),
-      where("finishedAt", '==', null),
+      where("finishedAt", '==', 0),
     )
   );
   return sortBy(response.docs.map(withId), ["scheduledAt"]);
@@ -122,10 +128,10 @@ export async function agenda(userId: string): Promise<RepetitionRecord[]> {
 export async function plan(userId: string): Promise<RepetitionRecord[]> {
   const now = dayjs().valueOf()
   const response = await getDocs(
-    query(repetitionTableRef, 
-      where("userId", "==", userId), 
+    query(repetitionTableRef,
+      where("userId", "==", userId),
       where("scheduledAt", '>', now),
-      where("finishedAt", '==', null),
+      where("finishedAt", '==', 0),
     )
   );
   return sortBy(response.docs.map(withId), ["scheduledAt"]);
@@ -133,9 +139,9 @@ export async function plan(userId: string): Promise<RepetitionRecord[]> {
 
 export async function history(userId: string): Promise<RepetitionRecord[]> {
   const response = await getDocs(
-    query(repetitionTableRef, 
-      where("userId", "==", userId), 
-      where("finishedAt", '!=', null),
+    query(repetitionTableRef,
+      where("userId", "==", userId),
+      where("finishedAt", '!=', 0),
     )
   );
   return sortBy(response.docs.map(withId), ["finishedAt"]);

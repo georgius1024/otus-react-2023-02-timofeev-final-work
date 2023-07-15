@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import Placeholder from "@/components/Placeholder";
 // import { ReactElement, useState } from "react";
 // import { Link } from "react-router-dom";
 // import { ReactSortable } from "react-sortablejs";
@@ -11,7 +12,16 @@ import { ReactElement } from "react";
 //   name: string;
 // };
 export default function HomePage(): ReactElement {
-  return <p>Just home page</p>
+  return (
+    <div className="container-fluid mt-4">
+      <div className="row">
+        <div className="col">
+          <Placeholder width="100%" rounded/>
+        </div>
+      </div>
+    </div>
+  )
+  // return <div clap>Just home page</p>
   // const [items, setItems] = useState<Item[]>([
   //   { id: 1, name: "H1" },
   //   { id: 2, name: "H2" },

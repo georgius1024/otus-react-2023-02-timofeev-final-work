@@ -56,7 +56,7 @@ export type RepetitionRecord = {
   activityId: string;
   userId: string;
   startedAt: number;
-  repeatCount: 0;
-  scheduledAt?: number | null;
-  finishedAt?: number | null;
+  repeatCount: number;
+  scheduledAt: number;
+  finishedAt: number;
 };

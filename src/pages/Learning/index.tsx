@@ -7,10 +7,13 @@ import dayjs from "dayjs";
 import useBusy from "@/utils/BusyHook";
 import * as modules from "@/services/modules";
 import * as progress from "@/services/progress";
-import ModalPanel from "@/components/ModalPanel";
+import * as repetition from "@/services/repetition";
+
 import CaretRightEmpty from "@/components/icons/CaretRightEmpty";
 import CaretRightFilled from "@/components/icons/CaretRightFilled";
 import Tick from "@/components/icons/Tick";
+import ModalPanel from "@/components/ModalPanel";
+import LearningPageLoading from "@/pages/Learning/components/LearningPageLoading";
 
 import type { RootState } from "@/store";
 import type { Module, ProgressRecord } from "@/types";
@@ -18,18 +21,26 @@ import type { Module, ProgressRecord } from "@/types";
 type StatusesMap = Map<string, ProgressRecord>;
 
 export default function LearningIndex() {
+  const [loading, setLoading] = useState<boolean>(false);
   const [courses, setCourses] = useState<Module[]>([]);
   const [confirm, setConfirm] = useState<Module | null>(null);
   const [statuses, setStatuses] = useState<StatusesMap>(
     new Map<string, ProgressRecord>()
   );
+  const [wordsToRepeat, setWordsToRepeat] = useState(0);
+
   const uid = useSelector((state: RootState) => state.auth?.user?.uid);
 
   const navigate = useNavigate();
   const busy = useBusy();
 
   const fetchAll = useCallback(async () => {
-    const courses = await modules.fetchChildren("");
+    const loadCoursesPromise = modules.fetchChildren("");
+    const loadAgenda = repetition.agenda(uid || "");
+    const [courses, agenda] = await Promise.all([
+      loadCoursesPromise,
+      loadAgenda,
+    ]);
     const promises = courses.map((e) => progress.find(uid || "", e.id || ""));
     const responses = await Promise.all(promises);
     const entries = responses
@@ -38,33 +49,40 @@ export default function LearningIndex() {
     // @ts-ignore
     setStatuses(new Map<string, ProgressRecord>(entries));
     setCourses(courses);
+    setWordsToRepeat(agenda.length);
   }, [uid]);
 
   useEffect(() => {
-    busy(true);
+    setLoading(true);
     fetchAll()
       .catch(console.error)
-      .finally(() => busy(false));
-  }, [busy, fetchAll]);
+      .finally(() => setLoading(false));
+  }, [fetchAll]);
 
   const openCoursePage = (id: string) => {
     navigate(`/learning/course/${id}`);
   };
+
+  const openRepetitionPage = () => {
+    navigate('/learning/repetition');
+  }
 
   const startCourse = async (course: Module | null) => {
     if (!course || !course.id || !uid) {
       return;
     }
     const status = statuses.get(course.id);
-    busy(true);
     if (!status) {
-      await progress.create({
-        moduleId: course.id,
-        userId: uid,
-        startedAt: dayjs().valueOf(),
-      });
+      busy(true);
+      await progress
+        .create({
+          moduleId: course.id,
+          userId: uid,
+          startedAt: dayjs().valueOf(),
+        })
+        .catch(console.error);
+      busy(false);
     }
-    busy(false);
     openCoursePage(course.id);
   };
 
@@ -129,6 +147,9 @@ export default function LearningIndex() {
       resolveCourseAction(course);
     }
   };
+  if (loading) {
+    return <LearningPageLoading />;
+  }
 
   if (!uid) {
     return (
@@ -136,10 +157,6 @@ export default function LearningIndex() {
         Need to be logged in to start course!!!
       </div>
     );
-  }
-
-  if (!courses) {
-    return <p>Loading...</p>;
   }
 
   return (
@@ -169,9 +186,15 @@ export default function LearningIndex() {
           </button>
         </div>
         <div className="col">
-          <button className="btn btn-outline-primary w-100">
+          <button
+            className="btn btn-outline-primary w-100"
+            disabled={!wordsToRepeat}
+            onClick={openRepetitionPage}
+          >
             Repeat words
-            <span className="badge bg-primary rounded-pill ms-3">12</span>
+            <span className="badge bg-primary rounded-pill ms-3">
+              {wordsToRepeat}
+            </span>
           </button>
         </div>
         <div className="col">
@@ -182,8 +205,8 @@ export default function LearningIndex() {
       </div>
 
       <ModalPanel show={Boolean(confirm)} onClose={() => setConfirm(null)}>
-        <h1>Start course confirmation</h1>
-        <p>You are going to start course "{confirm?.name}"?</p>
+        <h1>Start course</h1>
+        <p>Press button below to start course "{confirm?.name}"</p>
         <button
           className="btn btn-primary w-100"
           onClick={() => startCourse(confirm)}
