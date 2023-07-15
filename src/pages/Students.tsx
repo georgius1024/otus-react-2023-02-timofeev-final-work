@@ -1,5 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
 import * as users from "@/services/users";
+import * as progress from "@/services/progress";
+import * as repetition from "@/services/repetition";
+
+import useBusy from "@/utils/BusyHook";
 
 import Placeholder from "@/components/Placeholder";
 import Trash from "@/components/icons/Trash";
@@ -9,7 +13,7 @@ import type { User } from "@/types";
 export default function StudentsPage() {
   const [loading, setLoading] = useState<boolean | null>(null);
   const [students, setStudents] = useState<User[]>([]);
-
+  const busy = useBusy()
   const loadAll = useCallback(async () => {
     const students = await users.fetchAll();
     setStudents(students);
@@ -48,6 +52,13 @@ export default function StudentsPage() {
       </div>
     );
   }
+  const deleteUserData = (uid: string) => {
+    busy(true)
+    Promise.all([
+      progress.destroyAll(uid),
+      repetition.destroyAll(uid),
+    ]).then(() => busy(false))
+  }
 
   const studentList = students.map((student) => {
     return (
@@ -58,7 +69,7 @@ export default function StudentsPage() {
         <div className="flex-grow-1">{student.name}</div>
         <div>{student.email}</div>
 
-        <span className="badge bg-danger ms-3">
+        <span className="badge bg-danger ms-3" onClick={() => deleteUserData(student.uid)}>
           <Trash />
         </span>
       </div>

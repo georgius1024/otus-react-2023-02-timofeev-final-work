@@ -146,3 +146,14 @@ export async function history(userId: string): Promise<RepetitionRecord[]> {
   );
   return sortBy(response.docs.map(withId), ["finishedAt"]);
 }
+
+export async function destroyAll(userId: string): Promise<void> {
+  const response = await getDocs(
+    query(
+      repetitionTableRef,
+      where("userId", "==", userId)
+    )
+  );
+  const promises = response.docs.map(withId).map(destroy);
+  await Promise.all(promises)
+}

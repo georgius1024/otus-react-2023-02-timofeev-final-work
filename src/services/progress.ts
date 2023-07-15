@@ -63,3 +63,14 @@ export async function find(
   const [first] = response.docs.map(withId);
   return first || null;
 }
+
+export async function destroyAll(userId: string): Promise<void> {
+  const response = await getDocs(
+    query(
+      progressTableRef,
+      where("userId", "==", userId)
+    )
+  );
+  const promises = response.docs.map(withId).map(destroy);
+  await Promise.all(promises)
+}
