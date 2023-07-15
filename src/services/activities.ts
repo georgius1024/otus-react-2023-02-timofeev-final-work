@@ -18,13 +18,13 @@ export async function fetchActivities(lesson:  Auth): Promise<Todo[]> {
   const response = await getDocs(
     query(
       todosRef,
-      where("uid", "==", user.uid),
+      where("uid", "==", auth.uid),
     )
   );
   return response.docs.map((e) => ({ ...(e.data() as Todo), id: e.id }));
 }
 
-export async function fetchTodo(user: Auth, id: string): Promise<Todo | null> {
+export async function fetchTodo(auth: Auth, id: string): Promise<Todo | null> {
   const todoRef = doc(db, "todos", id);
   const response = await getDoc(todoRef);
   if (response.exists()) {

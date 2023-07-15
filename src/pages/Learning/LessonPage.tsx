@@ -30,7 +30,7 @@ export default function LessonPage() {
   const [currentProgress, setCurrentProgress] = useState<ProgressRecord | null>(
     null
   );
-  const uid = useSelector((state: RootState) => state.auth?.user?.uid);
+  const uid = useSelector((state: RootState) => state.auth?.auth?.uid);
 
   const navigate = useNavigate();
 

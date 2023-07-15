@@ -5,10 +5,10 @@ import type { Auth } from "@/types";
 import { useSelector } from "react-redux";
 
 function PrivateRoute(props: PropsWithChildren) {
-  const user: Auth | undefined = useSelector(
-    (state: RootState) => state.auth?.user
+  const auth: Auth | undefined = useSelector(
+    (state: RootState) => state.auth?.auth
   );
-  if (user) {
+  if (auth) {
     return <> {props.children} </>;
   }
   return <Navigate to="/login" />;

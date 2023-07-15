@@ -12,7 +12,7 @@ import type { RootState } from "@/store";
 
 
 export default function RepetitionPage() {
-  const uid = useSelector((state: RootState) => state.auth?.user?.uid);
+  const uid = useSelector((state: RootState) => state.auth?.auth?.uid);
   const { activity = "" } = useParams();
 
   const [loading, setLoading] = useState<boolean | null>(null);

@@ -1,7 +1,7 @@
 import type { Auth } from "@/types";
 
 export interface AuthState {
-  user?: Auth;
+  auth?: Auth;
   busy?: boolean;
   error?: string;
 }

@@ -24,7 +24,7 @@ export const login = createAsyncThunk<
   AuthPayload,
   { rejectValue: string }
 >("auth/login", async (payload: AuthPayload) => {
-  const user = await signInWithEmailAndPassword(
+  const userAuth = await signInWithEmailAndPassword(
     auth,
     payload.email,
     payload.password
@@ -34,10 +34,10 @@ export const login = createAsyncThunk<
   });
   const accessRef = collection(db, "access");
   const response = await getDocs(
-    query(accessRef, where("uid", "==", user.uid), limit(1))
+    query(accessRef, where("uid", "==", userAuth.uid), limit(1))
   );
   const access = response.docs.at(0)?.data()?.access;
-  return { ...user, access };
+  return { ...userAuth, access };
 });
 
 export const register = createAsyncThunk(
@@ -65,13 +65,13 @@ export default function (builder: ActionReducerMapBuilder<AuthState>) {
   builder
     .addCase(login.pending, (state: AuthState) => {
       state.busy = true;
-      state.user = undefined;
+      state.auth = undefined;
       state.error = undefined;
     })
     .addCase(login.fulfilled, (state: AuthState, action) => {
       state.busy = false;
-      state.user = action.payload as unknown as Auth;
-      store(state.user);
+      state.auth = action.payload as unknown as Auth;
+      store(state.auth);
     })
     .addCase(login.rejected, (state: AuthState, action) => {
       state.busy = false;
@@ -80,13 +80,13 @@ export default function (builder: ActionReducerMapBuilder<AuthState>) {
     })
     .addCase(register.pending, (state: AuthState) => {
       state.busy = true;
-      state.user = undefined;
+      state.auth = undefined;
       state.error = undefined;
     })
     .addCase(register.fulfilled, (state: AuthState, action) => {
       state.busy = false;
-      state.user = action.payload as unknown as Auth;
-      store(state.user);
+      state.auth = action.payload as unknown as Auth;
+      store(state.auth);
     })
     .addCase(register.rejected, (state: AuthState, action) => {
       state.busy = false;

@@ -36,7 +36,7 @@ export default function CoursePage() {
 
   const [modal, showModal] = useState<boolean>(false);
 
-  const uid = useSelector((state: RootState) => state.auth?.user?.uid);
+  const uid = useSelector((state: RootState) => state.auth?.auth?.uid);
 
   const navigate = useNavigate();
 

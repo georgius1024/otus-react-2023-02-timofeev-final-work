@@ -29,7 +29,7 @@ export default function LearningIndex() {
   );
   const [wordsToRepeat, setWordsToRepeat] = useState(0);
 
-  const uid = useSelector((state: RootState) => state.auth?.user?.uid);
+  const uid = useSelector((state: RootState) => state.auth?.auth?.uid);
 
   const navigate = useNavigate();
   const busy = useBusy();

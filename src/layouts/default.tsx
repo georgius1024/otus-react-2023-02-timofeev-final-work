@@ -9,11 +9,11 @@ import type { Auth } from "@/types";
 import { logout } from "@/store/auth";
 
 export default function DefaultLayout(props: PropsWithChildren) {
-  const user = useSelector((state: RootState) => state.auth?.user);
-  const admin = useSelector((state: RootState) => state.auth?.user?.access);
-  function ProfileLinks(user: Auth | undefined) {
+  const auth = useSelector((state: RootState) => state.auth?.auth);
+  const admin = useSelector((state: RootState) => state.auth?.auth?.access);
+  function ProfileLinks(auth: Auth | undefined) {
     const dispatch = useDispatch();
-    if (user) {
+    if (auth) {
       return (
         <li className="nav-item me-2">
           <Link
@@ -61,13 +61,13 @@ export default function DefaultLayout(props: PropsWithChildren) {
                 Students
               </Link>
             </li>
-            <li className={classNames("nav-item me-3", { "d-none": !user })}>
+            <li className={classNames("nav-item me-3", { "d-none": !auth })}>
               <Link className="text-light" to="/learning">
                 Learning
               </Link>
             </li>
           </ul>
-          <ul className="navbar-nav flex-row">{ProfileLinks(user)}</ul>
+          <ul className="navbar-nav flex-row">{ProfileLinks(auth)}</ul>
         </div>
       </nav>
       <AlertsPanel />

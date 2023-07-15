@@ -1,6 +1,6 @@
 import type { Auth } from "@/types";
-export function store(user: Auth) {
-  sessionStorage["store/auth"] = JSON.stringify(user);
+export function store(auth: Auth) {
+  sessionStorage["store/auth"] = JSON.stringify(auth);
 }
 export function restore(): Auth | undefined {
   if ("store/auth" in sessionStorage) {

@@ -49,7 +49,7 @@ export default function ModulesTreePanel(props: ModulesTreePanelProps) {
     );
 
   return (
-      <ReactSortable className="list-group list-group-flush modules-tree-panel user-select-none" tag="div"
+      <ReactSortable className="list-group list-group-flush modules-tree-panel auth-select-none" tag="div"
         list={items(props.modules)}
         setList={setList}
         handle={".handle"}
