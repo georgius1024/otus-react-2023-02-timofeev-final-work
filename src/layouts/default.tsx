@@ -56,6 +56,11 @@ export default function DefaultLayout(props: PropsWithChildren) {
                 Modules
               </Link>
             </li>
+            <li className={classNames("nav-item me-3", { "d-none": !admin })}>
+              <Link className="text-light" to="/students">
+                Students
+              </Link>
+            </li>
             <li className={classNames("nav-item me-3", { "d-none": !user })}>
               <Link className="text-light" to="/learning">
                 Learning

@@ -5,6 +5,12 @@ export type User = {
   providerData?: unknown;
 };
 
+export type Student = {
+  id?: string;
+  uid: string;
+  email: string;
+};
+
 export type ErrorResponse = {
   error: {
     message: string;

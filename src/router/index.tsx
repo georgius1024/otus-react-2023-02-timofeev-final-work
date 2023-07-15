@@ -7,6 +7,7 @@ import LoginPage from "@/pages/Login";
 import RegisterPage from "@/pages/Register";
 import ForgotPage from "@/pages/Forgot";
 import ModulePage from "@/pages/Module";
+import StudentsPage from "@/pages/Students";
 import LearningPage from "@/pages/Learning";
 import CoursePage from "@/pages/Learning/CoursePage";
 import LessonPage from "@/pages/Learning/LessonPage";
@@ -63,6 +64,12 @@ const routes = [
   {
     path: "/module/:id?",
     element: ModulePage,
+    layout: DefaultLayout,
+    private: true,
+  },
+  {
+    path: "/students",
+    element: StudentsPage,
     layout: DefaultLayout,
     private: true,
   },
