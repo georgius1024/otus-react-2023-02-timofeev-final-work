@@ -26,11 +26,14 @@ export default function ProfilePage(): ReactElement {
   const busy = useSelector((state: RootState) => state.auth.busy);
   const current = useSelector((state: RootState) => state.auth.user);
   const uid = useSelector((state: RootState) => state.auth.auth?.uid);
+  const email = useSelector((state: RootState) => state.auth.auth?.email);
   const alert = useAlert();
 
   const onSubmit = async (profile: User) => {
     const { error } = (await dispatch(
-      updateProfile({ profile: { ...profile, uid: uid || "" } })
+      updateProfile({
+        profile: { ...profile, uid: uid || "", email: email || "" },
+      })
     )) as ErrorResponse;
     if (!error) {
       alert("Profile updated", "success");
