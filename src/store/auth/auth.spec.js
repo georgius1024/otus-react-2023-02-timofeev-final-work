@@ -13,23 +13,23 @@ vi.mock("firebase/auth", () => ({
 
 describe("auth slice actions", () => {
   it("logout", () => {
-    const state = { user: { uid: 101 } };
+    const state = { auth: { uid: 101 } };
     reducers.logout(state);
     expect(state).not.toHaveProperty("user.uid");
   });
   it("store", () => {
-    const state = { user: { uid: 101 } };
+    const state = { auth: { uid: 101 } };
     global.localStorage = {};
     reducers.store(state);
     expect(global.localStorage).toHaveProperty("store/auth");
   });
   it("store", () => {
-    const state = { user: null };
+    const state = { auth: null };
     global.localStorage = {
-      "store/auth": JSON.stringify({ user: { uid: 101 } }),
+      "store/auth": JSON.stringify({ auth: { uid: 101 } }),
     };
     reducers.restore(state);
-    expect(state).toHaveProperty("user.uid", 101);
+    expect(state).toHaveProperty("auth.uid", 101);
   });
 });
 

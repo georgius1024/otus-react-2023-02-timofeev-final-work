@@ -21,7 +21,6 @@ export default function StatsPage() {
       repetition.plan(uid()),
       repetition.history(uid()),
     ]);
-    console.log(plan);
     const mapRepetitions = new Map<string, RepetitionRecord>(
       [...plan, ...history].map((r) => [r.moduleId, r])
     );
