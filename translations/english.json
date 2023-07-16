@@ -1,7 +1,17 @@
 {
   "layout": {
     "default": {
-      "start": "Go"
+      "menu": {
+        "modules": "Courses",
+        "students": "Students",
+        "learning": "Learning",
+        "profile": "Profile",
+        "stats": "Stats",
+        "logout": "Logout",
+        "login": "Login",
+        "register": "Register"
+      },
+      "copyright": "© 2023 Diligent student"
     }
   }
 }

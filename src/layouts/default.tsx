@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 import classNames from "classnames";
 import AlertsPanel from "@/components/AlertsPanel";
 import BusyStatePanel from "@/components/BusyStatePanel";
+import LanguageSwitch from "@/components/LanguageSwitch";
+
 import { useTranslation } from "react-i18next";
 import type { RootState } from "@/store";
 import type { Auth } from "@/types";
@@ -14,12 +16,28 @@ export default function DefaultLayout(props: PropsWithChildren) {
   const user = useSelector((state: RootState) => state.auth?.user);
   const admin = useSelector((state: RootState) => state.auth?.auth?.access);
   const { t, i18n } = useTranslation();
+  function LoginLinks() {
+    return (
+      <ul className="navbar-nav flex-row">
+        <li className="nav-item me-2">
+          <Link className="text-light" to="/login">
+          {t("layout.default.menu.login")}
+          </Link>
+        </li>
+        <li className="nav-item me-2">
+          <Link className="text-light" to="/register">
+          {t("layout.default.menu.register")}
+          </Link>
+        </li>
+      </ul>
+    );
+  }
 
-  function ProfileLinks(auth: Auth | undefined) {
+  function ProfileMenu() {
     const profileName = user?.name || auth?.email;
     const dispatch = useDispatch();
-    if (auth) {
       return (
+        <ul className="navbar-nav flex-row">
         <li className="nav-item dropdown me-2">
           <a
             className="nav-link dropdown-toggle text-light"
@@ -32,12 +50,12 @@ export default function DefaultLayout(props: PropsWithChildren) {
           >
             {profileName}
           </a>
-          <div className="dropdown-menu bg-white" style={{minWidth: '10rem'}}>
+          <div className="dropdown-menu bg-white" style={{ minWidth: "10rem" }}>
             <Link className="dropdown-item text-dark" to="/profile">
-              Profile
+              {t("layout.default.menu.profile")}
             </Link>
             <Link className="dropdown-item text-dark" to="/stats">
-              Stats
+              {t("layout.default.menu.stats")}
             </Link>
             <div className="dropdown-divider"></div>
             <Link
@@ -45,79 +63,12 @@ export default function DefaultLayout(props: PropsWithChildren) {
               to="/login"
               onClick={() => dispatch(logout())}
             >
-              Logout
+              {t("layout.default.menu.logout")}
             </Link>
           </div>
         </li>
+        </ul>
       );
-    } else {
-      return (
-        <>
-          <li className="nav-item me-2">
-            <Link className="text-light" to="/login">
-              Login
-            </Link>
-          </li>
-          <li className="nav-item me-2">
-            <Link className="text-light" to="/register">
-              Register
-            </Link>
-          </li>
-        </>
-      );
-    }
-  }
-
-  type LocaleItem = {
-    lang: string;
-    flag: string;
-  };
-
-  function languageSelector() {
-    const currentLanguageLong = i18n.language;
-    const [currentLanuageShort] = currentLanguageLong.split('-')
-    const locales: LocaleItem[] = [
-      { lang: "en", flag: "🇺🇸" },
-      { lang: "ru", flag: "🇷🇺" },
-    ];
-    const currentLocale =
-      locales.find((e) => e.lang === currentLanuageShort) || locales.at(0);
-
-    const setLocale = (locale: LocaleItem) => {
-      i18n.changeLanguage(locale.lang);
-    };
-    return (
-      <ul className="navbar-nav flex-row">
-        <li className="nav-item dropdown me-2">
-          <a
-            className="nav-link dropdown-toggle text-light"
-            href="#"
-            id="navbarDropdown"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            <span className="bg-light p-1">
-            {currentLocale?.flag}
-            </span>
-          </a>
-          <div className="dropdown-menu bg-white dropdown-menu-light"  style={{minWidth: '1rem'}}>
-            {locales.map((locale) => {
-              return (
-                <div
-                  className="dropdown-item text-light"
-                  key={locale.flag}
-                  onClick={() => setLocale(locale)}
-                >
-                  {locale.flag}
-                </div>
-              );
-            })}
-          </div>
-        </li>
-      </ul>
-    );
   }
 
   return (
@@ -125,27 +76,36 @@ export default function DefaultLayout(props: PropsWithChildren) {
       <nav className="navbar bg-primary" data-bs-theme="dark">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
-            {t('layout.default.start')}
+            <img
+              src="/apple-touch-icon.png"
+              alt="logo"
+              height="32"
+              className="me-3"
+            />
           </Link>
           <ul className="navbar-nav flex-row flex-grow-1">
             <li className={classNames("nav-item me-3", { "d-none": !admin })}>
               <Link className="text-light" to="/module">
-                Modules
+                {t("layout.default.menu.modules")}
               </Link>
             </li>
             <li className={classNames("nav-item me-3", { "d-none": !admin })}>
               <Link className="text-light" to="/students">
-                Students
+                {t("layout.default.menu.students")}
               </Link>
             </li>
             <li className={classNames("nav-item me-3", { "d-none": !auth })}>
               <Link className="text-light" to="/learning">
-                Learning
+                {t("layout.default.menu.learning")}
               </Link>
             </li>
           </ul>
-          <ul className="navbar-nav flex-row">{ProfileLinks(auth)}</ul>
-          {languageSelector()}
+          {auth && <ProfileMenu/>}
+          {!auth && <LoginLinks/>}
+          <LanguageSwitch
+            current={i18n.language}
+            onSelect={(lang) => i18n.changeLanguage(lang)}
+          />
         </div>
       </nav>
       <AlertsPanel />
@@ -162,7 +122,7 @@ export default function DefaultLayout(props: PropsWithChildren) {
             target="_blank"
             className="text-light"
           >
-            (c) 2023 Diligent student
+            {t("layout.default.copyright")}
           </a>
         </div>
       </nav>

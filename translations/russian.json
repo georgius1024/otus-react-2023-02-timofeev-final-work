@@ -1,7 +1,17 @@
 {
   "layout": {
     "default": {
-      "start": "Пшел"
+      "menu": {
+        "modules": "Курсы",
+        "students": "Ученики",
+        "learning": "Обучение",
+        "profile": "Профайл",
+        "stats": "Статистика",
+        "logout": "Выход",
+        "login": "Вход",
+        "register": "Регистрация"
+      },
+      "copyright": "© 2023 Прилежный студент"
     }
   }
 }
