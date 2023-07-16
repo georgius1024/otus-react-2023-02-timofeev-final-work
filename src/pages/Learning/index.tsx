@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import dayjs from "dayjs";
 
@@ -30,9 +31,9 @@ export default function LearningIndex() {
   const [wordsToRepeat, setWordsToRepeat] = useState(0);
 
   const uid = useUid();
-
   const navigate = useNavigate();
   const busy = useBusy();
+  const { t } = useTranslation();
 
   const fetchAll = useCallback(async () => {
     const loadCoursesPromise = modules.fetchChildren("");
@@ -64,12 +65,12 @@ export default function LearningIndex() {
   };
 
   const openRepetitionPage = () => {
-    navigate('/learning/repetition');
-  }
+    navigate("/learning/repetition");
+  };
 
   const openRepetitionAddWordPage = () => {
-    navigate('/learning/repetition/add');
-  }
+    navigate("/learning/repetition/add");
+  };
 
   const startCourse = async (course: Module | null) => {
     if (!course || !course.id || !uid()) {
@@ -117,27 +118,33 @@ export default function LearningIndex() {
     const status = checkStatus(course);
     if (status === "finished") {
       return (
-        <span className="text-success">
-          <Tick />
-          <span className="mx-1">{course.name}</span>
-          [DONE]
-        </span>
+        <div className="d-flex justify-content-between text-success">
+          <span>
+            <Tick />
+            <span className="mx-1">{course.name}</span>
+          </span>
+          <span className="text-uppercase">[{t("LearningPage.status.done")}]</span>
+        </div>
       );
     }
     if (status === "progress") {
       return (
-        <span className="text-primary">
-          <CaretRightFilled />
-          <span className="mx-1">{course.name}</span>
-          [IN PROGRESS]
-        </span>
+        <div className="d-flex justify-content-between text-primary">
+          <span>
+            <CaretRightFilled />
+            <span className="mx-1">{course.name}</span>
+          </span>
+          <span className="text-uppercase">[{t("LearningPage.status.progress")}]</span>
+        </div>
       );
     }
     return (
-      <span className="text-dark">
-        <CaretRightEmpty />
-        <span className="mx-1">{course.name}</span>
-      </span>
+      <div className="d-flex justify-content-between">
+        <span className="text-dark">
+          <CaretRightEmpty />
+          <span className="mx-1">{course.name}</span>
+        </span>
+      </div>
     );
   };
 
@@ -164,8 +171,8 @@ export default function LearningIndex() {
   }
 
   return (
-    <div className="container-fluid">
-      <h1>Choose course</h1>
+    <div className="container-fluid mt-4">
+      <h1>{t("LearningPage.title")}</h1>
       <div className="list-group">
         {courses.map((course) => (
           <button
@@ -186,7 +193,7 @@ export default function LearningIndex() {
             disabled={!canContinue}
             onClick={continueCourse}
           >
-            Continue training
+            {t("LearningPage.buttons.continue")}
           </button>
         </div>
         <div className="col">
@@ -195,17 +202,19 @@ export default function LearningIndex() {
             disabled={!wordsToRepeat}
             onClick={openRepetitionPage}
           >
-            Repeat words
+            {t("LearningPage.buttons.repeat")}
+            
             <span className="badge bg-primary rounded-pill ms-3">
               {wordsToRepeat}
             </span>
           </button>
         </div>
         <div className="col">
-          <button className="btn btn-outline-primary w-100"
+          <button
+            className="btn btn-outline-primary w-100"
             onClick={openRepetitionAddWordPage}
           >
-            Add words to learn
+            {t("LearningPage.buttons.add_custom_activities")}
           </button>
         </div>
       </div>

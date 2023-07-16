@@ -45,6 +45,18 @@
     },
     "submit": "Restore", 
     "confirm": "We sent reset password recovery email"
+  },
+  "LearningPage": {
+    "title": "Your courses",
+    "buttons": {
+      "continue": "Continue training",
+      "repeat": "Repeat words",
+      "add_custom_activities": "Add words to learn"
+    },
+    "status": {
+      "done": "done",
+      "progress": "in progress"
+    }
   }
 
 }
