@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams, Outlet } from "react-router";
+import { useTranslation } from "react-i18next";
 
 import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
@@ -26,6 +27,7 @@ export default function RepetitionPage() {
   const busy = useBusy();
   const uid = useUid();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const current = steps.find((e) => e.id === currentStep);
   const currentIndex = steps.findIndex((e) => e.id === currentStep);
@@ -57,7 +59,7 @@ export default function RepetitionPage() {
       busy(true);
       await updateRepetitionStatus(uid(), steps, failed)
         .then(() => {
-          alert("You finished word repetition");
+          alert(t("RepetitionPage.confirm"), "success");
           openLearningPage();
         })
         .catch(console.error)
@@ -137,8 +139,8 @@ export default function RepetitionPage() {
   }
 
   return (
-    <div className="container-fluid">
-      <h1>Words repetition</h1>
+    <div className="container-fluid mt-4">
+      <h1>{t("RepetitionPage.title")}</h1>
       <div className="progress my-3" style={{ height: "12px" }}>
         <div
           className="progress-bar"

@@ -1,5 +1,7 @@
 import { useCallback, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 import classNames from "classnames";
 
 import WordActivityDispatcher from "@/pages/Learning/components/WordActivityDispatcher";
@@ -20,6 +22,7 @@ export default function RepetitionStepPage() {
   const [rejected, setRejected] = useState<boolean>(false);
 
   const { step, onDone, onFail } = useOutletContext<ContextType>();
+  const { t } = useTranslation();
 
   const onSolved = useCallback((correct: boolean) => {
     setCorrect(correct)
@@ -93,13 +96,14 @@ export default function RepetitionStepPage() {
           onClick={() => submit(correct)}
           disabled={!enabled}
         >
-          Continue
+          {t("RepetitionPage.buttons.continue")}
+          
         </button>
         <button
           className="btn btn-outline-danger"
           onClick={skip}
         >
-          I don't know
+          {t("RepetitionPage.buttons.forgot")}
         </button>
 
       </div>
