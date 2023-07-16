@@ -157,6 +157,10 @@ export default function CoursePage() {
     navigate("/learning/repetition");
   };
 
+  const openRepetitionAddWordPage = () => {
+    navigate('/learning/repetition/add');
+  }
+
   const startLesson = (lesson: Module) => {
     if (!lesson || !lesson.id) {
       return;
@@ -272,7 +276,9 @@ export default function CoursePage() {
           </button>
         </div>
         <div className="col">
-          <button className="btn btn-outline-primary w-100">
+          <button className="btn btn-outline-primary w-100"
+            onClick={openRepetitionAddWordPage}
+          >
             Add words to learn
           </button>
         </div>

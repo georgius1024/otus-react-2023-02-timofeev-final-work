@@ -15,6 +15,8 @@ import LessonPage from "@/pages/Learning/LessonPage";
 import LessonStepPage from "@/pages/Learning/LessonStepPage";
 import RepetitionPage from "@/pages/Learning/RepetitionPage";
 import RepetitionStepPage from "@/pages/Learning/RepetitionStepPage";
+import RepetitionAddWordOrPhrasePage from "@/pages/Learning/RepetitionAddWordOrPhrasePage";
+
 import ErrorPage from "@/pages/Error";
 
 const routes = [
@@ -48,6 +50,12 @@ const routes = [
         private: true,
       },
     ],
+  },
+  {
+    path: "/learning/repetition/add",
+    element: RepetitionAddWordOrPhrasePage,
+    layout: DefaultLayout,
+    private: true,
   },
   {
     path: "/learning/repetition",

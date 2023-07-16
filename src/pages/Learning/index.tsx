@@ -67,6 +67,10 @@ export default function LearningIndex() {
     navigate('/learning/repetition');
   }
 
+  const openRepetitionAddWordPage = () => {
+    navigate('/learning/repetition/add');
+  }
+
   const startCourse = async (course: Module | null) => {
     if (!course || !course.id || !uid) {
       return;
@@ -198,7 +202,9 @@ export default function LearningIndex() {
           </button>
         </div>
         <div className="col">
-          <button className="btn btn-outline-primary w-100">
+          <button className="btn btn-outline-primary w-100"
+            onClick={openRepetitionAddWordPage}
+          >
             Add words to learn
           </button>
         </div>
