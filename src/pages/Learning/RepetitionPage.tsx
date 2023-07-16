@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams, Outlet } from "react-router";
-import { useSelector } from "react-redux";
 
 import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
+import useUid from "@/utils/UidHook";
 
 import * as modules from "@/services/modules";
 import * as repetition from "@/services/repetition";
@@ -11,11 +11,10 @@ import * as repetition from "@/services/repetition";
 import RepetitionPageLoading from "./components/RepetitionPageLoading";
 
 import type { RepetitionRecord } from "@/types";
-import type { RootState } from "@/store";
+
 import type { RepetitionStep } from "@/pages/Learning/components/ActivityTypes";
 
 export default function RepetitionPage() {
-  const uid = useSelector((state: RootState) => state.auth?.auth?.uid);
   const { step = "" } = useParams();
 
   const [loading, setLoading] = useState<boolean | null>(null);
@@ -25,6 +24,7 @@ export default function RepetitionPage() {
 
   const alert = useAlert();
   const busy = useBusy();
+  const uid = useUid();
   const navigate = useNavigate();
 
   const current = steps.find((e) => e.id === currentStep);
@@ -55,7 +55,7 @@ export default function RepetitionPage() {
   const nextStep = async () => {
     if (currentIndex === steps.length - 1) {
       busy(true);
-      await updateRepetitionStatus(uid || "", steps, failed)
+      await updateRepetitionStatus(uid(), steps, failed)
         .then(() => {
           alert("You finished word repetition");
           openLearningPage();
@@ -85,7 +85,7 @@ export default function RepetitionPage() {
   );
 
   const fetchAll = useCallback(async () => {
-    const agenda = await repetition.agenda(uid || "");
+    const agenda = await repetition.agenda(uid());
     const promises = agenda.map((rep: RepetitionRecord) => {
       return modules.fetchOne(rep.moduleId);
     });

@@ -14,6 +14,7 @@ const userSchema: any = yup.object<User>({
 });
 
 import useAlert from "@/utils/AlertHook";
+import useUid from "@/utils/UidHook";
 
 import { AppDispatch, RootState } from "@/store";
 
@@ -25,14 +26,15 @@ export default function ProfilePage(): ReactElement {
   const navigate = useNavigate();
   const busy = useSelector((state: RootState) => state.auth.busy);
   const current = useSelector((state: RootState) => state.auth.user);
-  const uid = useSelector((state: RootState) => state.auth.auth?.uid);
   const email = useSelector((state: RootState) => state.auth.auth?.email);
+
   const alert = useAlert();
+  const uid = useUid();
 
   const onSubmit = async (profile: User) => {
     const { error } = (await dispatch(
       updateProfile({
-        profile: { ...profile, uid: uid || "", email: email || "" },
+        profile: { ...profile, uid: uid(), email: email || "" },
       })
     )) as ErrorResponse;
     if (!error) {

@@ -1,12 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 import dayjs from "dayjs";
 
 import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
+import useUid from "@/utils/UidHook";
+
 import * as modules from "@/services/modules";
 import * as progress from "@/services/progress";
 import * as repetition from "@/services/repetition";
@@ -19,7 +20,6 @@ import Tick from "@/components/icons/Tick";
 import ModalPanel from "@/components/ModalPanel";
 
 import type { Module, ProgressRecord } from "@/types";
-import type { RootState } from "@/store";
 
 type StatusesMap = Map<string, ProgressRecord>;
 
@@ -36,18 +36,16 @@ export default function CoursePage() {
 
   const [modal, showModal] = useState<boolean>(false);
 
-  const uid = useSelector((state: RootState) => state.auth?.auth?.uid);
-
+  const uid = useUid();
   const navigate = useNavigate();
-
   const busy = useBusy();
   const alert = useAlert();
 
   const fetchAndCheckEverything = useCallback(async () => {
     const fetchCourse = modules.fetchOne(id);
     const fetchLessons = modules.fetchChildren(id);
-    const loadCurrentProcess = progress.find(uid || "", id);
-    const loadAgenda = repetition.agenda(uid || "");
+    const loadCurrentProcess = progress.find(uid(), id);
+    const loadAgenda = repetition.agenda(uid());
     const [course, lessons, currentProgress, agenda] = await Promise.all([
       fetchCourse,
       fetchLessons,
@@ -56,7 +54,7 @@ export default function CoursePage() {
     ]);
 
     const responses = await Promise.all(
-      lessons.map((e) => progress.find(uid || "", e.id || ""))
+      lessons.map((e) => progress.find(uid(), e.id || ""))
     );
     const statusEntries = responses
       .filter(Boolean)
@@ -106,7 +104,7 @@ export default function CoursePage() {
       progress
         .create({
           moduleId: firstLesson?.id || "",
-          userId: uid || "",
+          userId: uid(),
           startedAt: dayjs().valueOf(),
         })
         .then(() =>
@@ -172,7 +170,7 @@ export default function CoursePage() {
       progress
         .create({
           moduleId: lesson.id,
-          userId: uid || "",
+          userId: uid(),
           startedAt: dayjs().valueOf(),
         })
         .then(() => {

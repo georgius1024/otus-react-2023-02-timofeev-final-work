@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import dayjs from "dayjs";
 
 import useBusy from "@/utils/BusyHook";
+import useUid from "@/utils/UidHook";
+
 import * as modules from "@/services/modules";
 import * as progress from "@/services/progress";
 import * as repetition from "@/services/repetition";
@@ -15,7 +16,6 @@ import Tick from "@/components/icons/Tick";
 import ModalPanel from "@/components/ModalPanel";
 import LearningPageLoading from "@/pages/Learning/components/LearningPageLoading";
 
-import type { RootState } from "@/store";
 import type { Module, ProgressRecord } from "@/types";
 
 type StatusesMap = Map<string, ProgressRecord>;
@@ -29,19 +29,19 @@ export default function LearningIndex() {
   );
   const [wordsToRepeat, setWordsToRepeat] = useState(0);
 
-  const uid = useSelector((state: RootState) => state.auth?.auth?.uid);
+  const uid = useUid();
 
   const navigate = useNavigate();
   const busy = useBusy();
 
   const fetchAll = useCallback(async () => {
     const loadCoursesPromise = modules.fetchChildren("");
-    const loadAgenda = repetition.agenda(uid || "");
+    const loadAgenda = repetition.agenda(uid());
     const [courses, agenda] = await Promise.all([
       loadCoursesPromise,
       loadAgenda,
     ]);
-    const promises = courses.map((e) => progress.find(uid || "", e.id || ""));
+    const promises = courses.map((e) => progress.find(uid(), e.id || ""));
     const responses = await Promise.all(promises);
     const entries = responses
       .filter(Boolean)
@@ -72,7 +72,7 @@ export default function LearningIndex() {
   }
 
   const startCourse = async (course: Module | null) => {
-    if (!course || !course.id || !uid) {
+    if (!course || !course.id || !uid()) {
       return;
     }
     const status = statuses.get(course.id);
@@ -81,7 +81,7 @@ export default function LearningIndex() {
       await progress
         .create({
           moduleId: course.id,
-          userId: uid,
+          userId: uid(),
           startedAt: dayjs().valueOf(),
         })
         .catch(console.error);
@@ -155,7 +155,7 @@ export default function LearningIndex() {
     return <LearningPageLoading />;
   }
 
-  if (!uid) {
+  if (!uid()) {
     return (
       <div className="alert alert-danger" role="alert">
         Need to be logged in to start course!!!

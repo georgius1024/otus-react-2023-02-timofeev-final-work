@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import classNames from "classnames";
@@ -10,15 +9,16 @@ import * as repetition from "@/services/repetition";
 
 import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
+import useUid from "@/utils/UidHook";
 
 import ActivityForm from "@/pages/Module/components/ActivityFormDispatcher";
 import type { Module, ActivityType, Activity } from "@/types";
-import type { RootState } from "@/store";
+
 export default function RepetitionAddWordOrPhrasePage() {
-  const uid = useSelector((state: RootState) => state.auth?.auth?.uid);
   const [module, setModule] = useState<Module | null>(null);
   const [activityType, setActivityType] = useState<ActivityType>("word");
 
+  const uid = useUid();
   const busy = useBusy()
   const alert = useAlert()
   const navigate = useNavigate()
@@ -45,7 +45,7 @@ export default function RepetitionAddWordOrPhrasePage() {
 
   useEffect(() => {
     const module = {
-      parent: uid || "",
+      parent: uid(),
       name: "",
       type: "custom-activity",
       activity: createActivity(activityType),
@@ -63,7 +63,7 @@ export default function RepetitionAddWordOrPhrasePage() {
     busy(true)
     const created = await modules.create(module).catch(console.error)
     if (created) {
-      await repetition.start(uid || '', created.id || '')
+      await repetition.start(uid(), created.id || '')
       busy(false)
       alert('Saved')
       navigate('/learning')

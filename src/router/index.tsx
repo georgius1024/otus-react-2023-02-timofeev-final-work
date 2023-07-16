@@ -16,7 +16,7 @@ import LessonStepPage from "@/pages/Learning/LessonStepPage";
 import RepetitionPage from "@/pages/Learning/RepetitionPage";
 import RepetitionStepPage from "@/pages/Learning/RepetitionStepPage";
 import RepetitionAddWordOrPhrasePage from "@/pages/Learning/RepetitionAddWordOrPhrasePage";
-
+import StatsPage from "@/pages/StatsPage";
 import ErrorPage from "@/pages/Error";
 
 const routes = [
@@ -69,6 +69,12 @@ const routes = [
         private: true,
       },
     ],
+  },
+  {
+    path: "/stats",
+    element: StatsPage,
+    layout: DefaultLayout,
+    private: true,
   },
   {
     path: "/module/:id?",

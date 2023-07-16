@@ -180,12 +180,10 @@ export async function agenda(userId: string): Promise<RepetitionRecord[]> {
 }
 
 export async function plan(userId: string): Promise<RepetitionRecord[]> {
-  const now = dayjs().valueOf();
   const response = await getDocs(
     query(
       repetitionTableRef,
       where("userId", "==", userId),
-      where("scheduledAt", ">", now),
       where("finishedAt", "==", 0)
     )
   );

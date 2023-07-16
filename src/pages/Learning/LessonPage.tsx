@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { useParams, useNavigate, Outlet } from "react-router-dom";
 
 import dayjs from "dayjs";
 
 import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
+import useUid from "@/utils/UidHook";
 
 import * as modules from "@/services/modules";
 import * as progress from "@/services/progress";
@@ -14,7 +14,6 @@ import * as repetition from "@/services/repetition";
 import ModalPanel from "@/components/ModalPanel";
 
 import type { Module, ProgressRecord } from "@/types";
-import type { RootState } from "@/store";
 
 import LessonNavigation from "@/pages/Learning/components/LessonNavigation";
 import "@/pages/Learning/LessonPage.scss";
@@ -30,8 +29,8 @@ export default function LessonPage() {
   const [currentProgress, setCurrentProgress] = useState<ProgressRecord | null>(
     null
   );
-  const uid = useSelector((state: RootState) => state.auth?.auth?.uid);
 
+  const uid = useUid();
   const navigate = useNavigate();
 
   const navigateToStep = useCallback(
@@ -52,7 +51,7 @@ export default function LessonPage() {
     const fetchParent = modules.fetchOne(course);
     const fetchLesson = modules.fetchOne(id);
     const fetchActivities = modules.fetchChildren(id);
-    const fetchCurrentProgress = await progress.find(uid || "", id);
+    const fetchCurrentProgress = await progress.find(uid(), id);
 
     const [parent, lesson, activities, currentProgress] = await Promise.all([
       fetchParent,
@@ -108,10 +107,9 @@ export default function LessonPage() {
         ["word", "phrase"].includes(
           activities.find((e) => e.id === currentActivity)?.activity?.type ||
             ""
-        ) &&
-        uid
+        )
       ) {
-        repetition.start(uid, currentActivity);
+        repetition.start(uid(), currentActivity);
       }
     }
 

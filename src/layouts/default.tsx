@@ -13,7 +13,7 @@ export default function DefaultLayout(props: PropsWithChildren) {
   const user = useSelector((state: RootState) => state.auth?.user);
   const admin = useSelector((state: RootState) => state.auth?.auth?.access);
   function ProfileLinks(auth: Auth | undefined) {
-    const profileName = user?.name || auth?.email
+    const profileName = user?.name || auth?.email;
     const dispatch = useDispatch();
     if (auth) {
       return (
@@ -30,11 +30,11 @@ export default function DefaultLayout(props: PropsWithChildren) {
             {profileName}
           </a>
           <div className="dropdown-menu bg-primary">
-          <Link
-              className="dropdown-item text-light"
-              to="/profile"
-              >
+            <Link className="dropdown-item text-light" to="/profile">
               Profile
+            </Link>
+            <Link className="dropdown-item text-light" to="/stats">
+              Stats
             </Link>
             <div className="dropdown-divider"></div>
             <Link
