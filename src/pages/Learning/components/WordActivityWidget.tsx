@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import classNames from "classnames";
 import { StepType, WordActivityProps } from "@/pages/Learning/components/ActivityTypes";
+import { useTranslation } from "react-i18next";
 
 import WordActivityDispatcher from "@/pages/Learning/components/WordActivityDispatcher";
 
@@ -23,6 +24,9 @@ export default function WordActivityWidget(props: WordActivityProps) {
   const [correct, setCorrect] = useState(false);
   const [rejected, setRejected] = useState<boolean>(false);
   const [step, setStep] = useState<StepType>("learn");
+
+  const { t } = useTranslation();
+  
   useEffect(() => {
     setEnabled(false);
     setStep("learn");
@@ -71,13 +75,13 @@ export default function WordActivityWidget(props: WordActivityProps) {
           onClick={goNext}
           disabled={!enabled}
         >
-          Continue
+          {t("Activities.buttons.continue")}
         </button>
         <button
           className={classNames("btn btn-outline-danger", {'d-none': step === 'learn'})}
           onClick={restart}
         >
-          Restart word
+          {t("Activities.buttons.forgot")}
         </button>
 
       </div>

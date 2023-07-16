@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import type { SlideActivity } from "@/types";
+import { useTranslation } from "react-i18next";
 
 type OnDone = () => void;
 
@@ -10,6 +11,9 @@ type SlideActivityWidgetProps = {
 
 export default function SlideActivityWidget(props: SlideActivityWidgetProps) {
   const [enabled, setEnabled] = useState(false);
+
+  const { t } = useTranslation();
+  
   useEffect(() => {
     setTimeout(() => setEnabled(true), 1000);
   }, []);
@@ -24,7 +28,7 @@ export default function SlideActivityWidget(props: SlideActivityWidgetProps) {
           onClick={props.onDone}
           disabled={!enabled}
         >
-          Continue
+          {t("Activities.buttons.continue")}
         </button>
       </div>
     </div>

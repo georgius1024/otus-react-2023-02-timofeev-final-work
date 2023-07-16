@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
+
 import classNames from "classnames";
 
 import { StepType, PhraseActivityProps } from "@/pages/Learning/components/ActivityTypes";
@@ -24,6 +26,9 @@ export default function PhraseActivityWidget(props: PhraseActivityProps) {
   const [correct, setCorrect] = useState(false);
   const [rejected, setRejected] = useState<boolean>(false);
   const [step, setStep] = useState<StepType>("learn");
+
+  const { t } = useTranslation();
+  
   useEffect(() => {
     setEnabled(false);
     setStep("learn");
@@ -71,13 +76,13 @@ export default function PhraseActivityWidget(props: PhraseActivityProps) {
           onClick={goNext}
           disabled={!enabled}
         >
-          Continue
+          {t("Activities.buttons.continue")}
         </button>
         <button
           className={classNames("btn btn-outline-danger", {'d-none': step === 'learn'})}
           onClick={restart}
         >
-          Restart phrase
+          {t("Activities.buttons.forgot")}
         </button>
 
       </div>

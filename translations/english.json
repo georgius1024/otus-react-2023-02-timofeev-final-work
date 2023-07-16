@@ -89,5 +89,11 @@
       "description": "You finished the lessin \"{{lesson}}\". Click button to exit",
       "action": "Exit lesson"
     }
+  },
+  "Activities": {
+    "buttons": {
+      "continue": "Continue",
+      "forgot": "I don't remember"
+    }
   }
 }
