@@ -183,7 +183,39 @@
   "StatsPage": {
     "title": "My stats",
     "finished": "finished",
-    "next_repeat": "next repeat at {{at}}",
+    "next-repeat": "next repeat at {{at}}",
     "total": "Total: {{total}} words and phrases"
+  },
+  "ModulesPage": {
+    "title": "Modules",
+    "breadcrumbs": {
+      "root": "Root"
+    },
+    "actions": {
+      "edit": "edit",
+      "create": "create",
+      "course": "course",
+      "lesson": "lesson",
+      "activity": "activity"
+    },
+    "panel": {
+      "edit": "edit"
+    },
+    "CreateWidget": {
+      "course": "Create course",
+      "lesson": "Create lesson",
+      "activity-word": "Create word activity",
+      "activity-phrase": "Create phrase activity",
+      "activity-slide": "Create slide activity"
+    }
+  },
+  "ModuleForm": {
+    "name": {
+      "label": "Name"
+    },
+    "buttons": {
+      "save": "Save",
+      "reset": "Reset"
+    }
   }
 }

@@ -183,8 +183,40 @@
   "StatsPage": {
     "title": "Моя статистика",
     "finished": "изучено",
-    "next_repeat": "следующий повтор {{at}}",
+    "next-repeat": "следующий повтор {{at}}",
     "total": "Всего: {{total}} слов и фраз"
-
+  },
+  "ModulesPage": {
+    "title": "Курсы",
+    "breadcrumbs": {
+      "root": "Начало"
+    },
+    "panel": {
+      "edit": "правка"
+    },
+    "actions": {
+      "edit": "Редактируем",
+      "create": "Создаем",
+      "course": "курс",
+      "lesson": "занятие",
+      "activity": "активность"
+    },
+    "CreateWidget": {
+      "course": "Создать курс",
+      "lesson": "Создать занятие",
+      "activity-word": "Создать изучение слова",
+      "activity-phrase": "Создать изучение фразы",
+      "activity-slide": "Создать слайд"
+    }
+  },
+  "ModuleForm": {
+    "name": {
+      "label": "Название"
+    },
+    "buttons": {
+      "save": "Сохранить",
+      "reset": "Сброс"
+   }
   }
+
 }

@@ -1,4 +1,5 @@
 import Form from 'react-formal';
+import { useTranslation } from "react-i18next";
 import * as yup from 'yup';
 
 import FormGroup from "@/components/FormGroup";
@@ -18,19 +19,21 @@ type ModuleFormProps = {
 };
 
 export default function ModuleForm(props: ModuleFormProps) {
+  const { t } = useTranslation();
+
   return (
     <Form schema={moduleSchema} onSubmit={props.onSubmit} defaultValue={props.module}>
-      <FormGroup label="Name">
+      <FormGroup label={t("ModuleForm.name.label")}>
         <Form.Field className="form-control shadow-none w-100" name="name" type="text"
           placeholder={`enter ${props.module.type} name here...`}
         />
         <Form.Message for="name" className="text-danger mb-3 p-1 d-block" />
       </FormGroup>
       <Form.Submit className="btn btn-primary light-text me-3">
-        Save
+        {t("ModuleForm.buttons.save")}
       </Form.Submit>
       <Form.Reset className="btn btn-outline-primary">
-        Reset
+        {t("ModuleForm.buttons.reset")}
       </Form.Reset>
     </Form>
   );

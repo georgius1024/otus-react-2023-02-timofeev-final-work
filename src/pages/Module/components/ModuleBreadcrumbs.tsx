@@ -1,5 +1,7 @@
 import type { Module } from "@/types";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 type ModulesBreadcrumbsProps = {
   path: Module[];
 };
@@ -10,8 +12,10 @@ type Breadcrumb = {
   active?: boolean;
 }
 export default function ModulesBreadcrumbs(props: ModulesBreadcrumbsProps) {
+  const { t } = useTranslation();
+
   const breadcrumbs: Breadcrumb[] = [
-    { name: "Root", id: "" },
+    { name: t("ModulesPage.breadcrumbs.root"), id: "" },
     ...props.path.map((e) => ({ name: e.name, id: e.id })),
   ]
     .filter(Boolean)

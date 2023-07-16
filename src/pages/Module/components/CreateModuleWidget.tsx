@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { nanoid } from "nanoid";
 
 import Folder from "@/components/icons/Folder";
@@ -14,6 +15,8 @@ type CreateModuleWidgetProps = {
 };
 
 export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
+  const { t } = useTranslation();
+
   const createModuleType = ((): ModuleType | null => {
     if (!props.current) {
       return "course";
@@ -85,7 +88,7 @@ export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
       <span className="me-2">
         <Easel />
       </span>
-      Create {type} activity
+      <span>{t(`ModulesPage.CreateWidget.activity-${type}`)}</span>
     </button>
   );
   const acivityTypes: ActivityType[] = ["word", "phrase", "slide"];
@@ -106,7 +109,7 @@ export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
         {createModuleType === "course" && <Folder />}
         {createModuleType === "lesson" && <File />}
       </span>
-      Create {createModuleType}
+      <span>{t(`ModulesPage.CreateWidget.${createModuleType}`)}</span>
     </button>
   );
 }

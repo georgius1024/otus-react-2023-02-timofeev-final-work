@@ -1,8 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { ReactSortable } from "react-sortablejs";
-import "@/pages/Module/components/ModulesTreePanel.scss";
-import type { Module } from "@/types";
 import type { ItemInterface } from "react-sortablejs";
+
 import omit from "lodash.omit";
+import type { Module } from "@/types";
 
 type OnSelect = (id: string) => void;
 type OnEdit = (id: string) => void;
@@ -17,7 +18,11 @@ type ModulesTreePanelProps = {
   onSort: OnSort;
 };
 
+import "@/pages/Module/components/ModulesTreePanel.scss";
+
 export default function ModulesTreePanel(props: ModulesTreePanelProps) {
+  const { t } = useTranslation();
+
   const selectClick =
     (item: Module) => (event: React.MouseEvent<HTMLSpanElement>) => {
       event.stopPropagation();
@@ -89,7 +94,7 @@ export default function ModulesTreePanel(props: ModulesTreePanelProps) {
                   fill="currentColor"
                 />
               </svg>
-              edit
+              {t("ModulesPage.panel.edit")}
             </span>
             <span className="badge bg-danger ms-3" onClick={deleteClick(e)}>
               <svg

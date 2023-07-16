@@ -100,7 +100,7 @@ export default function StatsPage() {
               [
               {e.repetition.finishedAt
                 ? t("StatsPage.finished")
-                : t("StatsPage.next_repeat", {at: dayjs(e.repetition.scheduledAt).fromNow()})
+                : t("StatsPage.next-repeat", {at: dayjs(e.repetition.scheduledAt).fromNow()})
               }]
             </span>
           </li>

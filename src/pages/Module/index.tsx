@@ -1,20 +1,23 @@
 import { ReactElement, useEffect, useState, useCallback } from "react";
-import type { Module } from "@/types";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+
 import debounce from "lodash.debounce";
-
-import "@/pages/Module/index.scss";
-
-//import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
+
+import * as modules from "@/services/modules";
+
 import ModuleForm from "@/pages/Module/components/ModuleForm";
 import ActivityForm from "@/pages/Module/components/ActivityFormDispatcher";
 import ModulesTreePanel from "@/pages/Module/components/ModulesTreePanel";
 import SidePanel from "@/components/SidePanel";
 import ModulesBreadcrumbs from "@/pages/Module/components/ModuleBreadcrumbs";
 import CreateModuleWidget from "@/pages/Module/components/CreateModuleWidget";
-import * as modules from "@/services/modules";
+
+import type { Module } from "@/types";
+
+import "@/pages/Module/index.scss";
 
 type EditorActionType = 'none' | 'create' | 'edit'
 
@@ -24,10 +27,11 @@ export default function ModulePage(): ReactElement {
   const [editingModule, setEditingModule] = useState<Module | null>(null);
   const [editorAction, showEditor] = useState<EditorActionType>('none');
   const [maxPosition, setMaxPosition] = useState<number>(0)
-  //const alert = useAlert();
+  const { t } = useTranslation();
   const busy = useBusy();
-  const { id = "" } = useParams();
   const navigate = useNavigate();
+  const { id = "" } = useParams();
+
   const switchTo = (id: string | undefined) => navigate(`/module/${id}`);
   const reload = useCallback(
     async (parent: string) => {
@@ -138,7 +142,7 @@ export default function ModulePage(): ReactElement {
   })()
   return (
     <div className="container-fluid module-page">
-      <h1>Modules</h1>
+      <h1>{t("ModulesPage.title")}</h1>
       <ModulesBreadcrumbs path={parentModules} />
       <div className="modules-list">
         <ModulesTreePanel
@@ -157,9 +161,11 @@ export default function ModulePage(): ReactElement {
         onClose={() => showEditor('none')}
       >
         <h4>
-          <span className="text-capitalize">{editorAction}</span>
+          <span className="text-capitalize">
+            {t(`ModulesPage.actions.${editorAction}`)}
+          </span>
           &nbsp;
-          {editingModule?.type}
+          {t(`ModulesPage.actions.${editingModule?.type}`)}
         </h4>
         {
           EditorForm &&
