@@ -1,26 +1,47 @@
+import { useCallback, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import classNames from "classnames";
 
-// import type {
-//   Activity,
-//   SlideActivity,
-//   WordActivity,
-//   PhraseActivity,
-// } from "@/types";
+import WordActivityDispatcher from "@/pages/Learning/components/WordActivityDispatcher";
+import PhraseActivityDispatcher from "@/pages/Learning/components/PhraseActivityDispatcher";
 
 import type { RepetitionStep } from "@/pages/Learning/components/ActivityTypes";
 
 type ContextType = {
-  step: RepetitionStep
-  onDone: () => void
-}
-
-// import SlideActivityWidget from "@/pages/Learning/components/SlideActivityWidget";
-// import WordActivityWidget from "@/pages/Learning/components/WordActivityWidget";
-// import PhraseActivityWidget from "@/pages/Learning/components/PhraseActivityWidget";
-
+  step: RepetitionStep;
+  onDone: () => void;
+  onFail: () => void;
+};
 
 export default function RepetitionStepPage() {
-  const {step, onDone} = useOutletContext<ContextType>()
+
+  const [enabled, setEnabled] = useState<boolean>(false);
+  const [correct, setCorrect] = useState<boolean>(false);
+  const [rejected, setRejected] = useState<boolean>(false);
+
+  const { step, onDone, onFail } = useOutletContext<ContextType>();
+
+  const onSolved = useCallback((correct: boolean) => {
+    setCorrect(correct)
+    setEnabled(true);
+  }, [])
+
+  const submit = useCallback((correct: boolean) => {
+    setEnabled(false);
+    if (correct) {
+      onDone()
+    } else {
+      onFail()
+      const timer = setTimeout(() => setRejected(false), 1000);
+      setRejected(true);
+      return () => clearTimeout(timer);
+    }
+  }, [onDone, onFail])
+
+  const skip = useCallback(() => {
+    onFail()
+    onDone()
+  }, [onDone, onFail])
 
   if (!step) {
     return (
@@ -30,30 +51,59 @@ export default function RepetitionStepPage() {
     );
   }
 
+
+  function RepetitionStepDispatcher() {
+    if (step.activity.type === "word") {
+      return (
+        <div className={classNames("card-body", `${step.type}-step`)}>
+          <WordActivityDispatcher
+            activity={step.activity}
+            step={step.type}
+            key={step.id}
+            onSolved={onSolved}
+          />
+        </div>
+      );
+    }
+
+    if (step.activity.type === "phrase") {
+      return (
+        <div className={classNames("card-body", `${step.type}-step`)}>
+          <PhraseActivityDispatcher
+            activity={step.activity}
+            step={step.type}
+            key={step.id}
+            onSolved={onSolved}
+          />
+        </div>
+      );
+    }
+
+    return null;
+  }
+
   return (
-    <div>
-      <div>{JSON.stringify(step.id)}</div>
-      <button className="btn btn-primary" onClick={onDone}>
-        Next
-      </button>
-      {/* {step.type === "slide" && (
-        <SlideActivityWidget
-          activity={step as SlideActivity}
-          onDone={onDone}
-        />
-      )}
-      {step.type === "word" && (
-        <WordActivityWidget
-          activity={step as WordActivity}
-          onDone={onDone}
-        />
-      )}
-      {step.type === "phrase" && (
-        <PhraseActivityWidget
-          activity={step as PhraseActivity}
-          onDone={onDone}
-        />
-      )} */}
+    <div className={classNames("card", `${step.activity.type}-activity`)}>
+      {RepetitionStepDispatcher()}
+      <div className="card-footer d-flex justify-content-between">
+        <button
+          className={classNames("btn btn-primary", {
+            "animated-rejected": rejected,
+          })}
+          onClick={() => submit(correct)}
+          disabled={!enabled}
+        >
+          Continue
+        </button>
+        <button
+          className="btn btn-outline-danger"
+          onClick={skip}
+        >
+          I don't know
+        </button>
+
+      </div>
+
     </div>
   );
 }

@@ -54,7 +54,7 @@ export default function WordActivityWidget(props: WordActivityProps) {
   }, []);
 
   return (
-    <div className="card word-activty">
+    <div className="card word-activity">
       <div className={classNames("card-body", `${step}-step`)}>
         <WordActivityDispatcher
           activity={props.activity}

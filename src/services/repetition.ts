@@ -53,13 +53,13 @@ export async function destroy(repetition: RepetitionRecord): Promise<void> {
 
 export async function find(
   userId: string,
-  activityId: string
+  moduleId: string
 ): Promise<RepetitionRecord | null> {
   const response = await getDocs(
     query(
       repetitionTableRef,
       where("userId", "==", userId),
-      where("activityId", "==", activityId)
+      where("moduleId", "==", moduleId)
     )
   );
   const [first] = response.docs.map(withId);
@@ -68,9 +68,9 @@ export async function find(
 
 export async function findOrCreate(
   userId: string,
-  activityId: string
+  moduleId: string
 ): Promise<RepetitionRecord> {
-  const current = await find(userId, activityId)
+  const current = await find(userId, moduleId)
 
   if (current) {
     return current
@@ -78,7 +78,7 @@ export async function findOrCreate(
 
   return await create({
     userId,
-    activityId,
+    moduleId,
     startedAt: dayjs().valueOf(),
     repeatCount: 0,
     scheduledAt: 0,
@@ -87,9 +87,9 @@ export async function findOrCreate(
 }
 
 export async function register(userId: string,
-  activityId: string
+  moduleId: string
 ): Promise<RepetitionRecord> {
-  const current = await findOrCreate(userId, activityId)
+  const current = await findOrCreate(userId, moduleId)
   const interval = [1, 1, 1]
   const span = 'minute'
 

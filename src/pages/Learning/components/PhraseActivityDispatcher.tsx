@@ -5,6 +5,8 @@ import PhraseDirectTranslationStep from "@/pages/Learning/components/PhraseDirec
 import PhraseReverseTranslationStep from "@/pages/Learning/components/PhraseReverseTranslationStep";
 import PhrasePuzzleStep from "@/pages/Learning/components/PhrasePuzzleStep";
 
+import "@/pages/Learning/components/ActivityStyles.scss"
+
 export default function PhraseActivityDispatcher(
   props: PhraseActivityDispatcherProps
 ) {

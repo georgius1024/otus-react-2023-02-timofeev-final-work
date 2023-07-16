@@ -60,7 +60,7 @@ export type ProgressRecord = {
 
 export type RepetitionRecord = {
   id?: string;
-  activityId: string;
+  moduleId: string;
   userId: string;
   startedAt: number;
   repeatCount: number;

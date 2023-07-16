@@ -7,6 +7,8 @@ import useAlert from "@/utils/AlertHook";
 import * as modules from "@/services/modules";
 import * as repetition from "@/services/repetition";
 
+import RepetitionPageLoading from "./components/RepetitionPageLoading";
+
 import type { RepetitionRecord } from "@/types";
 import type { RootState } from "@/store";
 import type { RepetitionStep } from "@/pages/Learning/components/ActivityTypes";
@@ -22,9 +24,25 @@ export default function RepetitionPage() {
   const alert = useAlert();
   const navigate = useNavigate();
 
+  const current = steps.find((e) => e.id === currentStep);
+  const currentIndex = steps.findIndex((e) => e.id === currentStep)
+
   const openLearningPage = useCallback(() => {
     navigate("/learning/");
   }, [navigate]);
+
+  const nextStep = () => {
+    const position = steps.findIndex(e => e.id === currentStep)
+    if (position === steps.length - 1) {
+      alert("You finished word repetition");
+      openLearningPage();
+    } else {
+      navigateToStep(steps[position+1].id)
+    }
+  };
+  const onFail = () => {
+    console.log('failed', current)
+  }
 
   const navigateToStep = useCallback(
     (step?: string) => {
@@ -40,19 +58,20 @@ export default function RepetitionPage() {
   const fetchAll = useCallback(async () => {
     const agenda = await repetition.agenda(uid || "");
     const promises = agenda.map((rep: RepetitionRecord) => {
-      return modules.fetchOne(rep.activityId);
+      return modules.fetchOne(rep.moduleId);
     });
-    const activities = await Promise.all(promises);
+    const portion = await Promise.all(promises);
 
     const steps = ["learn", "translate-direct", "translate-reverse", "puzzle"].map(
       (type) => {
-          return activities.map((activity) => {
-          const repetition = agenda.find((r) => r.activityId == activity?.id);
+          return portion.map((module) => {
+          const repetition = agenda.find((r) => r.moduleId == module?.id);
           return {
-            id : `${type}-${activity?.id}`,
+            id : `${type}-${module?.id}`,
+            moduleId: module?.id,
             type,
             repetition,
-            activity,
+            activity: module?.activity,
           } as RepetitionStep;
         })
       })
@@ -92,34 +111,25 @@ export default function RepetitionPage() {
     navigateToStep,
   ]);
 
-  const nextStep = () => {
-    const position = steps.findIndex(e => e.id === currentStep)
-    if (position === steps.length - 1) {
-      alert("Done");
-      openLearningPage();
-    } else {
-      navigateToStep(steps[position+1].id)
-    }
-  };
-
   if (loading) {
-    return <p>Loading...</p>;
+    return <RepetitionPageLoading/>;
   }
-
-  const current = steps.find((e) => e.id === currentStep);
 
   return (
     <div className="container-fluid">
-      <h1>Hello repetition</h1>
-      <div>{steps.findIndex((e) => e.id === currentStep)} / {steps.length}</div>
-      <Outlet context={{ step: current, onDone: nextStep }} />
-      <hr />
-      <button
-        className="btn btn-secondary light-text"
-        onClick={openLearningPage}
+      <h1>Words repetition</h1>
+      <div
+        className="progress my-3"
+        style={{ height: "12px" }}
       >
-        Back
-      </button>
+        <div
+          className="progress-bar"
+          style={{
+            width: `${((currentIndex + 1) * 100 - 1) / steps.length}%`,
+          }}
+        ></div>
+      </div>
+      <Outlet context={{ step: current, onDone: nextStep, onFail }} />
     </div>
   );
 }

@@ -7,6 +7,8 @@ import WordDirectTranslationStep from "@/pages/Learning/components/WordDirectTra
 import WordReverseTranslationStep from "@/pages/Learning/components/WordReverseTranslationStep";
 import WordPuzzleStep from "@/pages/Learning/components/WordPuzzleStep";
 
+import "@/pages/Learning/components/ActivityStyles.scss"
+
 export default function WordActivityDispatcher(props: WordActivityDispatcherProps) {
   switch (props.step) {
     case "learn":
