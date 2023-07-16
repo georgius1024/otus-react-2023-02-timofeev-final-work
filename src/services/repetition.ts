@@ -51,6 +51,15 @@ export async function destroy(repetition: RepetitionRecord): Promise<void> {
   return deleteDoc(repetitionRef(repetition.id));
 }
 
+export function scheduleNextRepetition(repeatCount: number): number | null {
+  const interval = [0.5, 1, 2];
+  const span = "minute";
+  if (repeatCount > interval.length - 1) {
+    return null;
+  }
+  return dayjs().add(interval[repeatCount], span).startOf(span).valueOf();
+}
+
 export async function find(
   userId: string,
   moduleId: string
@@ -70,10 +79,10 @@ export async function findOrCreate(
   userId: string,
   moduleId: string
 ): Promise<RepetitionRecord> {
-  const current = await find(userId, moduleId)
+  const current = await find(userId, moduleId);
 
   if (current) {
-    return current
+    return current;
   }
 
   return await create({
@@ -82,16 +91,36 @@ export async function findOrCreate(
     startedAt: dayjs().valueOf(),
     repeatCount: 0,
     scheduledAt: 0,
-    finishedAt: 0
-  })
+    finishedAt: 0,
+  });
 }
 
-export async function register(userId: string,
+export async function start(
+  userId: string,
   moduleId: string
 ): Promise<RepetitionRecord> {
-  const current = await findOrCreate(userId, moduleId)
-  const interval = [1, 1, 1]
-  const span = 'minute'
+
+  const current = await find(userId, moduleId);
+
+  if (current) {
+    return current;
+  }
+
+  return await create({
+    userId,
+    moduleId,
+    startedAt: dayjs().valueOf(),
+    repeatCount: 0,
+    scheduledAt: scheduleNextRepetition(0) || 0,
+    finishedAt: 0,
+  });
+}
+
+export async function repeat(
+  userId: string,
+  moduleId: string
+): Promise<RepetitionRecord> {
+  const current = await findOrCreate(userId, moduleId);
 
   if (current.finishedAt) {
     return current; // Can't repeat finished
@@ -101,37 +130,63 @@ export async function register(userId: string,
     return current; // Can't repeat before scheduled time
   }
 
-  if (current.repeatCount < interval.length) {
-    const next = interval[current.repeatCount]
-    current.scheduledAt = dayjs().add(next, span).startOf(span).valueOf()
-    current.repeatCount += 1
-  } else {
-    current.finishedAt = dayjs().valueOf()
+  const patch = (): Partial<RepetitionRecord> => {
+    const scheduledAt = scheduleNextRepetition(current.repeatCount);
+    if (scheduledAt) {
+      return { scheduledAt, repeatCount: current.repeatCount + 1 };
+    }
+    return { finishedAt: dayjs().valueOf() };
+  };
+
+  const updated = { ...current, ...patch() };
+  await update(updated);
+  return updated;
+}
+
+export async function reset(
+  userId: string,
+  moduleId: string
+): Promise<RepetitionRecord | null> {
+  const current = await find(userId, moduleId);
+  if (!current) {
+    return null;
   }
-  await update(current)
-  return current
+
+  if (current.finishedAt) {
+    return current; // Can't reset finished
+  }
+
+  const patch: Partial<RepetitionRecord> = {
+    repeatCount: 0,
+    scheduledAt: scheduleNextRepetition(0) || 0,
+  };
+
+  await update({ ...current, ...patch });
+  return current;
 }
 
 export async function agenda(userId: string): Promise<RepetitionRecord[]> {
-  const now = dayjs().valueOf()
+  const now = dayjs().valueOf();
 
   const response = await getDocs(
-    query(repetitionTableRef,
+    query(
+      repetitionTableRef,
       where("userId", "==", userId),
-      where("scheduledAt", '<=', now),
-      where("finishedAt", '==', 0),
+      where("scheduledAt", "<=", now),
+      where("finishedAt", "==", 0)
     )
   );
   return sortBy(response.docs.map(withId), ["scheduledAt"]);
 }
 
 export async function plan(userId: string): Promise<RepetitionRecord[]> {
-  const now = dayjs().valueOf()
+  const now = dayjs().valueOf();
   const response = await getDocs(
-    query(repetitionTableRef,
+    query(
+      repetitionTableRef,
       where("userId", "==", userId),
-      where("scheduledAt", '>', now),
-      where("finishedAt", '==', 0),
+      where("scheduledAt", ">", now),
+      where("finishedAt", "==", 0)
     )
   );
   return sortBy(response.docs.map(withId), ["scheduledAt"]);
@@ -139,9 +194,10 @@ export async function plan(userId: string): Promise<RepetitionRecord[]> {
 
 export async function history(userId: string): Promise<RepetitionRecord[]> {
   const response = await getDocs(
-    query(repetitionTableRef,
+    query(
+      repetitionTableRef,
       where("userId", "==", userId),
-      where("finishedAt", '!=', 0),
+      where("finishedAt", "!=", 0)
     )
   );
   return sortBy(response.docs.map(withId), ["finishedAt"]);
@@ -149,11 +205,8 @@ export async function history(userId: string): Promise<RepetitionRecord[]> {
 
 export async function destroyAll(userId: string): Promise<void> {
   const response = await getDocs(
-    query(
-      repetitionTableRef,
-      where("userId", "==", userId)
-    )
+    query(repetitionTableRef, where("userId", "==", userId))
   );
   const promises = response.docs.map(withId).map(destroy);
-  await Promise.all(promises)
+  await Promise.all(promises);
 }

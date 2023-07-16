@@ -28,7 +28,6 @@ export default function WordPuzzleStep(props: WordActivityStepProps) {
     const letter = puzzle.slice(-1);
     setPuzzle(puzzle.slice(0, -1));
     setLetters([...letters, ...letter]);
-    console.log(letters, letter)
   }
   const keyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     e.preventDefault();

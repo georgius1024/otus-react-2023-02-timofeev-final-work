@@ -3,6 +3,7 @@ import { useNavigate, useParams, Outlet } from "react-router";
 import { useSelector } from "react-redux";
 
 import useAlert from "@/utils/AlertHook";
+import useBusy from "@/utils/BusyHook";
 
 import * as modules from "@/services/modules";
 import * as repetition from "@/services/repetition";
@@ -20,29 +21,57 @@ export default function RepetitionPage() {
   const [loading, setLoading] = useState<boolean | null>(null);
   const [steps, setSteps] = useState<RepetitionStep[]>([]);
   const [currentStep, setStep] = useState<string>(step);
+  const [failed, setFailed] = useState<Set<string>>(new Set());
 
   const alert = useAlert();
+  const busy = useBusy();
   const navigate = useNavigate();
 
   const current = steps.find((e) => e.id === currentStep);
-  const currentIndex = steps.findIndex((e) => e.id === currentStep)
+  const currentIndex = steps.findIndex((e) => e.id === currentStep);
 
   const openLearningPage = useCallback(() => {
     navigate("/learning/");
   }, [navigate]);
 
-  const nextStep = () => {
-    const position = steps.findIndex(e => e.id === currentStep)
-    if (position === steps.length - 1) {
-      alert("You finished word repetition");
-      openLearningPage();
+  const updateRepetitionStatus = useCallback(
+    (uid: string, steps: RepetitionStep[], failed: Set<string>) => {
+      const modulesSet = new Set<string>(
+        steps.map(step => (step.moduleId))
+      )
+      const moduleIds = [...modulesSet.values()]
+      const promises = moduleIds.map((moduleId) => {
+        if (failed.has(moduleId)) {
+          return repetition.reset(uid, moduleId);
+        } else {
+          return repetition.repeat(uid, moduleId);
+        }
+      });
+      return Promise.all(promises);
+    },
+    []
+  );
+
+  const nextStep = async () => {
+    if (currentIndex === steps.length - 1) {
+      busy(true);
+      await updateRepetitionStatus(uid || "", steps, failed)
+        .then(() => {
+          alert("You finished word repetition");
+          openLearningPage();
+        })
+        .catch(console.error)
+        .finally(() => busy(false));
     } else {
-      navigateToStep(steps[position+1].id)
+      const nextStep = steps[currentIndex + 1];
+      navigateToStep(nextStep.id);
     }
   };
   const onFail = () => {
-    console.log('failed', current)
-  }
+    if (current) {
+      setFailed(failed.add(current.moduleId));
+    }
+  };
 
   const navigateToStep = useCallback(
     (step?: string) => {
@@ -62,18 +91,18 @@ export default function RepetitionPage() {
     });
     const portion = await Promise.all(promises);
 
-    const steps = ["learn", "translate-direct", "translate-reverse", "puzzle"].map(
-      (type) => {
-          return portion.map((module) => {
+    const steps = ["learn", "translate-direct", "translate-reverse", "puzzle"]
+      .map((type) => {
+        return portion.map((module) => {
           const repetition = agenda.find((r) => r.moduleId == module?.id);
           return {
-            id : `${type}-${module?.id}`,
+            id: `${type}-${module?.id}`,
             moduleId: module?.id,
             type,
             repetition,
             activity: module?.activity,
           } as RepetitionStep;
-        })
+        });
       })
       .flat(1);
     setSteps(steps);
@@ -101,31 +130,20 @@ export default function RepetitionPage() {
       navigateToStep(firstStep);
       setStep(firstStep);
     }
-  }, [
-    loading,
-    steps,
-    step,
-    navigate,
-    alert,
-    openLearningPage,
-    navigateToStep,
-  ]);
+  }, [loading, steps, step, navigate, alert, openLearningPage, navigateToStep]);
 
   if (loading) {
-    return <RepetitionPageLoading/>;
+    return <RepetitionPageLoading />;
   }
 
   return (
     <div className="container-fluid">
       <h1>Words repetition</h1>
-      <div
-        className="progress my-3"
-        style={{ height: "12px" }}
-      >
+      <div className="progress my-3" style={{ height: "12px" }}>
         <div
           className="progress-bar"
           style={{
-            width: `${((currentIndex + 1) * 100 - 1) / steps.length}%`,
+            width: `${((currentIndex + 0.5) * 100) / steps.length}%`,
           }}
         ></div>
       </div>

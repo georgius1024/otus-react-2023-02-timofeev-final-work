@@ -111,7 +111,7 @@ export default function LessonPage() {
         ) &&
         uid
       ) {
-        repetition.register(uid, currentActivity);
+        repetition.start(uid, currentActivity);
       }
     }
 
