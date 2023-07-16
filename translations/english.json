@@ -94,6 +94,34 @@
     "buttons": {
       "continue": "Continue",
       "forgot": "I don't remember"
+    },
+    "phrase": {
+      "learn": {
+        "title": "Please remember the phrase"
+      },
+      "direct-translation": {
+        "title": "Please select translation for the phrase \"{{phrase}}\""
+      },
+      "reverse-translation": {
+        "title": "Please select phrase for the translation \"{{translation}}\""
+      }, 
+      "puzzle": {
+        "title": "Please assemble phrase \"{{translation}}\""
+      }
+    },
+    "word": {
+      "learn": {
+        "title": "Please remember the word \"{{word}}\""
+      },
+      "direct-translation": {
+        "title": "Please select translation for the word \"{{word}}\""
+      },
+      "reverse-translation": {
+        "title": "Please select word for the translation \"{{translation}}\""
+      }, 
+      "puzzle": {
+        "title": "Please assemble word \"{{translation}}\""
+      }
     }
   }
 }

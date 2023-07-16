@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+
 import uniq from "lodash.uniq";
 import classNames from "classnames";
 
@@ -10,9 +12,12 @@ import { PhraseActivityStepProps } from "@/pages/Learning/components/ActivityTyp
 export default function PhraseDirectTranslationStep(
   props: PhraseActivityStepProps
 ) {
-  const busy = useBusy();
   const [translations, setTranslations] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
+
+  const busy = useBusy();
+  const { t } = useTranslation();
+
   useEffect(() => {
     busy(true);
     modules
@@ -37,9 +42,8 @@ export default function PhraseDirectTranslationStep(
   return (
     <>
       <h5 className="card-title">
-        Please select proper translation for the phrase
+        {t("Activities.phrase.direct-translation.title", {phrase: props.activity.phrase})}
       </h5>
-      <p>{props.activity.phrase}</p>
       <ul className="list-group list-group-flush">
         {translations.map((translation) => (
           <li

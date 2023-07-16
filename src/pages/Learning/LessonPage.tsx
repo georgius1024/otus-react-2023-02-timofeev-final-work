@@ -36,6 +36,8 @@ export default function LessonPage() {
   const uid = useUid();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const busy = useBusy();
+  const alert = useAlert();
 
   const navigateToStep = useCallback(
     (step?: string) => {
@@ -47,9 +49,7 @@ export default function LessonPage() {
     },
     [course, id, navigate]
   );
-
-  const busy = useBusy();
-  const alert = useAlert();
+  
 
   const fetchEverything = useCallback(async () => {
     const fetchParent = modules.fetchOne(course);

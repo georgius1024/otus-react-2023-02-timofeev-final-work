@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 import { PhraseActivityStepProps } from "@/pages/Learning/components/ActivityTypes";
 
 export default function PhrasePuzzleStep(props: PhraseActivityStepProps) {
   const [words, setWords] = useState<string[]>([]);
   const [puzzle, setPuzzle] = useState<string[]>([]);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     setWords(props.activity.phrase.split(" ").sort(() => Math.random() - 0.5));
@@ -38,8 +41,11 @@ export default function PhrasePuzzleStep(props: PhraseActivityStepProps) {
   };
   return (
     <>
-      <h5 className="card-title">Please spell the phrase</h5>
-      <p>{props.activity.translation}</p>
+      <h5 className="card-title">
+        {t("Activities.phrase.puzzle.title", {
+          translation: props.activity.translation,
+        })}
+      </h5>
       <div
         className="card-text keyboard-catcher"
         tabIndex={0}

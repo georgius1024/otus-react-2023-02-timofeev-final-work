@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+
 import uniq from "lodash.uniq";
 import classNames from "classnames";
 
@@ -7,10 +9,14 @@ import * as modules from "@/services/modules";
 
 import { PhraseActivityStepProps } from "@/pages/Learning/components/ActivityTypes";
 
-export default function PhraseReverseTranslationStep(props: PhraseActivityStepProps) {
-  const busy = useBusy();
+export default function PhraseReverseTranslationStep(
+  props: PhraseActivityStepProps
+) {
   const [phrases, setPhrases] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
+
+  const busy = useBusy();
+  const { t } = useTranslation();
 
   useEffect(() => {
     busy(true);
@@ -36,8 +42,11 @@ export default function PhraseReverseTranslationStep(props: PhraseActivityStepPr
 
   return (
     <>
-      <h5 className="card-title">Please select proper translation for the phrase</h5>
-      <p>{props.activity.translation}</p>
+      <h5 className="card-title">
+        {t("Activities.phrase.reverse-translation.title", {
+          translation: props.activity.translation,
+        })}
+      </h5>
       <ul className="list-group list-group-flush">
         {phrases.map((phrase) => (
           <li

@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 import { WordActivityStepProps } from "@/pages/Learning/components/ActivityTypes";
 
 export default function WordPuzzleStep(props: WordActivityStepProps) {
   const [letters, setLetters] = useState<string[]>([]);
   const [puzzle, setPuzzle] = useState<string[]>([]);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     setLetters(props.activity.word.split("").sort(() => Math.random() - 0.5));
@@ -43,8 +46,9 @@ export default function WordPuzzleStep(props: WordActivityStepProps) {
   return (
     <>
       <h5 className="card-title">
-        Please spell the word "{props.activity.translation}"
+        {t("Activities.word.puzzle.title", {translation: props.activity.translation})}
       </h5>
+
       <div className="card-text keyboard-catcher" tabIndex={0} onKeyDown={keyDown}>
         <ul className="puzzle">
           {plottable.map((letter, index) => (

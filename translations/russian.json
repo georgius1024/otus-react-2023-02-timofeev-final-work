@@ -94,6 +94,34 @@
     "buttons": {
       "continue": "Дальше",
       "forgot": "Не помню"
+    },
+    "phrase": {
+      "learn": {
+        "title": "Пожалуйста, запомните эту фразу"
+      },
+      "direct-translation": {
+        "title": "Пожалуйста, выберите перевод для фразы \"{{phrase}}\""
+      },
+      "reverse-translation": {
+        "title": "Пожалуйста, выберите фразу, переведенную, как \"{{translation}}\""
+      },
+      "puzzle": {
+        "title": "Пожалуйста, соберите фразу \"{{translation}}\""
+      }
+    },
+    "word": {
+      "learn": {
+        "title": "Пожалуйста, запомните слово \"{{word}}\""
+      },
+      "direct-translation": {
+        "title": "Пожалуйста, выберите перевод для слова \"{{word}}\""
+      },
+      "reverse-translation": {
+        "title": "Пожалуйста, выберите слово, переведенное, как \"{{translation}}\""
+      },
+      "puzzle": {
+        "title": "Пожалуйста, соберите слово \"{{translation}}\""
+      }
     }
   }
 }

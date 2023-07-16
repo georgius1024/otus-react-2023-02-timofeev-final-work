@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+
 import uniq from "lodash.uniq";
 import classNames from "classnames";
 
@@ -8,9 +10,11 @@ import * as modules from "@/services/modules";
 import { WordActivityStepProps } from "@/pages/Learning/components/ActivityTypes";
 
 export default function WordReverseTranslationStep(props: WordActivityStepProps) {
-  const busy = useBusy();
   const [words, setWords] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
+
+  const busy = useBusy();
+  const { t } = useTranslation();
 
   useEffect(() => {
     busy(true);
@@ -36,7 +40,9 @@ export default function WordReverseTranslationStep(props: WordActivityStepProps)
 
   return (
     <>
-      <h5 className="card-title">Please select proper translation for the word "{props.activity.translation}"</h5>
+      <h5 className="card-title">
+        {t("Activities.word.reverse-translation.title", {translation: props.activity.translation})}
+      </h5>
       <ul className="list-group list-group-flush">
         {words.map((word) => (
           <li

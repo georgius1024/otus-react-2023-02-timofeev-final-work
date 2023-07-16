@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+
 import uniq from "lodash.uniq";
 import classNames from "classnames";
 
@@ -10,7 +12,10 @@ import { WordActivityStepProps } from "@/pages/Learning/components/ActivityTypes
 export default function WordDirectTranslationStep(
   props: WordActivityStepProps
 ) {
+
   const busy = useBusy();
+  const { t } = useTranslation();
+
   const [translations, setTranslations] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   useEffect(() => {
@@ -37,7 +42,7 @@ export default function WordDirectTranslationStep(
   return (
     <>
       <h5 className="card-title">
-        Please select proper translation for the word "{props.activity.word}"
+        {t("Activities.word.direct-translation.title", {word: props.activity.word})}
       </h5>
       <ul className="list-group list-group-flush">
         {translations.map((translation) => (
