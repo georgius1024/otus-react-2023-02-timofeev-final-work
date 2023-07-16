@@ -21,6 +21,7 @@
     "dayjs": "^1.11.8",
     "firebase": "^9.22.2",
     "i18next": "^23.2.11",
+    "i18next-browser-languagedetector": "^7.1.0",
     "jsdom": "^22.1.0",
     "lodash.debounce": "^4.0.8",
     "lodash.omit": "^4.5.0",

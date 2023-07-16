@@ -74,15 +74,14 @@ export default function DefaultLayout(props: PropsWithChildren) {
   };
 
   function languageSelector() {
-    const current = i18n.language;
-
+    const currentLanguageLong = i18n.language;
+    const [currentLanuageShort] = currentLanguageLong.split('-')
     const locales: LocaleItem[] = [
       { lang: "en", flag: "🇺🇸" },
       { lang: "ru", flag: "🇷🇺" },
     ];
-
     const currentLocale =
-      locales.find((e) => e.lang === current) || locales.at(0);
+      locales.find((e) => e.lang === currentLanuageShort) || locales.at(0);
 
     const setLocale = (locale: LocaleItem) => {
       i18n.changeLanguage(locale.lang);
