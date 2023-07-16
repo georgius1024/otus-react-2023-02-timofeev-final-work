@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import classNames from "classnames";
 import AlertsPanel from "@/components/AlertsPanel";
 import BusyStatePanel from "@/components/BusyStatePanel";
+import { useTranslation } from "react-i18next";
 import type { RootState } from "@/store";
 import type { Auth } from "@/types";
 import { logout } from "@/store/auth";
@@ -12,6 +13,8 @@ export default function DefaultLayout(props: PropsWithChildren) {
   const auth = useSelector((state: RootState) => state.auth?.auth);
   const user = useSelector((state: RootState) => state.auth?.user);
   const admin = useSelector((state: RootState) => state.auth?.auth?.access);
+  const { t, i18n } = useTranslation();
+
   function ProfileLinks(auth: Auth | undefined) {
     const profileName = user?.name || auth?.email;
     const dispatch = useDispatch();
@@ -65,12 +68,63 @@ export default function DefaultLayout(props: PropsWithChildren) {
     }
   }
 
+  type LocaleItem = {
+    lang: string;
+    flag: string;
+  };
+
+  function languageSelector() {
+    const current = i18n.language;
+
+    const locales: LocaleItem[] = [
+      { lang: "en", flag: "🇺🇸" },
+      { lang: "ru", flag: "🇷🇺" },
+    ];
+
+    const currentLocale =
+      locales.find((e) => e.lang === current) || locales.at(0);
+
+    const setLocale = (locale: LocaleItem) => {
+      i18n.changeLanguage(locale.lang);
+    };
+    return (
+      <ul className="navbar-nav flex-row">
+        <li className="nav-item dropdown me-2">
+          <a
+            className="nav-link dropdown-toggle text-light"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            {currentLocale?.flag}
+          </a>
+          <div className="dropdown-menu bg-white dropdown-menu-light">
+            {locales.map((locale) => {
+              return (
+                <div
+                  className="dropdown-item text-light"
+                  key={locale.flag}
+                  onClick={() => setLocale(locale)}
+                >
+                  {locale.flag}
+                </div>
+              );
+            })}
+          </div>
+        </li>
+      </ul>
+    );
+  }
+
   return (
     <div className="container-lg position-relative" style={{ height: "100vh" }}>
       <nav className="navbar bg-primary" data-bs-theme="dark">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
-            Start
+            {t('layout.default.start')}
           </Link>
           <ul className="navbar-nav flex-row flex-grow-1">
             <li className={classNames("nav-item me-3", { "d-none": !admin })}>
@@ -90,6 +144,7 @@ export default function DefaultLayout(props: PropsWithChildren) {
             </li>
           </ul>
           <ul className="navbar-nav flex-row">{ProfileLinks(auth)}</ul>
+          {languageSelector()}
         </div>
       </nav>
       <AlertsPanel />

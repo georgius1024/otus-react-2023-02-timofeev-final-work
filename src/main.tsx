@@ -2,10 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { RouterProvider } from "react-router-dom";
-import router from "@/router";
-import { store } from "@/store";
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime'
+
+import router from "@/router";
+import { store } from "@/store";
+import "@/i18n"
 
 import "@/main.scss";
 import 'bootstrap';
