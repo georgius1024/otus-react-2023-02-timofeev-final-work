@@ -1,4 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
+
 import * as users from "@/services/users";
 import * as progress from "@/services/progress";
 import * as repetition from "@/services/repetition";
@@ -13,7 +15,10 @@ import type { User } from "@/types";
 export default function StudentsPage() {
   const [loading, setLoading] = useState<boolean | null>(null);
   const [students, setStudents] = useState<User[]>([]);
+
   const busy = useBusy()
+  const { t } = useTranslation();
+
   const loadAll = useCallback(async () => {
     const students = await users.fetchAll();
     setStudents(students);
@@ -77,8 +82,8 @@ export default function StudentsPage() {
     );
   });
   return (
-    <div className="container-fluid">
-      <h1>Students</h1>
+    <div className="container-fluid mt-4">
+      <h1>{t("StudentsPage.title")}</h1>
       <div className="list-group list-group-flush modules-tree-panel auth-select-none">
         {studentList}
       </div>
