@@ -32,16 +32,16 @@ export default function DefaultLayout(props: PropsWithChildren) {
           >
             {profileName}
           </a>
-          <div className="dropdown-menu bg-primary">
-            <Link className="dropdown-item text-light" to="/profile">
+          <div className="dropdown-menu bg-white" style={{minWidth: '10rem'}}>
+            <Link className="dropdown-item text-dark" to="/profile">
               Profile
             </Link>
-            <Link className="dropdown-item text-light" to="/stats">
+            <Link className="dropdown-item text-dark" to="/stats">
               Stats
             </Link>
             <div className="dropdown-divider"></div>
             <Link
-              className="dropdown-item text-light"
+              className="dropdown-item text-dark"
               to="/login"
               onClick={() => dispatch(logout())}
             >
@@ -99,9 +99,11 @@ export default function DefaultLayout(props: PropsWithChildren) {
             aria-haspopup="true"
             aria-expanded="false"
           >
+            <span className="bg-light p-1">
             {currentLocale?.flag}
+            </span>
           </a>
-          <div className="dropdown-menu bg-white dropdown-menu-light">
+          <div className="dropdown-menu bg-white dropdown-menu-light"  style={{minWidth: '1rem'}}>
             {locales.map((locale) => {
               return (
                 <div
