@@ -79,5 +79,15 @@
       "description": "You finished the course \"{{course}}\". Click button to exit",
       "action": "Exit course"
     }
+  }, 
+  "LessonPage": {
+    "buttons": {
+      "exit": "Exit lesson"
+    },
+    "modal": {
+      "title": "Congratulations",
+      "description": "You finished the lessin \"{{lesson}}\". Click button to exit",
+      "action": "Exit lesson"
+    }
   }
 }

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate, Outlet } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import dayjs from "dayjs";
 
@@ -12,6 +13,7 @@ import * as progress from "@/services/progress";
 import * as repetition from "@/services/repetition";
 
 import ModalPanel from "@/components/ModalPanel";
+import Placeholder from "@/components/Placeholder";
 
 import type { Module, ProgressRecord } from "@/types";
 
@@ -21,6 +23,7 @@ import classNames from "classnames";
 
 export default function LessonPage() {
   const { course = "", id = "", step = "" } = useParams();
+  const [loading, setLoading] = useState<boolean | null>(null);
   const [parent, setParent] = useState<Module | null>(null);
   const [lesson, setLesson] = useState<Module | null>(null);
   const [activities, setActivities] = useState<Module[]>([]);
@@ -32,6 +35,7 @@ export default function LessonPage() {
 
   const uid = useUid();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const navigateToStep = useCallback(
     (step?: string) => {
@@ -94,19 +98,17 @@ export default function LessonPage() {
   }, [uid, id, course, step, navigate, alert]);
 
   useEffect(() => {
-    busy(true);
+    setLoading(true);
     fetchEverything()
       .catch(console.error)
-      .finally(() => busy(false));
+      .finally(() => setLoading(false));
   }, [busy, fetchEverything]);
 
   const nextActivity = () => {
-
     if (!currentProgress?.finishedAt) {
       if (
         ["word", "phrase"].includes(
-          activities.find((e) => e.id === currentActivity)?.activity?.type ||
-            ""
+          activities.find((e) => e.id === currentActivity)?.activity?.type || ""
         )
       ) {
         repetition.start(uid(), currentActivity);
@@ -137,16 +139,39 @@ export default function LessonPage() {
     navigate(`/learning/course/${course}`);
   };
 
-  if (!activities.length) {
-    return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className="container-fluid mt-4">
+        <div className="row mt-3">
+          <div className="col">
+            <Placeholder height="24px" rounded />
+          </div>
+        </div>
+        <div className="row mt-3">
+          <div className="col">
+            <Placeholder height="24px" rounded />
+          </div>
+        </div>
+        <div className="row mt-3">
+          <div className="col">
+            <Placeholder height="24px" rounded />
+          </div>
+        </div>
+        <div className="row mt-3">
+          <div className="col">
+            <Placeholder height="24px" rounded />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const activity = activities.find((e) => e.id === currentActivity)?.activity;
   const position = activities.findIndex((e) => e.id === currentActivity);
   const lessonIsCompleted = Boolean(currentProgress?.finishedAt);
   return (
-    <div className="container-fluid">
-      <nav aria-label="breadcrumb" className=" mt-2">
+    <div className="container-fluid mt-4">
+      <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item " aria-current="page">
             {parent?.name}
@@ -156,8 +181,7 @@ export default function LessonPage() {
           </li>
         </ol>
       </nav>
-      {lessonIsCompleted && <h1>Repeating {lesson?.name}</h1>}
-      {!lessonIsCompleted && <h1>{lesson?.name} in progress</h1>}
+      <h1>{lesson?.name}</h1>
       <div
         className={classNames("progress", "my-2", {
           "d-none": lessonIsCompleted,
@@ -167,7 +191,7 @@ export default function LessonPage() {
         <div
           className="progress-bar"
           style={{
-            width: `${((position + 1) * 100 - 1) / activities.length}%`,
+            width: `${((position + 0.5) * 100) / activities.length}%`,
           }}
         ></div>
       </div>
@@ -186,19 +210,16 @@ export default function LessonPage() {
             className="btn btn-outline-success btn-sm"
             onClick={completeLesson}
           >
-            Exit lesson
+            {t("LessonPage.buttons.exit")}
           </button>
         </div>
       </div>
       <Outlet context={{ activity: activity, onDone: nextActivity }} />
       <ModalPanel show={modal} onClose={() => showModal(false)}>
-        <h1>Congratulations</h1>
-        <p>You completed the lesson. Click button to exit</p>
-        <button
-          className="btn btn-primary w-100"
-          onClick={() => completeLesson()}
-        >
-          Exit lesson
+      <h1>{t("LessonPage.modal.title")}</h1>
+        <p>{t("LessonPage.modal.description", { lesson: lesson?.name })}</p>
+        <button className="btn btn-primary w-100" onClick={completeLesson}>
+          {t("LessonPage.modal.action")}
         </button>
       </ModalPanel>
     </div>

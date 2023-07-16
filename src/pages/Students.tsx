@@ -52,6 +52,7 @@ export default function StudentsPage() {
       </div>
     );
   }
+
   const deleteUserData = (uid: string) => {
     busy(true)
     Promise.all([
