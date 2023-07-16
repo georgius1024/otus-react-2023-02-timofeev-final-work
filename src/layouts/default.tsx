@@ -2,7 +2,7 @@ import { PropsWithChildren } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-
+import dayjs from "dayjs";
 import classNames from "classnames";
 
 import AlertsPanel from "@/components/AlertsPanel";
@@ -17,18 +17,21 @@ export default function DefaultLayout(props: PropsWithChildren) {
   const user = useSelector((state: RootState) => state.auth?.user);
   const admin = useSelector((state: RootState) => state.auth?.auth?.access);
   const { t, i18n } = useTranslation();
-
+  const changeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+    dayjs.locale(lang);
+  };
   function LoginLinks() {
     return (
       <ul className="navbar-nav flex-row">
         <li className="nav-item me-2">
           <Link className="text-light" to="/login">
-          {t("layout.default.menu.login")}
+            {t("layout.default.menu.login")}
           </Link>
         </li>
         <li className="nav-item me-2">
           <Link className="text-light" to="/register">
-          {t("layout.default.menu.register")}
+            {t("layout.default.menu.register")}
           </Link>
         </li>
       </ul>
@@ -38,8 +41,8 @@ export default function DefaultLayout(props: PropsWithChildren) {
   function ProfileMenu() {
     const profileName = user?.name || auth?.email;
     const dispatch = useDispatch();
-      return (
-        <ul className="navbar-nav flex-row">
+    return (
+      <ul className="navbar-nav flex-row">
         <li className="nav-item dropdown me-2">
           <a
             className="nav-link dropdown-toggle text-light"
@@ -69,8 +72,8 @@ export default function DefaultLayout(props: PropsWithChildren) {
             </Link>
           </div>
         </li>
-        </ul>
-      );
+      </ul>
+    );
   }
 
   return (
@@ -102,12 +105,9 @@ export default function DefaultLayout(props: PropsWithChildren) {
               </Link>
             </li>
           </ul>
-          {auth && <ProfileMenu/>}
-          {!auth && <LoginLinks/>}
-          <LanguageSwitch
-            current={i18n.language}
-            onSelect={(lang) => i18n.changeLanguage(lang)}
-          />
+          {auth && <ProfileMenu />}
+          {!auth && <LoginLinks />}
+          <LanguageSwitch current={i18n.language} onSelect={changeLanguage} />
         </div>
       </nav>
       <AlertsPanel />

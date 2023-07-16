@@ -3,6 +3,8 @@ import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { RouterProvider } from "react-router-dom";
 import dayjs from "dayjs";
+import 'dayjs/locale/en'
+import 'dayjs/locale/ru'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 import router from "@/router";
