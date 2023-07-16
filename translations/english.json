@@ -56,7 +56,28 @@
     "status": {
       "done": "done",
       "progress": "in progress"
+    },
+    "modal": {
+      "title": "Start course",
+      "description": "Press button below to start course \"{{course}}\"",
+      "action": "Start course"
+    }
+  },
+  "CoursePage": {
+    "buttons": {
+      "continue": "Continue course",
+      "exit": "Exit course",
+      "repeat": "Repeat words",
+      "add_custom_activities": "Add words to learn"
+    },
+    "status": {
+      "done": "done",
+      "progress": "in progress"
+    },
+    "modal": {
+      "title": "Congratulations",
+      "description": "You finished the course \"{{course}}\". Click button to exit",
+      "action": "Exit course"
     }
   }
-
 }

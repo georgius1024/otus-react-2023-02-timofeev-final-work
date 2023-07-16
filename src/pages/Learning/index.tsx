@@ -123,7 +123,9 @@ export default function LearningIndex() {
             <Tick />
             <span className="mx-1">{course.name}</span>
           </span>
-          <span className="text-uppercase">[{t("LearningPage.status.done")}]</span>
+          <span className="text-uppercase">
+            [{t("LearningPage.status.done")}]
+          </span>
         </div>
       );
     }
@@ -134,7 +136,9 @@ export default function LearningIndex() {
             <CaretRightFilled />
             <span className="mx-1">{course.name}</span>
           </span>
-          <span className="text-uppercase">[{t("LearningPage.status.progress")}]</span>
+          <span className="text-uppercase">
+            [{t("LearningPage.status.progress")}]
+          </span>
         </div>
       );
     }
@@ -203,7 +207,7 @@ export default function LearningIndex() {
             onClick={openRepetitionPage}
           >
             {t("LearningPage.buttons.repeat")}
-            
+
             <span className="badge bg-primary rounded-pill ms-3">
               {wordsToRepeat}
             </span>
@@ -220,13 +224,13 @@ export default function LearningIndex() {
       </div>
 
       <ModalPanel show={Boolean(confirm)} onClose={() => setConfirm(null)}>
-        <h1>Start course</h1>
-        <p>Press button below to start course "{confirm?.name}"</p>
+        <h1>{t("LearningPage.modal.title")}</h1>
+        <p>{t("LearningPage.modal.description", { course: confirm?.name })}</p>
         <button
           className="btn btn-primary w-100"
           onClick={() => startCourse(confirm)}
         >
-          Start course
+          {t("LearningPage.modal.action")}
         </button>
       </ModalPanel>
     </div>

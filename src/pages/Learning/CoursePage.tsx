@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import dayjs from "dayjs";
 
@@ -40,6 +41,7 @@ export default function CoursePage() {
   const navigate = useNavigate();
   const busy = useBusy();
   const alert = useAlert();
+  const { t } = useTranslation();
 
   const fetchAndCheckEverything = useCallback(async () => {
     const fetchCourse = modules.fetchOne(id);
@@ -207,27 +209,38 @@ export default function CoursePage() {
     const status = checkStatus(lesson);
     if (status === "finished") {
       return (
-        <span className="text-success">
-          <Tick />
-          <span className="mx-1">{lesson.name}</span>
-          [DONE]
-        </span>
+        <div className="d-flex justify-content-between text-success">
+          <span>
+            <Tick />
+            <span className="mx-1">{lesson.name}</span>
+          </span>
+          <span className="text-uppercase">
+            [{t("CoursePage.status.done")}]
+          </span>
+        </div>
       );
     }
     if (status === "progress") {
       return (
-        <span className="text-primary">
-          <CaretRightFilled />
-          <span className="mx-1">{lesson.name}</span>
-          [IN PROGRESS]
-        </span>
+        <div className="d-flex justify-content-between text-primary">
+          <span>
+            <CaretRightFilled />
+            <span className="mx-1">{lesson.name}</span>
+          </span>
+          <span className="text-uppercase">
+            [{t("CoursePage.status.progress")}]
+          </span>
+        </div>
       );
     }
     return (
-      <span className="text-muted">
-        <CaretRightEmpty />
-        <span className="mx-1">{lesson.name}</span>
-      </span>
+      <div className="d-flex justify-content-between text-muted">
+        <span>
+          <CaretRightEmpty />
+          <span className="mx-1">{lesson.name}</span>
+        </span>
+      </div>
+
     );
   };
 
@@ -252,12 +265,12 @@ export default function CoursePage() {
         <div className="col">
           {canContinue && (
             <button className="btn btn-primary w-100" onClick={continueLesson}>
-              Continue course
+              {t("CoursePage.buttons.continue")}
             </button>
           )}
           {!canContinue && (
             <button className="btn btn-success w-100" onClick={exitCourse}>
-              Exit course
+              {t("CoursePage.buttons.exit")}
             </button>
           )}
         </div>
@@ -267,7 +280,7 @@ export default function CoursePage() {
             disabled={!wordsToRepeat}
             onClick={openRepetitionPage}
           >
-            Repeat words
+            {t("CoursePage.buttons.repeat")}
             <span className="badge bg-primary rounded-pill ms-3">
               {wordsToRepeat}
             </span>
@@ -277,16 +290,16 @@ export default function CoursePage() {
           <button className="btn btn-outline-primary w-100"
             onClick={openRepetitionAddWordPage}
           >
-            Add words to learn
+            {t("CoursePage.buttons.add_custom_activities")}
           </button>
         </div>
       </div>
 
       <ModalPanel show={modal} onClose={() => showModal(false)}>
-        <h1>Congratulations</h1>
-        <p>You're completed the course. Click button to exit</p>
+        <h1>{t("CoursePage.modal.title")}</h1>
+        <p>{t("CoursePage.modal.description", { course: course?.name })}</p>
         <button className="btn btn-primary w-100" onClick={exitCourse}>
-          Exit course
+          {t("CoursePage.modal.action")}
         </button>
       </ModalPanel>
     </div>

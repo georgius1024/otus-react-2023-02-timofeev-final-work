@@ -19,7 +19,7 @@ export default function ModalPanel(props: PropsWithChildren<ModalPanelProps>) {
       return;
     }
 
-    if (!props.clickClose) {
+    if (props.clickClose === false) {
       return
     }
 
