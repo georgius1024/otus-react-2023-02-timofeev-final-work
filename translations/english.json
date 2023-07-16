@@ -13,5 +13,35 @@
       },
       "copyright": "© 2023 Diligent student"
     }
+  },
+  "LoginPage": {
+    "title": "Login",
+    "email": {
+      "label": "Email"
+    },
+    "password": {
+      "label": "Password"
+    },
+    "submit": "Login",
+    "forgot": "Forgot password?"
+  },
+  "RegisterPage": {
+    "title": "Register",
+    "email": {
+      "label": "Email"
+    },
+    "password": {
+      "label": "Password"
+    },
+    "submit": "Register",
+    "forgot": "Forgot password?"
+  },
+  "ForgotPage": {
+    "title": "Restore password",
+    "email": {
+      "label": "Email"
+    },
+    "submit": "Restore"
   }
+
 }

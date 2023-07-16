@@ -1,14 +1,15 @@
 import { PropsWithChildren } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+
 import classNames from "classnames";
+
 import AlertsPanel from "@/components/AlertsPanel";
 import BusyStatePanel from "@/components/BusyStatePanel";
 import LanguageSwitch from "@/components/LanguageSwitch";
 
-import { useTranslation } from "react-i18next";
 import type { RootState } from "@/store";
-import type { Auth } from "@/types";
 import { logout } from "@/store/auth";
 
 export default function DefaultLayout(props: PropsWithChildren) {
@@ -16,6 +17,7 @@ export default function DefaultLayout(props: PropsWithChildren) {
   const user = useSelector((state: RootState) => state.auth?.user);
   const admin = useSelector((state: RootState) => state.auth?.auth?.access);
   const { t, i18n } = useTranslation();
+
   function LoginLinks() {
     return (
       <ul className="navbar-nav flex-row">

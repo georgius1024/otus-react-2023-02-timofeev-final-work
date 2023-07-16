@@ -13,5 +13,34 @@
       },
       "copyright": "© 2023 Прилежный студент"
     }
+  },
+  "LoginPage": {
+    "title": "Вход",
+    "email": {
+      "label": "Email"
+    },
+    "password": {
+      "label": "Пароль"
+    },
+    "submit": "Войти",
+    "forgot": "Забыли пароль?"
+  },
+  "RegisterPage": {
+    "title": "Регистрация",
+    "email": {
+      "label": "Email"
+    },
+    "password": {
+      "label": "Пароль"
+    },
+    "submit": "Зарегистрироваься",
+    "forgot": "Забыли пароль?"
+  },
+  "ForgotPage": {
+    "title": "Восстановить пароль",
+    "email": {
+      "label": "Email"
+    },
+    "submit": "Востановить"
   }
 }

@@ -1,9 +1,11 @@
 import { ReactElement, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+
 import useAlert from "@/utils/AlertHook";
 
-import { register } from "@/store/auth";
+import { login } from "@/store/auth";
 import { AppDispatch, RootState } from "@/store";
 
 import Card from "@/components/Card";
@@ -12,13 +14,15 @@ import FormInput from "@/components/FormInput";
 
 import type { ErrorResponse } from "@/types";
 
-export default function Register(): ReactElement {
-  const dispatch: AppDispatch = useDispatch();
-  const navigate = useNavigate();
+export default function LoginPage(): ReactElement {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const busy = useSelector((state: RootState) => state.auth.busy);
+
   const alert = useAlert()
+  const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const emailChanged = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEmail(event.target.value);
@@ -34,10 +38,10 @@ export default function Register(): ReactElement {
   ): Promise<void> => {
     event.preventDefault();
     const { error } = (await dispatch(
-      register({ email, password })
+      login({ email, password })
     )) as ErrorResponse;
     if (!error) {
-      alert("Thank you for registration");
+      alert("Welcome back", 'success');
       navigate("/");
     } else {
       alert(error.message, 'warning');
@@ -45,9 +49,9 @@ export default function Register(): ReactElement {
   };
 
   return (
-    <Card title="Register">
-      <form name="register">
-        <FormGroup label="Email">
+    <Card title={t('LoginPage.title')}>
+      <form name="login">
+        <FormGroup label={t('LoginPage.email.label')}>
           <FormInput
             value={email}
             type="email"
@@ -56,7 +60,7 @@ export default function Register(): ReactElement {
             placeholder="name@example.com"
           />
         </FormGroup>
-        <FormGroup label="Password">
+        <FormGroup label={t('LoginPage.password.label')}>
           <FormInput
             value={password}
             type="password"
@@ -69,9 +73,9 @@ export default function Register(): ReactElement {
           type="button"
           onClick={submit}
         >
-          Register
+          {t('LoginPage.submit')}
         </button>
-        <Link to="/forgot">Forgot password?</Link>
+        <Link to="/forgot">{t('LoginPage.forgot')}</Link>
       </form>
     </Card>
   );

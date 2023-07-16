@@ -3,9 +3,9 @@ import DefaultLayout from "@/layouts/default";
 import PrivateRoute from "@/components/PrivateRoute";
 
 import HomePage from "@/pages/Home";
-import LoginPage from "@/pages/Login";
-import RegisterPage from "@/pages/Register";
-import ForgotPage from "@/pages/Forgot";
+import LoginPage from "@/pages/LoginPage";
+import RegisterPage from "@/pages/RegisterPage";
+import ForgotPage from "@/pages/ForgotPage";
 import ProfilePage from "@/pages/ProfilePage";
 import ModulePage from "@/pages/Module";
 import StudentsPage from "@/pages/Students";
