@@ -41,7 +41,7 @@ export default function RegisterPage(): ReactElement {
       register({ email, password })
     )) as ErrorResponse;
     if (!error) {
-      alert("Thank you for registration");
+      alert(t('RegisterPage.confirm'), "success");
       navigate("/");
     } else {
       alert(error.message, 'warning');

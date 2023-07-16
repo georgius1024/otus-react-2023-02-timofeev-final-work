@@ -41,7 +41,7 @@ export default function LoginPage(): ReactElement {
       login({ email, password })
     )) as ErrorResponse;
     if (!error) {
-      alert("Welcome back", 'success');
+      alert(t('LoginPage.confirm'), "success");
       navigate("/");
     } else {
       alert(error.message, 'warning');

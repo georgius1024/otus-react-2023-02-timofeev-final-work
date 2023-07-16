@@ -32,7 +32,7 @@ export default function ForgotPage(): ReactElement {
     event.preventDefault();
     const { error } = (await dispatch(forgot({ email }))) as ErrorResponse;
     if (!error) {
-      alert("We sent reset password recovery email", "success");
+      alert(t('ForgetPage.confirm'), "success");
       navigate("/login");
     } else {
       alert(error.message, "warning");

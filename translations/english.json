@@ -23,7 +23,8 @@
       "label": "Password"
     },
     "submit": "Login",
-    "forgot": "Forgot password?"
+    "forgot": "Forgot password?",
+    "confirm": "Welcome back"
   },
   "RegisterPage": {
     "title": "Register",
@@ -34,14 +35,16 @@
       "label": "Password"
     },
     "submit": "Register",
-    "forgot": "Forgot password?"
+    "forgot": "Forgot password?",
+    "confirm": "Thank you for registration"
   },
   "ForgotPage": {
     "title": "Restore password",
     "email": {
       "label": "Email"
     },
-    "submit": "Restore"
+    "submit": "Restore", 
+    "confirm": "We sent reset password recovery email"
   }
 
 }
