@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import classNames from "classnames";
 import dayjs from "dayjs";
@@ -22,6 +23,7 @@ export default function RepetitionAddWordOrPhrasePage() {
   const busy = useBusy()
   const alert = useAlert()
   const navigate = useNavigate()
+  const { t } = useTranslation();
 
   const createActivity = (type: ActivityType): Activity | null => {
     switch (type) {
@@ -81,7 +83,7 @@ export default function RepetitionAddWordOrPhrasePage() {
               href="#"
               onClick={() => setActivityType("word")}
             >
-              Word
+              {t("RepetitionPageAdd.word")}
             </a>
           </li>
           <li className="nav-item">
@@ -92,7 +94,7 @@ export default function RepetitionAddWordOrPhrasePage() {
               href="#"
               onClick={() => setActivityType("phrase")}
             >
-              Phrase
+              {t("RepetitionPageAdd.phrase")}
             </a>
           </li>
         </ul>

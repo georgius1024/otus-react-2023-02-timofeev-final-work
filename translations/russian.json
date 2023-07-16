@@ -131,6 +131,60 @@
       "continue": "Дальше",
       "forgot": "Не помню"
     }
- }
+  },
+  "RepetitionPageAdd": {
+    "word": "Слово",
+    "phrase": "Фраза"
+  },
+  "ActivityForm": {
+    "word": {
+      "word": {
+        "label": "Слово",
+        "placeholder": "Введите слово для изучения"
+      },
+      "translation": {
+        "label": "Пеервод",
+        "placeholder": "Введите перевод здесь"
+      },
+      "context": {
+        "label": "Контекст",
+        "placeholder": "Контекст использования слова (опционально)"
+      },
+      "synonyms": {
+        "label": "Синонимы",
+        "placeholder": "Синонимы слова (опционально)"
+      }
+    },
+    "phrase": {
+      "phrase": {
+        "label": "Фраза",
+        "placeholder": "Введите фразу для изучения"
+      },
+      "translation": {
+        "label": "Пеервод",
+        "placeholder": "Введите перевод здесь"
+      }
+    },
+    "slide": {
+      "header": {
+        "label": "Заголовок",
+        "placeholder": "Введите заголовок здесь"
+      },
+      "slide": {
+        "label": "Слайд",
+        "placeholder": "Введите слайд здесь"
+      }
+    },
+    "buttons": {
+      "save": "Сохранить",
+      "reset": "Сброс"
+    }
+  },
+  "StatsPage": {
+    "title": "Моя статистика",
+    "finished": "изучено",
+    "next_repeat": "следующий повтор {{at}}",
+    "total": "Всего: {{total}} слов и фраз"
 
+  }
 }

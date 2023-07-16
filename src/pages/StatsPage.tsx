@@ -1,4 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+
 import dayjs from "dayjs";
 import * as modules from "@/services/modules";
 import Placeholder from "@/components/Placeholder";
@@ -15,7 +17,10 @@ type StatsEntry = {
 export default function StatsPage() {
   const [loading, setLoading] = useState<boolean | null>(null);
   const [stats, setStats] = useState<StatsEntry[]>([]);
+
   const uid = useUid();
+  const { t } = useTranslation();
+
   const fetchAll = useCallback(async () => {
     const [plan, history] = await Promise.all([
       repetition.plan(uid()),
@@ -82,8 +87,8 @@ export default function StatsPage() {
   }
 
   return (
-    <div className="layout-fluid">
-      <h1>My stats</h1>
+    <div className="layout-fluid mt-4">
+      <h1>{t("StatsPage.title")}</h1>
       <ul className="list-group list-group-flush">
         {stats.map((e) => (
           <li
@@ -94,16 +99,16 @@ export default function StatsPage() {
             <span>
               [
               {e.repetition.finishedAt
-                ? "finished"
-                : `next repeat at ${dayjs(e.repetition.scheduledAt).fromNow()}`}
-              ]
+                ? t("StatsPage.finished")
+                : t("StatsPage.next_repeat", {at: dayjs(e.repetition.scheduledAt).fromNow()})
+              }]
             </span>
           </li>
         ))}
       </ul>
       <hr/>
       <div className="mt-3 ms-3">
-        Total: {stats.length} words and phrases
+        {t("StatsPage.total", {total: stats.length})}
       </div>
     </div>
   );

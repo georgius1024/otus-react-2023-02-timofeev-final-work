@@ -1,5 +1,6 @@
-import Form from 'react-formal';
-import * as yup from 'yup';
+import Form from "react-formal";
+import { useTranslation } from "react-i18next";
+import * as yup from "yup";
 
 import FormGroup from "@/components/FormGroup";
 
@@ -8,7 +9,7 @@ import type { Activity, PhraseActivity } from "@/types";
 //@ts-nocheck
 const ActivitySchema: any = yup.object({
   phrase: yup.string().required(),
-  translation: yup.string().required()
+  translation: yup.string().required(),
 });
 
 type OnSubmit = (activity: Activity) => void;
@@ -19,25 +20,39 @@ type ActivityFormProps = {
 };
 
 export default function PhraseActivityForm(props: ActivityFormProps) {
+  const { t } = useTranslation();
   return (
-    <Form schema={ActivitySchema} onSubmit={props.onSubmit} defaultValue={props.activity as PhraseActivity}>
-      <FormGroup label="Phrase">
-        <Form.Field className="form-control shadow-none w-100" name="phrase" type="text"
-          placeholder="enter foreign phrase here..."
+    <Form
+      schema={ActivitySchema}
+      onSubmit={props.onSubmit}
+      defaultValue={props.activity as PhraseActivity}
+    >
+      <FormGroup label={t("ActivityForm.phrase.phrase.label")}>
+        <Form.Field
+          className="form-control shadow-none w-100"
+          name="phrase"
+          type="text"
+          placeholder={t("ActivityForm.phrase.phrase.placeholder")}
         />
         <Form.Message for="phrase" className="text-danger mb-3 p-1 d-block" />
       </FormGroup>
-      <FormGroup label="Translation">
-        <Form.Field className="form-control shadow-none w-100" name="translation" type="text"
-          placeholder="enter translation here..."
+      <FormGroup label={t("ActivityForm.phrase.translation.label")}>
+        <Form.Field
+          className="form-control shadow-none w-100"
+          name="translation"
+          type="text"
+          placeholder={t("ActivityForm.phrase.translation.placeholder")}
         />
-        <Form.Message for="translation" className="text-danger mb-3 p-1 d-block" />
+        <Form.Message
+          for="translation"
+          className="text-danger mb-3 p-1 d-block"
+        />
       </FormGroup>
       <Form.Submit className="btn btn-primary light-text me-3">
-        Save
+        {t("ActivityForm.buttons.save")}
       </Form.Submit>
       <Form.Reset className="btn btn-outline-primary">
-        Reset
+        {t("ActivityForm.buttons.reset")}
       </Form.Reset>
     </Form>
   );

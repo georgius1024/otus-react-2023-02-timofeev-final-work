@@ -131,5 +131,59 @@
       "continue": "Continue",
       "forgot": "I don't remember"
     }
+  },
+  "RepetitionPageAdd": {
+    "word": "Word",
+    "phrase": "Phrase"
+  },
+  "ActivityForm": {
+    "word": {
+      "word": {
+        "label": "Word",
+        "placeholder": "Enter foreign word here"
+      },
+      "translation": {
+        "label": "Translation",
+        "placeholder": "Enter translation here"
+      },
+      "context": {
+        "label": "Context",
+        "placeholder": "Word usage context (optional)"
+      },
+      "synonyms": {
+        "label": "Synonyms",
+        "placeholder": "Word synonym (optional)"
+      }
+    },
+    "phrase": {
+      "phrase": {
+        "label": "Phrase",
+        "placeholder": "Enter foreign phrase here"
+      },
+      "translation": {
+        "label": "Translation",
+        "placeholder": "Enter translation here"
+      }
+    },
+    "slide": {
+      "header": {
+        "label": "Header",
+        "placeholder": "Enter header here"
+      },
+      "slide": {
+        "label": "Slide",
+        "placeholder": "Enter slide here"
+      }
+    },
+    "buttons": {
+      "save": "Save",
+      "reset": "Reset"
+    }
+  },
+  "StatsPage": {
+    "title": "My stats",
+    "finished": "finished",
+    "next_repeat": "next repeat at {{at}}",
+    "total": "Total: {{total}} words and phrases"
   }
 }
