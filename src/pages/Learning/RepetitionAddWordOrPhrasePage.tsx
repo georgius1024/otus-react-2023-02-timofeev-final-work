@@ -47,7 +47,7 @@ export default function RepetitionAddWordOrPhrasePage() {
     const module = {
       parent: uid || "",
       name: "",
-      type: "activity",
+      type: "custom-activity",
       activity: createActivity(activityType),
       position: dayjs().valueOf(),
     } as Module;

@@ -99,6 +99,7 @@ export async function findWords(type: "word" | "phrase"): Promise<string[]> {
   const response = await getDocs(
     query(
       modulesTableRef,
+      where("type", "==", 'activity'),
       where("activity.type", "==", type)
     )
   );
@@ -110,6 +111,7 @@ export async function findTranslations(type: "word" | "phrase"): Promise<string[
   const response = await getDocs(
     query(
       modulesTableRef,
+      where("type", "==", 'activity'),
       where("activity.type", "==", type),
     )
   );
