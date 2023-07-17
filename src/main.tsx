@@ -9,13 +9,14 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 
 import router from "@/router";
 import { store } from "@/store";
-import "@/i18n"
+import i18n from "@/i18n"
 
 import "@/main.scss";
 import 'bootstrap';
 import "@popperjs/core"
 
 dayjs.extend(relativeTime)
+dayjs.locale(i18n.language)
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
