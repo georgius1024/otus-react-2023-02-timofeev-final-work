@@ -8,7 +8,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production
+    env:
+      VITE_APY_KEY: ${{ secrets.VITE_APY_KEY }}
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
