@@ -93,10 +93,6 @@
     }
   },
   "Activities": {
-    "buttons": {
-      "continue": "Continue",
-      "forgot": "I don't remember"
-    },
     "phrase": {
       "learn": {
         "title": "Please remember the phrase"
