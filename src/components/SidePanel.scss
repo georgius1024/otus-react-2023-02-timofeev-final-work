@@ -1,4 +1,4 @@
-.side-panel {
+.side-panel-outer {
   .background {
     top: 0;
     left: 0;
@@ -13,12 +13,12 @@
       backdrop-filter: saturate(10%) blur(5px);
       transform: translateY(0);
       opacity: 1;
-      .side-panel {
+      .side-panel-inner {
         transform: translateX(0);
       }
     }
   }
-  .side-panel {
+  .side-panel-inner {
     transition: transform 200ms ease;
     position: fixed;
     top: 0;
@@ -47,6 +47,9 @@
       font-size: 32px;
       color: currentColor;
       cursor: pointer;
+    }
+    @media screen and (max-width: 800px) {
+      width: 100vw !important;
     }
   }
 }

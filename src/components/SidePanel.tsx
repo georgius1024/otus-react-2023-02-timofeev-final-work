@@ -66,14 +66,14 @@ export default function SidePanel(props: PropsWithChildren<SidePanelProps>) {
   );
 
   return (
-    <div className="side-panel">
+    <div className="side-panel-outer">
       <div
         className={classNames("background", { show: props.show })}
         onMouseDown={checkClick}
       >
         <div
           ref={sidebarRef}
-          className={classNames("side-panel", props.position || "right", {
+          className={classNames("side-panel-inner", props.position || "right", {
             close: props.closeControl !== false,
           })}
           style={{ width: `${props.width || 600}px` }}
