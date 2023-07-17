@@ -4,12 +4,16 @@ on:
   push:
     branches:
       - master
-
+env:
+  VITE_APY_KEY: ${{ secrets.VITE_APY_KEY }}
+  VITE_API_DOMAIN: ${{ secrets.VITE_API_DOMAIN }}
+  VITE_PROJECT_ID: ${{ secrets.VITE_PROJECT_ID }}
+  VITE_STORAGE_BUCKET: ${{ secrets.VITE_STORAGE_BUCKET }}
+  VITE_MESSAGE_SENDER_ID: ${{ secrets.VITE_MESSAGE_SENDER_ID }}
+  VITE_APP_ID: ${{ secrets.VITE_APP_ID }}
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      VITE_APY_KEY: ${{ secrets.VITE_APY_KEY }}
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
