@@ -220,5 +220,19 @@
   },
   "StudentsPage": {
     "title": "Students"
+  },
+  "ProfilePage": {
+    "new-user": "Please, update your profile after registration",
+    "confirm": "Profile updated",
+    "form": {
+      "name": {
+        "label": "Your name",
+        "placeholder": "Enter your name here"
+      }
+    },
+    "buttons": {
+      "save": "Save",
+      "reset": "Reset"
+    }
   }
 }
