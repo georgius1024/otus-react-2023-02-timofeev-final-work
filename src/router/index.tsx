@@ -39,13 +39,13 @@ const routes = [
     private: true,
   },
   {
-    path: "/learning/course/:course/lesson/:id",
+    path: "/learning/course/:courseId/lesson/:lessonId",
     element: LessonPage,
     layout: DefaultLayout,
     private: true,
     children: [
       {
-        path: "step/:step",
+        path: "step/:stepId",
         element: <LessonStepPage/>,
         private: true,
       },

@@ -41,3 +41,10 @@ export type RepetitionStep = {
   activity: Activity;
   repetition: RepetitionRecord;
 };
+
+export type LessonStep = {
+  id: string;
+  moduleId: string;
+  type: StepType;
+  activity: Activity;
+};

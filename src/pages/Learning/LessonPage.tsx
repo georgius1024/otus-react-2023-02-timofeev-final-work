@@ -3,6 +3,7 @@ import { useParams, useNavigate, Outlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import dayjs from "dayjs";
+import classNames from "classnames";
 
 import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
@@ -16,18 +17,24 @@ import ModalPanel from "@/components/ModalPanel";
 import Placeholder from "@/components/Placeholder";
 
 import type { Module, ProgressRecord } from "@/types";
+import type {
+  LessonStep,
+  StepType,
+} from "@/pages/Learning/components/ActivityTypes";
 
 import LessonNavigation from "@/pages/Learning/components/LessonNavigation";
 import "@/pages/Learning/LessonPage.scss";
-import classNames from "classnames";
 
 export default function LessonPage() {
-  const { course = "", id = "", step = "" } = useParams();
+  const { courseId = "", lessonId = "", stepId = "" } = useParams();
   const [loading, setLoading] = useState<boolean | null>(null);
-  const [parent, setParent] = useState<Module | null>(null);
+  const [course, setCourse] = useState<Module | null>(null);
   const [lesson, setLesson] = useState<Module | null>(null);
-  const [activities, setActivities] = useState<Module[]>([]);
-  const [currentActivity, setCurrentActivity] = useState<string>(step);
+  // const [activities, setActivities] = useState<Module[]>([]);
+  //const [currentActivity, setCurrentActivity] = useState<string>(step);
+
+  const [steps, setSteps] = useState<LessonStep[]>([]);
+  const [currentStep, setStep] = useState<string>(stepId);
   const [modal, showModal] = useState<boolean>(false);
   const [currentProgress, setCurrentProgress] = useState<ProgressRecord | null>(
     null
@@ -39,63 +46,83 @@ export default function LessonPage() {
   const busy = useBusy();
   const alert = useAlert();
 
+  const current = steps.find((e) => e.id === currentStep);
+  const currentIndex = steps.findIndex((e) => e.id === currentStep);
+  const lessonIsCompleted = Boolean(currentProgress?.finishedAt);
+
   const navigateToStep = useCallback(
-    (step?: string) => {
-      if (!step) {
-        return;
-      }
-      setCurrentActivity(step);
-      navigate(`/learning/course/${course}/lesson/${id}/step/${step}`);
+    (stepId: string) => {
+      setStep(stepId);
+      navigate(
+        `/learning/course/${courseId}/lesson/${lessonId}/step/${stepId}`
+      );
     },
-    [course, id, navigate]
+    [navigate, courseId, lessonId]
   );
-  
+
+  const nextStep = () => {
+    if (!currentProgress) {
+      return;
+    }
+    if (!currentProgress.finishedAt && current) {
+      if (["word", "phrase"].includes(current.activity.type)) {
+        repetition.start(uid(), current.moduleId);
+      }
+    }
+    if (currentIndex === steps.length - 1) {
+      if (!currentProgress.finishedAt) {
+        const updated = { ...currentProgress, finishedAt: dayjs().valueOf() };
+        progress.update(updated);
+        setCurrentProgress(updated);
+        showModal(true);
+      } else {
+        completeLesson();
+      }
+    } else {
+      const nextStep = steps[currentIndex + 1];
+      navigateToStep(nextStep.id);
+    }
+  };
 
   const fetchEverything = useCallback(async () => {
-    const fetchParent = modules.fetchOne(course);
-    const fetchLesson = modules.fetchOne(id);
-    const fetchActivities = modules.fetchChildren(id);
-    const fetchCurrentProgress = await progress.find(uid(), id);
+    const fetchCourse = modules.fetchOne(courseId);
+    const fetchLesson = modules.fetchOne(lessonId);
+    const fetchActivities = modules.fetchChildren(lessonId);
+    const fetchCurrentProgress = await progress.find(uid(), lessonId);
 
-    const [parent, lesson, activities, currentProgress] = await Promise.all([
-      fetchParent,
+    const [course, lesson, activities, currentProgress] = await Promise.all([
+      fetchCourse,
       fetchLesson,
       fetchActivities,
       fetchCurrentProgress,
     ]);
 
-    if (!parent) {
-      navigate(`/learning/courses`);
-      alert("Your should choose course first", "error");
-      return;
-    }
+    const steps = activities
+      .map((module) => {
+        if (!module.activity) {
+          return;
+        }
+        const availableSteps: StepType[] =
+          module.activity.type === "slide"
+            ? ["learn"]
+            : ["learn", "translate-direct", "translate-reverse", "puzzle"];
+        return availableSteps.map((type) => {
+          return {
+            id: `${type}-${module?.id}`,
+            moduleId: module?.id,
+            type,
+            activity: module?.activity,
+          } as LessonStep;
+        });
+      })
+      .flat()
+      .filter(Boolean) as LessonStep[];
 
-    if (!lesson) {
-      navigate(`/learning/course/${course}`);
-      alert("Your should choose lesson first", "error");
-      return;
-    }
-
-    if (!currentProgress) {
-      navigate(`/learning/course/${course}`);
-      alert("Your training was interrupted", "error");
-    }
-
-    const currentActivity = activities.find((e) => e.id === step);
-
-    if (!currentActivity) {
-      const firstActivityId = activities.at(0)?.id || "";
-      navigate(
-        `/learning/course/${course}/lesson/${id}/step/${firstActivityId}`
-      );
-      setCurrentActivity(firstActivityId);
-    }
-
-    setParent(parent);
+    setCourse(course);
     setLesson(lesson);
-    setActivities(activities);
     setCurrentProgress(currentProgress);
-  }, [uid, id, course, step, navigate, alert]);
+    setSteps(steps);
+  }, [uid, lessonId, courseId]);
 
   useEffect(() => {
     setLoading(true);
@@ -104,39 +131,56 @@ export default function LessonPage() {
       .finally(() => setLoading(false));
   }, [busy, fetchEverything]);
 
-  const nextActivity = () => {
-    if (!currentProgress?.finishedAt) {
-      if (
-        ["word", "phrase"].includes(
-          activities.find((e) => e.id === currentActivity)?.activity?.type || ""
-        )
-      ) {
-        repetition.start(uid(), currentActivity);
-      }
-    }
-
-    const index = activities.findIndex((e) => e.id === currentActivity);
-    const next = activities[index + 1]?.id;
-    if (!currentProgress) {
+  useEffect(() => {
+    if (loading !== false) {
       return;
     }
 
-    if (next) {
-      navigateToStep(next);
-    } else {
-      if (!currentProgress.finishedAt) {
-        const current = { ...currentProgress, finishedAt: dayjs().valueOf() };
-        progress.update(current);
-        setCurrentProgress(current);
-        showModal(true);
-      } else {
-        completeLesson();
-      }
+    if (!course) {
+      navigate(`/learning/courses`);
+      alert("Your should choose course first", "error");
+      return;
     }
-  };
+
+    if (!lesson) {
+      navigate(`/learning/course/${courseId}`);
+      alert("Your should choose lesson first", "error");
+      return;
+    }
+
+    if (!currentProgress) {
+      navigate(`/learning/course/${courseId}`);
+      alert("Your training was interrupted", "error");
+    }
+
+    if (!steps) {
+      navigate(`/learning/course/${courseId}`);
+      alert("Empty lesson without activities", "error");
+      return;
+    }
+
+    const firstStep = steps.at(0)?.id;
+
+    if (!stepId && firstStep) {
+      navigateToStep(firstStep);
+      setStep(firstStep);
+    }
+  }, [
+    loading,
+    course,
+    lesson,
+    currentProgress,
+    courseId,
+    lessonId,
+    stepId,
+    steps,
+    navigate,
+    alert,
+    navigateToStep,
+  ]);
 
   const completeLesson = async () => {
-    navigate(`/learning/course/${course}`);
+    navigate(`/learning/course/${courseId}`);
   };
 
   if (loading) {
@@ -166,15 +210,12 @@ export default function LessonPage() {
     );
   }
 
-  const activity = activities.find((e) => e.id === currentActivity)?.activity;
-  const position = activities.findIndex((e) => e.id === currentActivity);
-  const lessonIsCompleted = Boolean(currentProgress?.finishedAt);
   return (
     <div className="container-fluid mt-4">
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item " aria-current="page">
-            {parent?.name}
+            {course?.name}
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             {lesson?.name}
@@ -191,7 +232,7 @@ export default function LessonPage() {
         <div
           className="progress-bar"
           style={{
-            width: `${((position + 0.5) * 100) / activities.length}%`,
+            width: `${((currentIndex + 0.5) * 100) / steps.length}%`,
           }}
         ></div>
       </div>
@@ -200,9 +241,9 @@ export default function LessonPage() {
       >
         <div className="col">
           <LessonNavigation
-            count={activities.length}
-            position={position}
-            onNavigate={(position) => navigateToStep(activities[position]?.id)}
+            count={steps.length}
+            position={currentIndex}
+            onNavigate={(position) => navigateToStep(steps[position]?.id)}
           />
         </div>
         <div className="col text-end">
@@ -214,9 +255,9 @@ export default function LessonPage() {
           </button>
         </div>
       </div>
-      <Outlet context={{ activity: activity, onDone: nextActivity }} />
+      <Outlet context={{ step: current, onDone: nextStep }} />
       <ModalPanel show={modal} onClose={() => showModal(false)}>
-      <h1>{t("LessonPage.modal.title")}</h1>
+        <h1>{t("LessonPage.modal.title")}</h1>
         <p>{t("LessonPage.modal.description", { lesson: lesson?.name })}</p>
         <button className="btn btn-primary w-100" onClick={completeLesson}>
           {t("LessonPage.modal.action")}

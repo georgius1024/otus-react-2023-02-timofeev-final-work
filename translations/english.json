@@ -82,7 +82,9 @@
   },
   "LessonPage": {
     "buttons": {
-      "exit": "Exit lesson"
+      "exit": "Exit lesson",
+      "continue": "Continue",
+      "forgot": "I don't remember"
     },
     "modal": {
       "title": "Congratulations",
