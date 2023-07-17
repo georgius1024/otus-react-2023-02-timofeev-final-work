@@ -222,6 +222,7 @@
     "title": "Students"
   },
   "ProfilePage": {
+    "title": "Profile",
     "new-user": "Please, update your profile after registration",
     "confirm": "Profile updated",
     "form": {

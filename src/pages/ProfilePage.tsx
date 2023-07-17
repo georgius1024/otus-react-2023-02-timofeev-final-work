@@ -49,7 +49,7 @@ export default function ProfilePage(): ReactElement {
   };
 
   return (
-    <Card title="Profile">
+    <Card title={t("ProfilePage.title")}>
       <div
         className={classNames("alert alert-info", {
           "d-none": Boolean(current),
