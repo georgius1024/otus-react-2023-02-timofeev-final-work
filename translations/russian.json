@@ -93,10 +93,6 @@
     }
   },
   "Activities": {
-    "buttons": {
-      "continue": "Дальше",
-      "forgot": "Не помню"
-    },
     "phrase": {
       "learn": {
         "title": "Пожалуйста, запомните эту фразу"
