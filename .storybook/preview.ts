@@ -1,5 +1,4 @@
 import type { Preview } from "@storybook/react";
-//import 'bootstrap/dist/css/bootstrap.min.css';
 import "../src/main.scss";
 import 'bootstrap';
 import "@popperjs/core"
