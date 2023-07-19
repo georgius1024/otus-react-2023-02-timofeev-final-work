@@ -9,6 +9,8 @@ import {
 
 import { auth } from "@/firebase";
 
+import { storeAuth, cleanupAuth, storeUser, cleanupUser } from "@/store/auth/utils";
+
 import type {
   AuthState,
   AuthPayload,
@@ -16,7 +18,6 @@ import type {
   ProfilePayload
 } from "@/store/auth/types";
 import type { Auth, User } from "@/types";
-import { storeAuth, cleanupAuth, storeUser, cleanupUser } from "@/store/auth/utils";
 
 export const login = createAsyncThunk<
   { auth: Auth; user?: User },

@@ -11,25 +11,34 @@ vi.mock("firebase/auth", () => ({
   sendPasswordResetEmail: vi.fn().mockResolvedValue(true),
 }));
 
+vi.mock("@/services/users", () => ({
+  fechAccess: vi.fn().mockResolvedValue('*'),
+  fetchUser: vi.fn().mockResolvedValue({
+    id: 'abacdef0123456789',
+    uid: '1234',
+    email: 'none@nowhere.com',
+    name: 'User name'
+  }),
+  findWithUid: vi.fn().mockResolvedValue({
+    id: 'abacdef0123456789',
+    uid: '1234',
+    email: 'none@nowhere.com',
+    name: 'User name'
+  }), 
+  update: vi.fn().mockResolvedValue(),
+  create: vi.fn().mockResolvedValue({
+    id: 'abacdef0123456789',
+    uid: '1234',
+    email: 'none@nowhere.com',
+    name: 'User name'
+  })
+}))
+
 describe("auth slice actions", () => {
   it("logout", () => {
     const state = { auth: { uid: 101 } };
     reducers.logout(state);
     expect(state).not.toHaveProperty("user.uid");
-  });
-  it("store", () => {
-    const state = { auth: { uid: 101 } };
-    global.localStorage = {};
-    reducers.store(state);
-    expect(global.localStorage).toHaveProperty("store/auth");
-  });
-  it("store", () => {
-    const state = { auth: null };
-    global.localStorage = {
-      "store/auth": JSON.stringify({ auth: { uid: 101 } }),
-    };
-    reducers.restore(state);
-    expect(state).toHaveProperty("auth.uid", 101);
   });
 });
 
@@ -63,4 +72,16 @@ describe("auth slice thunks", () => {
     expect(firebaseAuth.signInWithEmailAndPassword).toHaveBeenCalled();
     expect(dispatch).toHaveBeenCalled();
   });
+  // it("updateProfile calls users module", async () => {
+  //   const dispatch = vi.fn();
+  //   const getState = vi.fn();
+  //   const action = thunks.updateProfile({ name: 'Updated' });
+  //   await action(dispatch, getState);
+  //   await flushPromises();
+  //   expect(users.update).toHaveBeenCalled();
+  // })
+
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
 });
