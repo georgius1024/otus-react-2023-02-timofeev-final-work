@@ -76,6 +76,7 @@ export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
     return {
       parent: props.current?.id || "",
       name: "",
+      enabled: true,
       type: moduleType,
     } as Module;
   };
