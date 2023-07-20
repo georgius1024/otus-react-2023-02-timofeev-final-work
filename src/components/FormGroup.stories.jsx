@@ -1,9 +1,6 @@
-import { jsxDecorator } from "storybook-addon-jsx";
-
 import FormGroup from "./FormGroup"
 export default {
   title: 'FormGroup',
-  decorators: [jsxDecorator],
   component: FormGroup,
   argTypes: {
     children: {
