@@ -18,7 +18,7 @@ const ActivitySchema: any = yup.object({
 type OnSubmit = (activity: Activity) => void;
 
 type ActivityFormProps = {
-  activity: Activity;
+  activity: Activity & { enabled: boolean };
   onSubmit: OnSubmit;
 };
 

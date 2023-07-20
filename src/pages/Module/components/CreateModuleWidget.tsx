@@ -68,6 +68,7 @@ export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
         parent: props.current?.id || "",
         name: "",
         type: moduleType,
+        enabled: true,
         activity: createActivity(activityType),
         position: (props.count || 0) + 1,
       } as Module;
