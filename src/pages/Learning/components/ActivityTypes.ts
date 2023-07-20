@@ -16,6 +16,7 @@ export type ActivityProps<T> = {
 
 export type ActivityStepProps<T> = {
   activity: T;
+  variants?: string[],
   onSolved: OnSolved;
 }
 

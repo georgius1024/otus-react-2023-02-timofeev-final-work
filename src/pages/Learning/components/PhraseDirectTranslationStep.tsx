@@ -19,6 +19,10 @@ export default function PhraseDirectTranslationStep(
   const { t } = useTranslation();
 
   useEffect(() => {
+    if (props.variants) {
+      setTranslations(modules.shuffle<string>(props.variants));
+      return 
+    }
     busy(true);
     modules
       .findTranslations('phrase')
@@ -31,7 +35,7 @@ export default function PhraseDirectTranslationStep(
       })
       .catch(console.error)
       .finally(() => busy(false));
-  }, [busy, props.activity.translation]);
+  }, [busy, props.activity.translation, props.variants]);
 
   const listSelectHandler = (selection: string) => {
     const solved = selection === props.activity.translation;

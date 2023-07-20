@@ -2,6 +2,7 @@ import type { Preview } from "@storybook/react";
 import "../src/main.scss";
 import 'bootstrap';
 import "@popperjs/core"
+import "../src/i18n"
 
 const preview: Preview = {
   parameters: {

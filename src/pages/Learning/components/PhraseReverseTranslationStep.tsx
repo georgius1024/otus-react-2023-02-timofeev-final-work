@@ -19,6 +19,10 @@ export default function PhraseReverseTranslationStep(
   const { t } = useTranslation();
 
   useEffect(() => {
+    if (props.variants) {
+      setPhrases(modules.shuffle<string>(props.variants));
+      return 
+    }
     busy(true);
     modules
       .findWords("phrase")
@@ -32,7 +36,7 @@ export default function PhraseReverseTranslationStep(
       })
       .catch(console.error)
       .finally(() => busy(false));
-  }, [busy, props.activity.phrase]);
+  }, [busy, props.activity.phrase, props.variants]);
 
   const listSelectHandler = (selection: string) => {
     const solved = selection === props.activity.phrase;
