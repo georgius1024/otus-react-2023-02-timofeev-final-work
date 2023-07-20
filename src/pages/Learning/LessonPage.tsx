@@ -95,6 +95,10 @@ export default function LessonPage() {
       fetchLesson,
       fetchActivities,
       fetchCurrentProgress,
+      modules.findWords("word"),
+      modules.findWords("phrase"),
+      modules.findTranslations("word"),
+      modules.findTranslations("phrase"),
     ]);
 
     const steps = activities

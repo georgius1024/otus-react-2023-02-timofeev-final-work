@@ -4,7 +4,7 @@ import omit from "lodash.omit";
 // @ts-ignore
 import pluck from "lodash.pluck";
 // @ts-ignore
-import stringSimilarity from 'string-similarity' 
+import stringSimilarity from "string-similarity";
 
 import {
   collection,
@@ -87,19 +87,23 @@ export async function destroy(module: Module): Promise<void> {
 }
 
 export function shuffle<T>(list: T[]): T[] {
-  return list.sort(() => Math.random() - 0.5)
+  return list.sort(() => Math.random() - 0.5);
 }
 
 export function similarWords(sample: string, list: string[], count: number) {
-  const sorted = list.sort((a, b) => stringSimilarity.compareTwoStrings(b, sample) - stringSimilarity.compareTwoStrings(a, sample))
-  return sorted.slice(0, count)
+  const sorted = list.sort(
+    (a, b) =>
+      stringSimilarity.compareTwoStrings(b, sample) -
+      stringSimilarity.compareTwoStrings(a, sample)
+  );
+  return sorted.slice(0, count);
 }
 
-export async function findWords(type: "word" | "phrase"): Promise<string[]> {
+async function __findWords(type: "word" | "phrase"): Promise<string[]> {
   const response = await getDocs(
     query(
       modulesTableRef,
-      where("type", "==", 'activity'),
+      where("type", "==", "activity"),
       where("activity.type", "==", type)
     )
   );
@@ -107,13 +111,41 @@ export async function findWords(type: "word" | "phrase"): Promise<string[]> {
   return pluck(response.docs.map(withId), `activity.${type}`);
 }
 
-export async function findTranslations(type: "word" | "phrase"): Promise<string[]> {
+export async function __findTranslations(
+  type: "word" | "phrase"
+): Promise<string[]> {
   const response = await getDocs(
     query(
       modulesTableRef,
-      where("type", "==", 'activity'),
-      where("activity.type", "==", type),
+      where("type", "==", "activity"),
+      where("activity.type", "==", type)
     )
   );
   return pluck(response.docs.map(withId), "activity.translation");
+}
+
+export async function findWords(type: "word" | "phrase"): Promise<string[]> {
+  const key = `cached-${type}s`;
+  if (sessionStorage.getItem(key)) {
+    try {
+      return JSON.parse(sessionStorage[key]);
+    } catch {} // eslint-disable-line
+  }
+  const data = await __findWords(type);
+  sessionStorage[key] = JSON.stringify(data);
+  return data;
+}
+
+export async function findTranslations(
+  type: "word" | "phrase"
+): Promise<string[]> {
+  const key = `cached-${type}s-translations`;
+  if (sessionStorage.getItem(key)) {
+    try {
+      return JSON.parse(sessionStorage[key]);
+    } catch {} // eslint-disable-line
+  }
+  const data = await __findTranslations(type);
+  sessionStorage[key] = JSON.stringify(data);
+  return data;
 }
