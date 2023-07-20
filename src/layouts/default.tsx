@@ -105,9 +105,11 @@ export default function DefaultLayout(props: PropsWithChildren) {
               </Link>
             </li>
           </ul>
+          <div className="me-5">
+            <LanguageSwitch current={i18n.language} onSelect={changeLanguage} />
+          </div>
           {auth && <ProfileMenu />}
           {!auth && <LoginLinks />}
-          <LanguageSwitch current={i18n.language} onSelect={changeLanguage} />
         </div>
       </nav>
       <AlertsPanel />
