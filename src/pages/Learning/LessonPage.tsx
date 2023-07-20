@@ -106,6 +106,9 @@ export default function LessonPage() {
         if (!module.activity) {
           return;
         }
+        if (!module.enabled) {
+          return;
+        }
         const availableSteps: StepType[] =
           module.activity.type === "slide"
             ? ["learn"]

@@ -173,6 +173,9 @@
         "placeholder": "Enter slide here"
       }
     },
+    "enabled": {
+      "label": "Enabled"
+    },
     "buttons": {
       "save": "Save",
       "reset": "Reset"
@@ -210,6 +213,9 @@
   "ModuleForm": {
     "name": {
       "label": "Name"
+    },
+    "enabled": {
+      "label": "Enabled"
     },
     "buttons": {
       "save": "Save",

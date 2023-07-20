@@ -173,6 +173,9 @@
         "placeholder": "Введите слайд здесь"
       }
     },
+    "enabled": {
+      "label": "Одобрено"
+    },
     "buttons": {
       "save": "Сохранить",
       "reset": "Сброс"
@@ -210,6 +213,9 @@
   "ModuleForm": {
     "name": {
       "label": "Название"
+    },
+    "enabled": {
+      "label": "Одобрено"
     },
     "buttons": {
       "save": "Сохранить",

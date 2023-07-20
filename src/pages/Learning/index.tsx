@@ -49,7 +49,7 @@ export default function LearningIndex() {
       .map((e) => [e?.moduleId || "", e]);
     // @ts-ignore
     setStatuses(new Map<string, ProgressRecord>(entries));
-    setCourses(courses);
+    setCourses(courses.filter(e => e.enabled));
     setWordsToRepeat(agenda.length);
   }, [uid]);
 

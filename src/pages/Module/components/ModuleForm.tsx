@@ -1,6 +1,6 @@
-import Form from 'react-formal';
+import Form from "react-formal";
 import { useTranslation } from "react-i18next";
-import * as yup from 'yup';
+import * as yup from "yup";
 
 import FormGroup from "@/components/FormGroup";
 
@@ -8,7 +8,8 @@ import type { Module } from "@/types";
 
 //@ts-nocheck
 const moduleSchema: any = yup.object({
-  name: yup.string().required()
+  name: yup.string().required(),
+  enabled: yup.boolean().required(),
 });
 
 type OnSubmit = (module: Module) => void;
@@ -22,13 +23,30 @@ export default function ModuleForm(props: ModuleFormProps) {
   const { t } = useTranslation();
 
   return (
-    <Form schema={moduleSchema} onSubmit={props.onSubmit} defaultValue={props.module}>
+    <Form
+      schema={moduleSchema}
+      onSubmit={props.onSubmit}
+      defaultValue={props.module}
+    >
       <FormGroup label={t("ModuleForm.name.label")}>
-        <Form.Field className="form-control shadow-none w-100" name="name" type="text"
+        <Form.Field
+          className="form-control shadow-none w-100"
+          name="name"
+          type="text"
           placeholder={`enter ${props.module.type} name here...`}
         />
         <Form.Message for="name" className="text-danger mb-3 p-1 d-block" />
       </FormGroup>
+      <div className="form-check mb-3">
+        <label className="form-check-label">
+          <Form.Field
+            type="checkbox"
+            name="enabled"
+            className="form-check-input"
+          />{" "}
+          {t("ModuleForm.enabled.label")}
+        </label>
+      </div>
       <Form.Submit className="btn btn-primary light-text me-3">
         {t("ModuleForm.buttons.save")}
       </Form.Submit>

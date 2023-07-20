@@ -10,6 +10,7 @@ import type { Activity, SlideActivity } from "@/types";
 const ActivitySchema: any = yup.object({
   header: yup.string().required(),
   slide: yup.string().required(),
+  enabled: yup.boolean().required(),
 });
 
 type OnSubmit = (activity: Activity) => void;
@@ -48,6 +49,16 @@ export default function SlideActivityForm(props: ActivityFormProps) {
         />
         <Form.Message for="slide" className="text-danger mb-3 p-1 d-block" />
       </FormGroup>
+      <div className="form-check mb-3">
+        <label className="form-check-label">
+          <Form.Field
+            type="checkbox"
+            name="enabled"
+            className="form-check-input"
+          />{" "}
+          {t("ActivityForm.enabled.label")}
+        </label>
+      </div>
       <Form.Submit className="btn btn-primary light-text me-3">
         {t("ActivityForm.buttons.save")}
       </Form.Submit>

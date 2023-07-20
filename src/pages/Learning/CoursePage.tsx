@@ -64,7 +64,7 @@ export default function CoursePage() {
     // @ts-ignore
     const statuses = new Map<string, ProgressRecord>(statusEntries);
     setCourse(course);
-    setLessons(lessons);
+    setLessons(lessons.filter(e => e.enabled));
     setStatuses(statuses);
     setCurrentProgress(currentProgress);
     setWordsToRepeat(agenda.length);

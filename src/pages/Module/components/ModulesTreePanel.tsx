@@ -19,10 +19,10 @@ type ModulesTreePanelProps = {
 };
 
 import "@/pages/Module/components/ModulesTreePanel.scss";
+import classNames from "classnames";
 
 export default function ModulesTreePanel(props: ModulesTreePanelProps) {
   const { t } = useTranslation();
-
   const selectClick =
     (item: Module) => (event: React.MouseEvent<HTMLSpanElement>) => {
       event.stopPropagation();
@@ -74,7 +74,7 @@ export default function ModulesTreePanel(props: ModulesTreePanelProps) {
               </svg>
             </div>
             <div className="flex-grow-1">
-              <span className="module-link" onClick={selectClick(e)}>
+              <span className={classNames("module-link", {"text-decoration-line-through": !e.enabled})} onClick={selectClick(e)}>
                 {e.name || "--empty module name--"}
               </span>
             </div>

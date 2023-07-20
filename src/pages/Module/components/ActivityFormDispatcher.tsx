@@ -1,6 +1,7 @@
 import WordActivityForm from '@/pages/Module/components/WordActivityForm';
 import PhraseActivityForm from '@/pages/Module/components/PhraseActivityForm';
 import SlideActivityForm from '@/pages/Module/components/SlideActivityForm';
+import omit from "lodash.omit";
 
 import type { Module, Activity, WordActivity, PhraseActivity, SlideActivity } from "@/types";
 type OnSubmit = (module: Module) => void;
@@ -26,8 +27,10 @@ export default function ActivityForm(props: ActivityFormProps) {
           return (activity as SlideActivity).header
       }
     })()
+    // @ts-ignore
+    const enabled = activity['enabled'] ?? true
     const name = `${ucfirst(activity.type)} "${activityToken}"`
-    props.onSubmit({ ...props.module, name, activity })
+    props.onSubmit({ ...props.module, enabled, name, activity: omit(activity, 'enabled') as Activity })
   }
   if (!props.module.activity) {
     return null

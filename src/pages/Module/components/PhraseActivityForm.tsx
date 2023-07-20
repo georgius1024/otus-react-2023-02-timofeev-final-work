@@ -10,6 +10,7 @@ import type { Activity, PhraseActivity } from "@/types";
 const ActivitySchema: any = yup.object({
   phrase: yup.string().required(),
   translation: yup.string().required(),
+  enabled: yup.boolean().required(),
 });
 
 type OnSubmit = (activity: Activity) => void;
@@ -48,6 +49,16 @@ export default function PhraseActivityForm(props: ActivityFormProps) {
           className="text-danger mb-3 p-1 d-block"
         />
       </FormGroup>
+      <div className="form-check mb-3">
+        <label className="form-check-label">
+          <Form.Field
+            type="checkbox"
+            name="enabled"
+            className="form-check-input"
+          />{" "}
+          {t("ActivityForm.enabled.label")}
+        </label>
+      </div>
       <Form.Submit className="btn btn-primary light-text me-3">
         {t("ActivityForm.buttons.save")}
       </Form.Submit>
