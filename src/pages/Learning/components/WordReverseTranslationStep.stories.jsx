@@ -1,12 +1,12 @@
 import { Provider } from "react-redux";
 
-import PhraseDirectTranslationStep from "./PhraseDirectTranslationStep";
+import WordReverseTranslationStep from "./WordReverseTranslationStep";
 import Card from "../../../components/Card";
 import { store } from "../../../store";
 
 export default {
-  component: PhraseDirectTranslationStep,
-  title: "activities/phrase/PhraseDirectTranslationStep",
+  component: WordReverseTranslationStep,
+  title: "activities/word/WordReverseTranslationStep",
   argTypes: {
     onSolved: {
       table: {
@@ -28,23 +28,23 @@ export default {
 
 export function Default() {
   const activity = {
-    type: "phrase",
-    phrase: "Pharse on foreign language",
-    translation: "Correct translation to native language",
+    type: "word",
+    word: "word",
+    translation: "Слово",
   };
   const variants = [
-    "Correct translation to native language",
-    "Incorrect translation to native language (1)",
-    "Incorrect translation to native language (2)",
-    "Incorrect translation to native language (3)",
+    "word",
+    "hord",
+    "cord",
+    "board",
   ];
   
   const onSolved = (correct) => setTimeout(() => alert(correct), 10);
-
+  
   return (
     <Provider store={store}>
       <Card title="Activity" modules={6}>
-        <PhraseDirectTranslationStep
+        <WordReverseTranslationStep
           activity={activity}
           variants={variants}
           onSolved={onSolved}

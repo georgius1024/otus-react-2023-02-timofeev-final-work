@@ -1,9 +1,9 @@
-import PhrasePuzzleStep from "./PhrasePuzzleStep";
+import WordPuzzleStep from "./WordPuzzleStep";
 import Card from "../../../components/Card";
 import "./ActivityStyles.scss";
 export default {
-  component: PhrasePuzzleStep,
-  title: "activities/phrase/PhrasePuzzleStep",
+  component: WordPuzzleStep,
+  title: "activities/word/WordPuzzleStep",
   argTypes: {
     onSolved: {
       table: {
@@ -20,18 +20,18 @@ export default {
 
 export function Default() {
   const activity = {
-    type: "phrase",
-    phrase: "One two three",
-    translation: "Один два три",
+    type: "word",
+    word: "word",
+    translation: "слово",
   };
-
+  
   const onSolved = (correct) => setTimeout(() => alert(correct), 10);
-
+  
   return (
     <Card title="Activity">
-      <div className="phrase-activity">
+      <div className="word-activity">
         <div className="puzzle-step">
-          <PhrasePuzzleStep activity={activity} onSolved={onSolved} />
+          <WordPuzzleStep activity={activity} onSolved={onSolved} />
         </div>
       </div>
     </Card>

@@ -19,6 +19,11 @@ export default function WordDirectTranslationStep(
   const [translations, setTranslations] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   useEffect(() => {
+    if (props.variants) {
+      setTranslations(modules.shuffle<string>(props.variants));
+      return 
+    }
+
     busy(true);
     modules
       .findTranslations('word')
@@ -31,7 +36,7 @@ export default function WordDirectTranslationStep(
       })
       .catch(console.error)
       .finally(() => busy(false));
-  }, [busy, props.activity.translation]);
+  }, [busy, props.activity.translation, props.variants]);
 
   const listSelectHandler = (selection: string) => {
     const solved = selection === props.activity.translation;

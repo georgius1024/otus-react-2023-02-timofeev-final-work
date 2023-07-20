@@ -38,7 +38,9 @@ export function Default() {
     "Incorrect pharse on foreign language (2)",
     "Incorrect pharse on foreign language (3)",
   ];
-  const onSolved = (correct) => alert(correct);
+
+  const onSolved = (correct) => setTimeout(() => alert(correct), 10);
+
   return (
     <Provider store={store}>
       <Card title="Activity" modules={6}>

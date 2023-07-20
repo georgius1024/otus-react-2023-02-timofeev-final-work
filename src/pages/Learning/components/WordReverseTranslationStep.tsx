@@ -17,6 +17,10 @@ export default function WordReverseTranslationStep(props: WordActivityStepProps)
   const { t } = useTranslation();
 
   useEffect(() => {
+    if (props.variants) {
+      setWords(modules.shuffle<string>(props.variants));
+      return 
+    }
     busy(true);
     modules
       .findWords("word")
@@ -30,7 +34,7 @@ export default function WordReverseTranslationStep(props: WordActivityStepProps)
       })
       .catch(console.error)
       .finally(() => busy(false));
-  }, [busy, props.activity.word]);
+  }, [busy, props.activity.word, props.variants]);
 
   const listSelectHandler = (selection: string) => {
     const solved = selection === props.activity.word;

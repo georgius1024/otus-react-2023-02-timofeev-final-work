@@ -1,9 +1,9 @@
-import PhraseLearnStep from "./PhraseLearnStep";
+import WordLearnStep from "./WordLearnStep";
 import Card from "../../../components/Card";
 
 export default {
-  component: PhraseLearnStep,
-  title: "activities/phrase/PhraseLearnStep",
+  component: WordLearnStep,
+  title: "activities/word/WordLearnStep",
   argTypes: {
     onSolved: {
       table: {
@@ -20,14 +20,14 @@ export default {
 
 export function Default() {
   const activity = {
-    type: "phrase",
-    phrase: "Pharse on foreign language",
-    translation: "Translation to native language",
+    type: "word",
+    word: "Word",
+    translation: "Translation",
   };
   const onSolved = () => null
   return (
     <Card title="Activity">
-      <PhraseLearnStep activity={activity} onSolved={onSolved} />
+      <WordLearnStep activity={activity} onSolved={onSolved} />
     </Card>
   );
 }
