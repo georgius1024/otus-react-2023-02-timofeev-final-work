@@ -75,7 +75,6 @@ export default function CoursePage() {
   useEffect(() => {
     setLoading(true);
     fetchAndCheckEverything()
-      .catch(console.error)
       .finally(() => setLoading(false));
   }, [fetchAndCheckEverything]);
 
@@ -105,7 +104,6 @@ export default function CoursePage() {
         .then(() =>
           navigate(`/learning/course/${id}/lesson/${firstLesson?.id}`)
         )
-        .catch(console.error);
       return;
     }
 
@@ -172,7 +170,6 @@ export default function CoursePage() {
           busy(false);
           openLessonPage(lessonId);
         })
-        .catch(console.error);
     } else {
       openLessonPage(lessonId);
     }

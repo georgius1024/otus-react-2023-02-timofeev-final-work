@@ -57,7 +57,6 @@ export default function ModulePage(): ReactElement {
           setMaxPosition(children.at(-1)?.position || 0)
           busy(false);
         })
-        .catch(console.error);
     },
     [busy]
   );
@@ -89,7 +88,6 @@ export default function ModulePage(): ReactElement {
       .then(() => {
         reload(module.parent);
       })
-      .catch(console.error)
       .finally(() => busy(false));
   };
   const saveModule = (module: Module | null, editorAction: EditorActionType) => {
@@ -107,7 +105,6 @@ export default function ModulePage(): ReactElement {
         showEditor('none');
         reload(module.parent);
       })
-      .catch(console.error)
       .finally(() => busy(false));
   };
   const sortModules = (list: Module[]) => {

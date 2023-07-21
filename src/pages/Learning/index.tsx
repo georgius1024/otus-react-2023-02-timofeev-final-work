@@ -56,7 +56,6 @@ export default function LearningIndex() {
   useEffect(() => {
     setLoading(true);
     fetchAll()
-      .catch(console.error)
       .finally(() => setLoading(false));
   }, [fetchAll]);
 
@@ -85,7 +84,6 @@ export default function LearningIndex() {
           userId: uid(),
           startedAt: dayjs().valueOf(),
         })
-        .catch(console.error);
       busy(false);
     }
     openCoursePage(course.id);

@@ -27,7 +27,6 @@ export default function StudentsPage() {
   useEffect(() => {
     setLoading(true);
     loadAll()
-      .catch(console.error)
       .finally(() => setLoading(false));
   }, [loadAll]);
 
