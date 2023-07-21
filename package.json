@@ -9,6 +9,7 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest",
+    "coverage": "vitest --coverage",
     "deploy": "tsc && vite build && firebase deploy",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -16,8 +17,6 @@
   "dependencies": {
     "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^1.9.5",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^14.0.0",
     "axios": "^1.4.0",
     "bootstrap": "^5.3.0",
     "classnames": "^2.3.2",
@@ -42,7 +41,6 @@
     "sass": "^1.63.6",
     "sortablejs": "^1.15.0",
     "string-similarity": "^4.0.4",
-    "vitest": "^0.32.0",
     "yup": "^1.2.0"
   },
   "devDependencies": {
@@ -56,6 +54,8 @@
     "@storybook/react": "^7.1.0",
     "@storybook/react-vite": "^7.1.0",
     "@storybook/testing-library": "^0.2.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
     "@types/lodash": "^4.14.195",
     "@types/lodash.debounce": "^4.0.7",
     "@types/lodash.omit": "^4.5.7",
@@ -68,6 +68,7 @@
     "@typescript-eslint/eslint-plugin": "^5.59.0",
     "@typescript-eslint/parser": "^5.59.0",
     "@vitejs/plugin-react-swc": "^3.0.0",
+    "@vitest/coverage-v8": "^0.33.0",
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
@@ -76,6 +77,8 @@
     "flush-promises": "^1.0.2",
     "storybook": "^7.1.0",
     "typescript": "^5.0.2",
-    "vite": "^4.3.9"
+    "vite": "^4.3.9",
+    "vite-tsconfig-paths": "^4.2.0",
+    "vitest": "^0.32.0"
   }
 }

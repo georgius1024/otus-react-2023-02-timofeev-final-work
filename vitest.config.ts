@@ -7,6 +7,8 @@ export default defineConfig({
   test: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
+      "@assets": fileURLToPath(new URL("./src/assets", import.meta.url)),
+      "@translations": fileURLToPath(new URL("./translations", import.meta.url))
     },
     globals: true,
     environment: "jsdom",

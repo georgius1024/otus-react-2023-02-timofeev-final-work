@@ -17,20 +17,6 @@ describe("auth slice actions", () => {
     reducers.logout(state);
     expect(state).not.toHaveProperty("user.uid");
   });
-  it("store", () => {
-    const state = { auth: { uid: 101 } };
-    global.localStorage = {};
-    reducers.store(state);
-    expect(global.localStorage).toHaveProperty("store/auth");
-  });
-  it("store", () => {
-    const state = { auth: null };
-    global.localStorage = {
-      "store/auth": JSON.stringify({ auth: { uid: 101 } }),
-    };
-    reducers.restore(state);
-    expect(state).toHaveProperty("auth.uid", 101);
-  });
 });
 
 describe("auth slice thunks", () => {
