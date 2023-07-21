@@ -94,7 +94,6 @@ export default function CoursePage() {
     if (!currentProgress) {
       throw new Error("This course have no lessons")
     }
-
     if (!statuses?.size) {
       const firstLesson = lessons.at(0);
       progress

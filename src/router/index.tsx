@@ -20,6 +20,7 @@ import RepetitionStepPage from "@/pages/Learning/RepetitionStepPage";
 import RepetitionAddWordOrPhrasePage from "@/pages/Learning/RepetitionAddWordOrPhrasePage";
 import StatsPage from "@/pages/StatsPage";
 import ErrorPage from "@/pages/Error";
+import Error404Page from "@/pages/Error404";
 
 const routes = [
   {
@@ -112,8 +113,13 @@ const routes = [
     layout: DefaultLayout,
   },
   {
-    path: "*",
+    path: "/error",
     element: ErrorPage,
+    layout: DefaultLayout,
+  },
+  {
+    path: "*",
+    element: Error404Page,
     layout: DefaultLayout,
   },
 ].map((route) => {
