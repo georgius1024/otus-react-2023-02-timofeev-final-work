@@ -32,7 +32,7 @@ export default function ForgotPage(): ReactElement {
     event.preventDefault();
     const { error } = (await dispatch(forgot({ email }))) as ErrorResponse;
     if (!error) {
-      alert(t('ForgetPage.confirm'), "success");
+      alert(t('ForgotPage.confirm'), "success");
       navigate("/login");
     } else {
       alert(error.message, "warning");

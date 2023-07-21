@@ -1,13 +1,6 @@
 import { createAsyncThunk, ActionReducerMapBuilder } from "@reduxjs/toolkit";
 import * as users from "@/services/users"
-
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
-} from "firebase/auth";
-
-import { auth } from "@/firebase";
+import * as auth from "@/services/auth"
 
 import { storeAuth, cleanupAuth, storeUser, cleanupUser } from "@/store/auth/utils";
 
@@ -17,6 +10,7 @@ import type {
   RecoverPayload,
   ProfilePayload
 } from "@/store/auth/types";
+
 import type { Auth, User } from "@/types";
 
 export const login = createAsyncThunk<
@@ -24,14 +18,10 @@ export const login = createAsyncThunk<
   AuthPayload,
   { rejectValue: string }
 >("auth/login", async (payload: AuthPayload) => {
-  const userAuth = await signInWithEmailAndPassword(
-    auth,
+  const userAuth = await auth.login(
     payload.email,
     payload.password
-  ).then((userCredentials) => {
-    const { uid, email, providerData } = userCredentials.user;
-    return { uid, email, providerData } as Auth;
-  });
+  );
 
   const fetchAccess = () => {
     return users.fechAccess(userAuth.uid || '')
@@ -50,21 +40,17 @@ export const login = createAsyncThunk<
 export const register = createAsyncThunk(
   "auth/register",
   async (payload: AuthPayload) => {
-    return createUserWithEmailAndPassword(
-      auth,
+    return await auth.register(
       payload.email,
       payload.password
-    ).then((userCredentials) => {
-      const { uid, email, providerData } = userCredentials.user;
-      return { uid, email, providerData };
-    });
+    );
   }
 );
 
 export const forgot = createAsyncThunk(
   "auth/forgot",
   async (payload: RecoverPayload) => {
-    return sendPasswordResetEmail(auth, payload.email);
+    return auth.forgot(payload.email);
   }
 );
 
