@@ -1,4 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
+
+import ErrorHandler from "@/components/ErrorHandler";
 import DefaultLayout from "@/layouts/default";
 import PrivateRoute from "@/components/PrivateRoute";
 
@@ -46,7 +48,7 @@ const routes = [
     children: [
       {
         path: "step/:stepId",
-        element: <LessonStepPage/>,
+        element: <LessonStepPage />,
         private: true,
       },
     ],
@@ -65,7 +67,7 @@ const routes = [
     children: [
       {
         path: ":step",
-        element: <RepetitionStepPage/>,
+        element: <RepetitionStepPage />,
         private: true,
       },
     ],
@@ -115,29 +117,33 @@ const routes = [
     layout: DefaultLayout,
   },
 ].map((route) => {
-  const children = route.children
+  const children = route.children;
   const Layout = route.layout || DefaultLayout;
   if (route.private) {
     return {
       ...route,
       element: (
-        <PrivateRoute>
-          <Layout>
-            <route.element />
-          </Layout>
-        </PrivateRoute>
+        <ErrorHandler>
+          <PrivateRoute>
+            <Layout>
+              <route.element />
+            </Layout>
+          </PrivateRoute>
+        </ErrorHandler>
       ),
-      children
+      children,
     };
   }
   return {
     ...route,
     element: (
-      <Layout>
-        <route.element />
-      </Layout>
+      <ErrorHandler>
+        <Layout>
+          <route.element />
+        </Layout>
+      </ErrorHandler>
     ),
-    children
+    children,
   };
 });
 
