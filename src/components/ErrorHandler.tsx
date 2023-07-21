@@ -11,8 +11,8 @@ function ErrorFallback(props: ErrorFallbackProps) {
   const { t } = useTranslation();
 
   return (
-    <div className="vw-100 vh-100 vw-100 z-3 d-flex justify-content-center align-items-center">
-      <div className="card text-bg-warning mb-3">
+    <div className="vw-100 vh-100 vw-100 z-3 d-flex justify-content-center position-fixed top-0 start-0 align-items-center text-opacity-50 pe-none">
+      <div className="card text-bg-warning mb-3 pe-auto">
         <div className="card-body">
           <h5 className="card-title">{t("ErrorPage.title")}</h5>
           <p className="card-text">{t("ErrorPage.description")}</p>

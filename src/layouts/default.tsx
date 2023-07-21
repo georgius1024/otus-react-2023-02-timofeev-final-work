@@ -8,6 +8,7 @@ import classNames from "classnames";
 import AlertsPanel from "@/components/AlertsPanel";
 import BusyStatePanel from "@/components/BusyStatePanel";
 import LanguageSwitch from "@/components/LanguageSwitch";
+import ErrorHandler from "@/components/ErrorHandler";
 
 import type { RootState } from "@/store";
 import { logout } from "@/store/auth";
@@ -112,7 +113,7 @@ export default function DefaultLayout(props: PropsWithChildren) {
       </nav>
       <AlertsPanel />
       <BusyStatePanel />
-      {props.children}
+      <ErrorHandler>{props.children}</ErrorHandler>
       <nav
         className="navbar bg-secondary position-absolute"
         data-bs-theme="dark"
