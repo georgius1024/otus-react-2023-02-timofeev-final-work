@@ -84,21 +84,15 @@ export default function CoursePage() {
       return;
     }
     if (!course) {
-      navigate(`/learning/courses`);
-      alert("Your should choose course first", "error");
-      return;
+      throw new Error("Your should choose course first")
     }
 
     if (!lessons) {
-      navigate(`/learning/courses`);
-      alert("This course have no lessons", "error");
-      return;
+      throw new Error("This course have no lessons")
     }
 
     if (!currentProgress) {
-      navigate(`/learning/courses`);
-      alert("Your training was interrupted", "error");
-      return;
+      throw new Error("This course have no lessons")
     }
 
     if (!statuses?.size) {

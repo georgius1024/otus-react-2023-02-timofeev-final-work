@@ -3,7 +3,11 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
-function ErrorFallback() {
+type ErrorFallbackProps = {
+  error: Error, resetErrorBoundary: () => void
+};
+
+function ErrorFallback(props: ErrorFallbackProps) {
   const { t } = useTranslation();
 
   return (
@@ -12,7 +16,7 @@ function ErrorFallback() {
         <div className="card-body">
           <h5 className="card-title">{t("ErrorPage.title")}</h5>
           <p className="card-text">{t("ErrorPage.description")}</p>
-          <Link to="/" role="button" className="btn btn-outline-primary w-100">
+          <Link to="/" onClick={props.resetErrorBoundary} role="button" className="btn btn-outline-primary w-100">
             {t("ErrorPage.action")}
           </Link>
         </div>
