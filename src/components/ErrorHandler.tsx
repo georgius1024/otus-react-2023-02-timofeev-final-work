@@ -1,7 +1,7 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect, useCallback } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type ErrorFallbackProps = {
   error: Error, resetErrorBoundary: () => void
@@ -25,7 +25,26 @@ function ErrorFallback(props: ErrorFallbackProps) {
   );
 }
 export default function ErrorHandler(props: PropsWithChildren) {
-  const logError = (error: Error) => console.error("Handled:", error);
+  const navigate = useNavigate()
+  const globalErrorHandler = useCallback(
+    (error: ErrorEvent) => {
+      error.stopPropagation();
+      error.preventDefault();
+      console.log('Error captured')
+      console.error(error)
+      navigate('/error')
+    }, 
+  [navigate])
+  useEffect(() => {
+    window.addEventListener('error', globalErrorHandler)
+    return () => window.removeEventListener('error', globalErrorHandler)
+  }, [globalErrorHandler])
+  const logError = (error: Error) => {throw new Error(error.message)};
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback} onError={logError}>
+      {props.children}
+    </ErrorBoundary>
+  );
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback} onError={logError}>
       {props.children}
