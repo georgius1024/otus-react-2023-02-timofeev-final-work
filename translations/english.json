@@ -14,6 +14,16 @@
       "copyright": "© 2023 Diligent student"
     }
   },
+  "ErrorPage": {
+    "title": "Ooops!",
+    "description": "Something bad happened in application. Don't worry we'll fix that soon",
+    "action": "Restart app"
+  },
+  "Error404Page": {
+    "title": "Ooops!",
+    "description": "Misnavigation happeed in application. Don't worry we'll fix that soon",
+    "action": "Home page"
+  },
   "LoginPage": {
     "title": "Login",
     "email": {

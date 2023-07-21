@@ -75,7 +75,6 @@ export default function CoursePage() {
   useEffect(() => {
     setLoading(true);
     fetchAndCheckEverything()
-      .catch(console.error)
       .finally(() => setLoading(false));
   }, [fetchAndCheckEverything]);
 
@@ -84,23 +83,16 @@ export default function CoursePage() {
       return;
     }
     if (!course) {
-      navigate(`/learning/courses`);
-      alert("Your should choose course first", "error");
-      return;
+      throw new Error("Your should choose course first")
     }
 
     if (!lessons) {
-      navigate(`/learning/courses`);
-      alert("This course have no lessons", "error");
-      return;
+      throw new Error("This course have no lessons")
     }
 
     if (!currentProgress) {
-      navigate(`/learning/courses`);
-      alert("Your training was interrupted", "error");
-      return;
+      throw new Error("This course have no lessons")
     }
-
     if (!statuses?.size) {
       const firstLesson = lessons.at(0);
       progress
@@ -112,7 +104,6 @@ export default function CoursePage() {
         .then(() =>
           navigate(`/learning/course/${id}/lesson/${firstLesson?.id}`)
         )
-        .catch(console.error);
       return;
     }
 
@@ -179,7 +170,6 @@ export default function CoursePage() {
           busy(false);
           openLessonPage(lessonId);
         })
-        .catch(console.error);
     } else {
       openLessonPage(lessonId);
     }

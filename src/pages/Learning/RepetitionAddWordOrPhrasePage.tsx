@@ -63,7 +63,7 @@ export default function RepetitionAddWordOrPhrasePage() {
 
   const submit = async (module: Module) => {
     busy(true)
-    const created = await modules.create(module).catch(console.error)
+    const created = await modules.create(module)
     if (created) {
       await repetition.start(uid(), created.id || '')
       busy(false)

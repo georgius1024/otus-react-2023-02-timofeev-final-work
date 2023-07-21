@@ -134,7 +134,6 @@ export default function LessonPage() {
   useEffect(() => {
     setLoading(true);
     fetchEverything()
-      .catch(console.error)
       .finally(() => setLoading(false));
   }, [busy, fetchEverything]);
 

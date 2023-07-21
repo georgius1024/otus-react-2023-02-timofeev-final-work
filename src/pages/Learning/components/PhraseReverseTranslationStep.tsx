@@ -34,7 +34,6 @@ export default function PhraseReverseTranslationStep(
 
         setPhrases(modules.shuffle<string>(phrases));
       })
-      .catch(console.error)
       .finally(() => busy(false));
   }, [busy, props.activity.phrase, props.variants]);
 

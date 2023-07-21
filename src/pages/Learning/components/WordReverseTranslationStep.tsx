@@ -32,7 +32,6 @@ export default function WordReverseTranslationStep(props: WordActivityStepProps)
 
         setWords(modules.shuffle<string>(words));
       })
-      .catch(console.error)
       .finally(() => busy(false));
   }, [busy, props.activity.word, props.variants]);
 

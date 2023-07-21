@@ -62,7 +62,6 @@ export default function RepetitionPage() {
           alert(t("RepetitionPage.confirm"), "success");
           openLearningPage();
         })
-        .catch(console.error)
         .finally(() => busy(false));
     } else {
       const nextStep = steps[currentIndex + 1];
@@ -113,7 +112,6 @@ export default function RepetitionPage() {
   useEffect(() => {
     setLoading(true);
     fetchAll()
-      .catch(console.error)
       .finally(() => setLoading(false));
   }, [fetchAll]);
 

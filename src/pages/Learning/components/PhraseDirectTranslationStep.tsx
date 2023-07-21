@@ -33,7 +33,6 @@ export default function PhraseDirectTranslationStep(
         ]).slice(0, 6);
         setTranslations(modules.shuffle<string>(translations));
       })
-      .catch(console.error)
       .finally(() => busy(false));
   }, [busy, props.activity.translation, props.variants]);
 

@@ -55,7 +55,6 @@ export default function StatsPage() {
   useEffect(() => {
     setLoading(true);
     fetchAll()
-      .catch(console.error)
       .finally(() => setLoading(false));
   }, [fetchAll]);
 

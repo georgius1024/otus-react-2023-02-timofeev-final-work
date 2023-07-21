@@ -1,4 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
+
+import ErrorHandler from "@/components/ErrorHandler";
 import DefaultLayout from "@/layouts/default";
 import PrivateRoute from "@/components/PrivateRoute";
 
@@ -18,6 +20,7 @@ import RepetitionStepPage from "@/pages/Learning/RepetitionStepPage";
 import RepetitionAddWordOrPhrasePage from "@/pages/Learning/RepetitionAddWordOrPhrasePage";
 import StatsPage from "@/pages/StatsPage";
 import ErrorPage from "@/pages/Error";
+import Error404Page from "@/pages/Error404";
 
 const routes = [
   {
@@ -46,7 +49,7 @@ const routes = [
     children: [
       {
         path: "step/:stepId",
-        element: <LessonStepPage/>,
+        element: <LessonStepPage />,
         private: true,
       },
     ],
@@ -65,7 +68,7 @@ const routes = [
     children: [
       {
         path: ":step",
-        element: <RepetitionStepPage/>,
+        element: <RepetitionStepPage />,
         private: true,
       },
     ],
@@ -110,34 +113,43 @@ const routes = [
     layout: DefaultLayout,
   },
   {
-    path: "*",
+    path: "/error",
     element: ErrorPage,
     layout: DefaultLayout,
   },
+  {
+    path: "*",
+    element: Error404Page,
+    layout: DefaultLayout,
+  },
 ].map((route) => {
-  const children = route.children
+  const children = route.children;
   const Layout = route.layout || DefaultLayout;
   if (route.private) {
     return {
       ...route,
       element: (
-        <PrivateRoute>
-          <Layout>
-            <route.element />
-          </Layout>
-        </PrivateRoute>
+        <ErrorHandler>
+          <PrivateRoute>
+            <Layout>
+              <route.element />
+            </Layout>
+          </PrivateRoute>
+        </ErrorHandler>
       ),
-      children
+      children,
     };
   }
   return {
     ...route,
     element: (
-      <Layout>
-        <route.element />
-      </Layout>
+      <ErrorHandler>
+        <Layout>
+          <route.element />
+        </Layout>
+      </ErrorHandler>
     ),
-    children
+    children,
   };
 });
 
