@@ -12,8 +12,8 @@ function GlobalErrorHandler() {
     (error: PromiseRejectionEvent) => {
       error.stopPropagation();
       error.preventDefault();
-      console.log("Unhandler rejection captured");
-      console.error(error);
+      console.log("Unhandled rejection captured");
+      console.error(error.reason);
       window.location.href = "/error";
     },
     []
