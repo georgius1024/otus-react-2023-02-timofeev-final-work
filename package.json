@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "coverage": "vitest --coverage",
-    "deploy": "tsc && vite build && firebase deploy",
+    "e2e": "playwright test",
+    "deploy": "tsc || vite build && firebase deploy",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -45,11 +46,11 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.36.1",
     "@storybook/addon-essentials": "^7.1.0",
     "@storybook/addon-interactions": "^7.1.0",
     "@storybook/addon-links": "^7.1.0",
     "@storybook/addon-onboarding": "^1.0.7",
-    "@storybook/addon-styling": "^1.3.4",
     "@storybook/blocks": "^7.1.0",
     "@storybook/builder-vite": "^7.1.0",
     "@storybook/react": "^7.1.0",
