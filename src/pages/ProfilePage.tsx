@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 
+
 import classNames from "classnames";
 import Form from "react-formal";
 import * as yup from "yup";
@@ -17,6 +18,7 @@ const userSchema: any = yup.object<User>({
 
 import useAlert from "@/utils/AlertHook";
 import useUid from "@/utils/UidHook";
+import useErrorHandler from "@/utils/ErrorHook"
 
 import { AppDispatch, RootState } from "@/store";
 
@@ -33,6 +35,7 @@ export default function ProfilePage(): ReactElement {
   const alert = useAlert();
   const uid = useUid();
   const { t } = useTranslation();
+  const errorHandler = useErrorHandler()
 
   const onSubmit = async (profile: User) => {
     const { error } = (await dispatch(
@@ -45,9 +48,10 @@ export default function ProfilePage(): ReactElement {
       navigate("/");
     } else {
       alert(error.message, "warning");
+      errorHandler(error as Error)
     }
   };
-
+  
   return (
     <Card title={t("ProfilePage.title")} modules={8}>
       <div

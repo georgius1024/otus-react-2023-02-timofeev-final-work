@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import ErrorHandler from "@/components/ErrorHandler";
 import DefaultLayout from "@/layouts/default";
 import PrivateRoute from "@/components/PrivateRoute";
 
@@ -129,13 +128,11 @@ const routes = [
     return {
       ...route,
       element: (
-        <ErrorHandler>
-          <PrivateRoute>
-            <Layout>
-              <route.element />
-            </Layout>
-          </PrivateRoute>
-        </ErrorHandler>
+        <PrivateRoute>
+          <Layout>
+            <route.element />
+          </Layout>
+        </PrivateRoute>
       ),
       children,
     };
@@ -143,11 +140,9 @@ const routes = [
   return {
     ...route,
     element: (
-      <ErrorHandler>
-        <Layout>
-          <route.element />
-        </Layout>
-      </ErrorHandler>
+      <Layout>
+        <route.element />
+      </Layout>
     ),
     children,
   };

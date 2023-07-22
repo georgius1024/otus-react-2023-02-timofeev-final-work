@@ -19,7 +19,7 @@ export default function LoginPage(): ReactElement {
   const [password, setPassword] = useState<string>("");
   const busy = useSelector((state: RootState) => state.auth.busy);
 
-  const alert = useAlert()
+  const alert = useAlert();
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -41,17 +41,17 @@ export default function LoginPage(): ReactElement {
       login({ email, password })
     )) as ErrorResponse;
     if (!error) {
-      alert(t('LoginPage.confirm'), "success");
+      alert(t("LoginPage.confirm"), "success");
       navigate("/");
     } else {
-      alert(error.message, 'warning');
+      alert(error.message, "warning");
     }
   };
 
   return (
-    <Card title={t('LoginPage.title')}>
+    <Card title={t("LoginPage.title")}>
       <form name="login">
-        <FormGroup label={t('LoginPage.email.label')}>
+        <FormGroup label={t("LoginPage.email.label")}>
           <FormInput
             value={email}
             type="email"
@@ -60,7 +60,7 @@ export default function LoginPage(): ReactElement {
             placeholder="name@example.com"
           />
         </FormGroup>
-        <FormGroup label={t('LoginPage.password.label')}>
+        <FormGroup label={t("LoginPage.password.label")}>
           <FormInput
             value={password}
             type="password"
@@ -73,9 +73,9 @@ export default function LoginPage(): ReactElement {
           type="button"
           onClick={submit}
         >
-          {t('LoginPage.submit')}
+          {t("LoginPage.submit")}
         </button>
-        <Link to="/forgot">{t('LoginPage.forgot')}</Link>
+        <Link to="/forgot">{t("LoginPage.forgot")}</Link>
       </form>
     </Card>
   );
