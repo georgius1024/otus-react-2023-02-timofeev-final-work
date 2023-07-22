@@ -38,10 +38,8 @@ export default function RepetitionPage() {
 
   const updateRepetitionStatus = useCallback(
     (uid: string, steps: RepetitionStep[], failed: Set<string>) => {
-      const modulesSet = new Set<string>(
-        steps.map(step => (step.moduleId))
-      )
-      const moduleIds = [...modulesSet.values()]
+      const modulesSet = new Set<string>(steps.map((step) => step.moduleId));
+      const moduleIds = [...modulesSet.values()];
       const promises = moduleIds.map((moduleId) => {
         if (failed.has(moduleId)) {
           return repetition.reset(uid, moduleId);
@@ -86,7 +84,13 @@ export default function RepetitionPage() {
   );
 
   const fetchAll = useCallback(async () => {
-    const agenda = await repetition.agenda(uid());
+    const [agenda] = await Promise.all([
+      repetition.agenda(uid()),
+      modules.findWords("word"),
+      modules.findWords("phrase"),
+      modules.findTranslations("word"),
+      modules.findTranslations("phrase"),
+    ]);
     const promises = agenda.map((rep: RepetitionRecord) => {
       return modules.fetchOne(rep.moduleId);
     });
@@ -111,8 +115,7 @@ export default function RepetitionPage() {
 
   useEffect(() => {
     setLoading(true);
-    fetchAll()
-      .finally(() => setLoading(false));
+    fetchAll().finally(() => setLoading(false));
   }, [fetchAll]);
 
   useEffect(() => {

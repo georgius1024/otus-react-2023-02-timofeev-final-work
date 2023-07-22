@@ -30,8 +30,6 @@ export default function LessonPage() {
   const [loading, setLoading] = useState<boolean | null>(null);
   const [course, setCourse] = useState<Module | null>(null);
   const [lesson, setLesson] = useState<Module | null>(null);
-  // const [activities, setActivities] = useState<Module[]>([]);
-  //const [currentActivity, setCurrentActivity] = useState<string>(step);
 
   const [steps, setSteps] = useState<LessonStep[]>([]);
   const [currentStep, setStep] = useState<string>(stepId);
