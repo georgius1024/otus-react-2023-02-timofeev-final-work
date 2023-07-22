@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import debounce from "lodash.debounce";
 import useBusy from "@/utils/BusyHook";
+import useErrorHandler from "@/utils/ErrorHook";
 
 import * as modules from "@/services/modules";
 
@@ -31,6 +32,7 @@ export default function ModulePage(): ReactElement {
   const busy = useBusy();
   const navigate = useNavigate();
   const { id = "" } = useParams();
+  const errorHandler = useErrorHandler()
 
   const switchTo = (id: string | undefined) => navigate(`/module/${id}`);
   const reload = useCallback(
@@ -121,7 +123,7 @@ export default function ModulePage(): ReactElement {
     busy(true);
     modules
       .sort(list)
-      .catch(console.error)
+      .catch(errorHandler)
       .finally(() => busy(false));
   };
   const sortDebounced = debounce(sortModules, 200)

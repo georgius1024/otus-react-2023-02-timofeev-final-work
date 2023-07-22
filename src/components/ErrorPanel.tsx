@@ -13,12 +13,12 @@ export default function ErrorPanel(props: ErrorPanelProps) {
     <div
       className="row position-fixed top-0 start-0 vw-100 vh-100 pe-none d-flex justify-content-center align-items-center"
       style={{
-        zIndex: 999,
+        zIndex: 11,
         backgroundColor: "#fff7",
         backdropFilter: "blur(2px)",
       }}
     >
-      <Card title="Error">
+      <Card title="Error" mt={false}>
         <div className="d-flex flex-row">
           <div className="text-danger d-flex align-items-center p-3">
             <svg

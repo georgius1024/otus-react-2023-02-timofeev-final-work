@@ -8,6 +8,7 @@ import classNames from "classnames";
 import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
 import useUid from "@/utils/UidHook";
+import useErrorHandler from "@/utils/ErrorHook";
 
 import * as modules from "@/services/modules";
 import * as progress from "@/services/progress";
@@ -43,6 +44,7 @@ export default function LessonPage() {
   const { t } = useTranslation();
   const busy = useBusy();
   const alert = useAlert();
+  const errorHandler = useErrorHandler()
 
   const current = steps.find((e) => e.id === currentStep);
   const currentIndex = steps.findIndex((e) => e.id === currentStep);
@@ -132,8 +134,9 @@ export default function LessonPage() {
   useEffect(() => {
     setLoading(true);
     fetchEverything()
+      .catch(errorHandler)
       .finally(() => setLoading(false));
-  }, [busy, fetchEverything]);
+  }, [busy, fetchEverything, errorHandler]);
 
   useEffect(() => {
     if (loading !== false) {

@@ -23,7 +23,7 @@ export default function RepetitionStepPage() {
 
   const { step, onDone, onFail } = useOutletContext<ContextType>();
   const { t } = useTranslation();
-
+  
   const onSolved = useCallback((correct: boolean) => {
     setCorrect(correct)
     setEnabled(true);
@@ -47,13 +47,8 @@ export default function RepetitionStepPage() {
   }, [onDone, onFail])
 
   if (!step) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        Activity is missed
-      </div>
-    );
+    throw new Error('Activity is missed')
   }
-
 
   function RepetitionStepDispatcher() {
     if (step.activity.type === "word") {

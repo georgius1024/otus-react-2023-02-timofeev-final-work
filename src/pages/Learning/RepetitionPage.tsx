@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import useAlert from "@/utils/AlertHook";
 import useBusy from "@/utils/BusyHook";
 import useUid from "@/utils/UidHook";
+import useError from "@/utils/ErrorHook";
 
 import * as modules from "@/services/modules";
 import * as repetition from "@/services/repetition";
@@ -28,6 +29,7 @@ export default function RepetitionPage() {
   const uid = useUid();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const errorHandler = useError()
 
   const current = steps.find((e) => e.id === currentStep);
   const currentIndex = steps.findIndex((e) => e.id === currentStep);
@@ -115,8 +117,10 @@ export default function RepetitionPage() {
 
   useEffect(() => {
     setLoading(true);
-    fetchAll().finally(() => setLoading(false));
-  }, [fetchAll]);
+    fetchAll()
+    .catch(errorHandler)
+    .finally(() => setLoading(false));
+  }, [fetchAll, errorHandler]);
 
   useEffect(() => {
     if (loading !== false) {

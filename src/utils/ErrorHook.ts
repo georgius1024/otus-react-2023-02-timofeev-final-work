@@ -4,7 +4,7 @@ import { useErrorBoundary } from "react-error-boundary";
 export default function useErrorHandler() {
   const { showBoundary } = useErrorBoundary();
   return useCallback(
-    function (error: Error) {
+    function (error: unknown) {
       showBoundary(error);
     },
     [showBoundary]
