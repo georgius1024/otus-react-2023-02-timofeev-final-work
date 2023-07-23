@@ -2,6 +2,7 @@ import { useOutletContext } from "react-router-dom";
 import { useState, useCallback, useEffect } from "react";
 import classNames from "classnames";
 import { useTranslation } from "react-i18next";
+import ReactMarkdown from "react-markdown";
 
 import type { LessonStep } from "@/pages/Learning/components/ActivityTypes";
 
@@ -63,8 +64,8 @@ export default function LessonPageStep() {
     if (step.activity.type === "slide") {
       return (
         <div className={classNames("card-body", `${step.type}-step`)}>
-          <h5 className="card-title">{step.activity.header}</h5>
-          <p>{step.activity.slide}</p>
+          <h1 className="card-title">{step.activity.header}</h1>
+          <ReactMarkdown>{step.activity.slide}</ReactMarkdown>
         </div>
       );
     }
@@ -98,11 +99,7 @@ export default function LessonPageStep() {
   }
 
   if (!step) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        Activity is missed
-      </div>
-    );
+    throw new Error("Activity is missed")
   }
 
   return (

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 
 import FormGroup from "@/components/FormGroup";
+import MDField from "@/components/MDField";
 
 import type { Activity, SlideActivity } from "@/types";
 
@@ -38,17 +39,13 @@ export default function SlideActivityForm(props: ActivityFormProps) {
         />
         <Form.Message for="header" className="text-danger mb-3 p-1 d-block" />
       </FormGroup>
-      <FormGroup label={t("ActivityForm.slide.slide.label")}>
-        <Form.Field
-          as="textarea"
-          className="form-control shadow-none w-100"
-          name="slide"
-          type="text"
-          rows={8}
-          placeholder={t("ActivityForm.slide.slide.placeholder")}
-        />
-        <Form.Message for="slide" className="text-danger mb-3 p-1 d-block" />
-      </FormGroup>
+      <MDField
+        label={t("ActivityForm.slide.slide.label")}
+        preview={t("ActivityForm.slide.slide.preview")}
+        name="slide"
+        placeholder={t("ActivityForm.slide.slide.placeholder")}
+      />
+      <Form.Message for="slide" className="text-danger mb-3 p-1 d-block" />
       <div className="form-check mb-3">
         <label className="form-check-label">
           <Form.Field

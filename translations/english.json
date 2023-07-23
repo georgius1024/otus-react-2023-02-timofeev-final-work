@@ -180,6 +180,7 @@
       },
       "slide": {
         "label": "Slide",
+        "preview": "Preview",
         "placeholder": "Enter slide here..."
       }
     },
@@ -226,6 +227,11 @@
     },
     "enabled": {
       "label": "Enabled"
+    },
+    "intro": {
+      "label": "Intro",
+      "preview": "Preview",
+      "placeholder": "Enter intro here..."
     },
     "buttons": {
       "save": "Save",

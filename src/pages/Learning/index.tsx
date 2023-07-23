@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import ReactMarkdown from "react-markdown";
 
 import dayjs from "dayjs";
 
@@ -49,14 +50,13 @@ export default function LearningIndex() {
       .map((e) => [e?.moduleId || "", e]);
     // @ts-ignore
     setStatuses(new Map<string, ProgressRecord>(entries));
-    setCourses(courses.filter(e => e.enabled));
+    setCourses(courses.filter((e) => e.enabled));
     setWordsToRepeat(agenda.length);
   }, [uid]);
 
   useEffect(() => {
     setLoading(true);
-    fetchAll()
-      .finally(() => setLoading(false));
+    fetchAll().finally(() => setLoading(false));
   }, [fetchAll]);
 
   const openCoursePage = (id: string) => {
@@ -78,12 +78,11 @@ export default function LearningIndex() {
     const status = statuses.get(course.id);
     if (!status) {
       busy(true);
-      await progress
-        .create({
-          moduleId: course.id,
-          userId: uid(),
-          startedAt: dayjs().valueOf(),
-        })
+      await progress.create({
+        moduleId: course.id,
+        userId: uid(),
+        startedAt: dayjs().valueOf(),
+      });
       busy(false);
     }
     openCoursePage(course.id);
@@ -164,7 +163,6 @@ export default function LearningIndex() {
     return <LearningPageLoading />;
   }
 
-
   return (
     <div className="container-fluid mt-4">
       <h1>{t("LearningPage.title")}</h1>
@@ -216,6 +214,7 @@ export default function LearningIndex() {
 
       <ModalPanel show={Boolean(confirm)} onClose={() => setConfirm(null)}>
         <h1>{t("LearningPage.modal.title")}</h1>
+        {confirm?.intro && <ReactMarkdown>{confirm.intro}</ReactMarkdown>}
         <p>{t("LearningPage.modal.description", { course: confirm?.name })}</p>
         <button
           className="btn btn-primary w-100"
