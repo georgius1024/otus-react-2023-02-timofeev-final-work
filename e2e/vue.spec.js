@@ -106,7 +106,7 @@ test("Craft some modules", async ({ page }) => {
     "* Topic 1\n* Topic 2\n* Topic 3"
   );
   await clickButtonWithText("Save");
-  await page.waitForTimeout(3000);
+  await whenButtonIsVisible('Slide "Intro slide"');
 
   // 9. Create word activity
   await clickButtonWithText("Create word activity");
@@ -114,7 +114,7 @@ test("Craft some modules", async ({ page }) => {
   await typeIntoPlaceholder("Enter foreign word here...", "word");
   await typeIntoPlaceholder("Enter translation here...", "word translation");
   await clickButtonWithText("Save");
-  await page.waitForTimeout(1000);
+  await whenButtonIsVisible('Word "word"');
 
   // 10. Create phrase activity
   await clickButtonWithText("Create phrase activity");
@@ -122,11 +122,12 @@ test("Craft some modules", async ({ page }) => {
   await typeIntoPlaceholder("Enter foreign phrase here...", "phrase");
   await typeIntoPlaceholder("Enter translation here...", "phrase translation");
   await clickButtonWithText("Save");
-  await page.waitForTimeout(1000);
-
-  await whenButtonIsVisible('Slide "Intro slide"');
-  await whenButtonIsVisible('Word "word"');
   await whenButtonIsVisible('Phrase "phrase"');
+
+
+  // Back to home page
+  await page.goto("/");
+  expect(homePageLocator).toBeVisible();
 
   /*
   Word "word"
@@ -202,5 +203,5 @@ test("Craft some modules", async ({ page }) => {
 
   //await page.waitForURL('**/');
 
-  //await new Promise(() => {});
+  await new Promise(() => {});
 });
