@@ -19,7 +19,7 @@ export default function LanguageSwitch(props: LanguageSwitchProps) {
   
   return (
     <ul className="navbar-nav flex-row my-2">
-      <li className="nav-item dropdown">
+      <li className="nav-item dropdown" role="menu">
         <a
           className="nav-link dropdown-toggle text-light"
           id="navbarDropdown"
@@ -37,6 +37,7 @@ export default function LanguageSwitch(props: LanguageSwitchProps) {
               <div
                 className="dropdown-item text-light"
                 key={locale.flag}
+                role="menuitem"
                 onClick={() => props.onSelect(locale.lang)}
               >
                 {locale.flag}

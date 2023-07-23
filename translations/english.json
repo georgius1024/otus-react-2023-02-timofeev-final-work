@@ -75,7 +75,7 @@
   },
   "CoursePage": {
     "buttons": {
-      "continue": "Continue course",
+      "continue": "Continue training",
       "exit": "Exit course",
       "repeat": "Repeat words",
       "add_custom_activities": "Add words to learn"
@@ -148,11 +148,11 @@
     "word": {
       "word": {
         "label": "Word",
-        "placeholder": "Enter foreign word here"
+        "placeholder": "Enter foreign word here..."
       },
       "translation": {
         "label": "Translation",
-        "placeholder": "Enter translation here"
+        "placeholder": "Enter translation here..."
       },
       "context": {
         "label": "Context",
@@ -160,27 +160,27 @@
       },
       "synonyms": {
         "label": "Synonyms",
-        "placeholder": "Word synonym (optional)"
+        "placeholder": "Word synonym (optional)..."
       }
     },
     "phrase": {
       "phrase": {
         "label": "Phrase",
-        "placeholder": "Enter foreign phrase here"
+        "placeholder": "Enter foreign phrase here..."
       },
       "translation": {
         "label": "Translation",
-        "placeholder": "Enter translation here"
+        "placeholder": "Enter translation here..."
       }
     },
     "slide": {
       "header": {
         "label": "Header",
-        "placeholder": "Enter header here"
+        "placeholder": "Enter header here..."
       },
       "slide": {
         "label": "Slide",
-        "placeholder": "Enter slide here"
+        "placeholder": "Enter slide here..."
       }
     },
     "enabled": {
@@ -198,7 +198,7 @@
     "total": "Total: {{total}} words and phrases"
   },
   "ModulesPage": {
-    "title": "Modules",
+    "title": "Courses",
     "breadcrumbs": {
       "root": "Root"
     },

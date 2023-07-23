@@ -51,6 +51,7 @@ export default function RepetitionAddWordOrPhrasePage() {
       name: "",
       type: "custom-activity",
       activity: createActivity(activityType),
+      enabled: true,
       position: dayjs().valueOf(),
     } as Module;
 

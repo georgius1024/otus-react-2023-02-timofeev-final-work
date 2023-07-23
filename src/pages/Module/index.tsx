@@ -20,19 +20,19 @@ import type { Module } from "@/types";
 
 import "@/pages/Module/index.scss";
 
-type EditorActionType = 'none' | 'create' | 'edit'
+type EditorActionType = "none" | "create" | "edit";
 
 export default function ModulePage(): ReactElement {
   const [childrenModules, setChildrenModules] = useState<Module[]>([]);
   const [parentModules, setParentModules] = useState<Module[]>([]);
   const [editingModule, setEditingModule] = useState<Module | null>(null);
-  const [editorAction, showEditor] = useState<EditorActionType>('none');
-  const [maxPosition, setMaxPosition] = useState<number>(0)
+  const [editorAction, showEditor] = useState<EditorActionType>("none");
+  const [maxPosition, setMaxPosition] = useState<number>(0);
   const { t } = useTranslation();
   const busy = useBusy();
   const navigate = useNavigate();
   const { id = "" } = useParams();
-  const errorHandler = useErrorHandler()
+  const errorHandler = useErrorHandler();
 
   const switchTo = (id: string | undefined) => navigate(`/module/${id}`);
   const reload = useCallback(
@@ -52,21 +52,23 @@ export default function ModulePage(): ReactElement {
         return [...path].reverse();
       };
 
-      Promise.all([fetchChildren(parent), fetchPath(parent)])
-        .then(([children, path]) => {
+      Promise.all([fetchChildren(parent), fetchPath(parent)]).then(
+        ([children, path]) => {
           setChildrenModules(children);
           setParentModules(path);
-          setMaxPosition(children.at(-1)?.position || 0)
+          setMaxPosition(children.at(-1)?.position || 0);
           busy(false);
-        })
+        }
+      );
     },
     [busy]
   );
-  const lastModule = parentModules.at(-1) || null
-  const formDomKey = (module: Module) => ([module.id, module.type, 'key'].join('-'))
+  const lastModule = parentModules.at(-1) || null;
+  const formDomKey = (module: Module) =>
+    [module.id, module.type, "key"].join("-");
   const create = (module: Module) => {
     setEditingModule(module);
-    showEditor('create');
+    showEditor("create");
   };
   const editModule = (id: string) => {
     const module = childrenModules.find((e) => e.id === id);
@@ -74,7 +76,7 @@ export default function ModulePage(): ReactElement {
       return;
     }
     setEditingModule(module);
-    showEditor('edit');
+    showEditor("edit");
   };
   const deleteModule = (id: string) => {
     const module = childrenModules.find((e) => e.id === id);
@@ -92,21 +94,21 @@ export default function ModulePage(): ReactElement {
       })
       .finally(() => busy(false));
   };
-  const saveModule = (module: Module | null, editorAction: EditorActionType) => {
-    if (!module || editorAction === 'none') {
+  const saveModule = (
+    module: Module | null,
+    editorAction: EditorActionType
+  ) => {
+    if (!module || editorAction === "none") {
       return;
     }
     // @ts-ignore
-    const action = editorAction === "edit"
-      ? modules.update(module)
-      : modules.create(module);
+    const action =
+      editorAction === "edit" ? modules.update(module) : modules.create(module);
     busy(true);
     action
       .then(() => setEditingModule(module))
-      .then(() => {
-        showEditor('none');
-        reload(module.parent);
-      })
+      .then(() => showEditor("none"))
+      .then(() => reload(module.parent))
       .finally(() => busy(false));
   };
   const sortModules = (list: Module[]) => {
@@ -126,21 +128,20 @@ export default function ModulePage(): ReactElement {
       .catch(errorHandler)
       .finally(() => busy(false));
   };
-  const sortDebounced = debounce(sortModules, 200)
+  const sortDebounced = debounce(sortModules, 200);
   useEffect(() => {
     reload(id);
   }, [reload, id]);
 
-
   const EditorForm = (() => {
-    if (editingModule?.type === 'activity') {
-      return ActivityForm
+    if (editingModule?.type === "activity") {
+      return ActivityForm;
     } else if (editingModule) {
-      return ModuleForm
+      return ModuleForm;
     }
-  })()
+  })();
   return (
-    <div className="container-fluid module-page">
+    <div className="container-fluid module-page mt-4">
       <h1>{t("ModulesPage.title")}</h1>
       <ModulesBreadcrumbs path={parentModules} />
       <div className="modules-list">
@@ -151,13 +152,19 @@ export default function ModulePage(): ReactElement {
           onDelete={deleteModule}
           onSort={sortDebounced}
         />
-        {<CreateModuleWidget current={lastModule} count={maxPosition} onCreate={create} />}
+        {
+          <CreateModuleWidget
+            current={lastModule}
+            count={maxPosition}
+            onCreate={create}
+          />
+        }
       </div>
       <SidePanel
         position="right"
         width={600}
-        show={editorAction !== 'none'}
-        onClose={() => showEditor('none')}
+        show={editorAction !== "none"}
+        onClose={() => showEditor("none")}
       >
         <h4>
           <span className="text-capitalize">
@@ -166,15 +173,13 @@ export default function ModulePage(): ReactElement {
           &nbsp;
           {t(`ModulesPage.actions.${editingModule?.type}`)}
         </h4>
-        {
-          EditorForm &&
-          editingModule &&
+        {EditorForm && editingModule && (
           <EditorForm
             module={editingModule}
             onSubmit={(module) => saveModule(module, editorAction)}
             key={formDomKey(editingModule)}
           />
-        }
+        )}
       </SidePanel>
     </div>
   );

@@ -81,13 +81,14 @@ export default function DefaultLayout(props: PropsWithChildren) {
     <div className="container-lg position-relative" style={{ height: "100vh" }}>
       <nav className="navbar bg-primary" data-bs-theme="dark">
         <div className="container-fluid">
-          <Link className="navbar-brand" to="/">
+          <Link className="navbar-brand me-3 d-flex align-items-center" to="/">
             <img
               src="/apple-touch-icon.png"
               alt="logo"
               height="32"
-              className="me-3"
+              
             />
+            Chiroyli
           </Link>
           <ul className="navbar-nav flex-row flex-grow-1">
             <li className={classNames("nav-item me-3", { "d-none": !admin })}>

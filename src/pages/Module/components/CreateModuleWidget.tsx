@@ -78,6 +78,7 @@ export default function CreateModuleWidget(props: CreateModuleWidgetProps) {
       name: "",
       enabled: true,
       type: moduleType,
+      position: (props.count || 0) + 1,
     } as Module;
   };
   const createActivityTypeButton = (type: ActivityType) => (

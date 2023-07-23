@@ -60,19 +60,19 @@ export default function LessonPage() {
     [navigate, courseId, lessonId]
   );
 
-  const nextStep = () => {
+  const nextStep = async () => {
     if (!currentProgress) {
       return;
     }
     if (!currentProgress.finishedAt && current) {
       if (["word", "phrase"].includes(current.activity.type)) {
-        repetition.start(uid(), current.moduleId);
+        await repetition.start(uid(), current.moduleId);
       }
     }
     if (currentIndex === steps.length - 1) {
       if (!currentProgress.finishedAt) {
         const updated = { ...currentProgress, finishedAt: dayjs().valueOf() };
-        progress.update(updated);
+        await progress.update(updated);
         setCurrentProgress(updated);
         showModal(true);
       } else {

@@ -9,7 +9,7 @@ const {
   VITE_STORAGE_BUCKET,
   VITE_MESSAGE_SENDER_ID,
   VITE_APP_ID,
-} = import.meta.env;
+} = import.meta.env || process.env;
 
 
 const firebaseConfig = {

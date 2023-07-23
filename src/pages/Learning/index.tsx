@@ -164,13 +164,6 @@ export default function LearningIndex() {
     return <LearningPageLoading />;
   }
 
-  if (!uid()) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        Need to be logged in to start course!!!
-      </div>
-    );
-  }
 
   return (
     <div className="container-fluid mt-4">
