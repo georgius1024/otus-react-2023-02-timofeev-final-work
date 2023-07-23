@@ -10,6 +10,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "coverage": "vitest --coverage",
+    "pre:e2e": "vite --port 9000 --mode test",
+    "e2e4": "npm run pre:e2e & playwright test",
     "e2e": "playwright test",
     "deploy": "tsc || vite build && firebase deploy",
     "storybook": "storybook dev -p 6006",

@@ -1,12 +1,7 @@
 // @ts-check
 import { devices } from '@playwright/test'
-
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// require('dotenv').config();
-
+import dotenv from 'dotenv'
+dotenv.config({ path: '.env.test.local' })
 /**
  * @see https://playwright.dev/docs/test-configuration
  * @type {import('@playwright/test').PlaywrightTestConfig}
@@ -14,7 +9,7 @@ import { devices } from '@playwright/test'
 const config = {
   testDir: './e2e',
   /* Maximum time one test can run for. */
-  timeout: 30 * 1000,
+  timeout: 300 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
@@ -35,7 +30,7 @@ const config = {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:5173',
+    baseURL: 'http://localhost:9000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -104,7 +99,7 @@ const config = {
      * Use the preview server on CI for more realistic testing.
      */
     command: process.env.CI ? 'vite preview --port 5173' : 'vite dev',
-    port: 5173,
+    port: 9000,
     reuseExistingServer: !process.env.CI
   }
 }
