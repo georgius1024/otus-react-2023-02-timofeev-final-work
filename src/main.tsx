@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/en";
 import "dayjs/locale/ru";
 import relativeTime from "dayjs/plugin/relativeTime";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 
 import router from "@/router";
 import { store } from "@/store";
@@ -17,6 +18,7 @@ import "bootstrap";
 import "@popperjs/core";
 
 dayjs.extend(relativeTime);
+dayjs.extend(localizedFormat);
 dayjs.locale(i18n.language);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
