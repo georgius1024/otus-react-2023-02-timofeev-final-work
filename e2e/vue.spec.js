@@ -95,8 +95,7 @@ test("Long user jorney", async ({ page }) => {
 
   //#region Back to home page
   await page.goto("/");
-  const homePageLocator = page.getByText("Home page");
-  expect(homePageLocator).toBeVisible();
+  await whenHeadingIsVisible("Home page");
   //#endregion
 
   //#region create Content
@@ -165,7 +164,7 @@ test("Long user jorney", async ({ page }) => {
 
   //#region Back to home page
   await page.goto("/");
-  expect(homePageLocator).toBeVisible();
+  await whenHeadingIsVisible("Home page");
   //#endregion
   //#region Learning page
   await clickLinkWithText("Learning");
@@ -277,8 +276,8 @@ test("Long user jorney", async ({ page }) => {
   await clickButtonWithText("I don't remember");
   await clickButtonWithText("I don't remember");
   await clickButtonWithText("I don't remember");
-  await page.waitForURL("**/learning");
-  await whenHeadingIsVisible("Your courses");
+  await page.waitForURL("**/");
+  await whenHeadingIsVisible("Home page");
 
   //#endregion
 

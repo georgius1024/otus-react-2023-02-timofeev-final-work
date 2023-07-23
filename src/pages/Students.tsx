@@ -7,7 +7,8 @@ import * as repetition from "@/services/repetition";
 
 import useBusy from "@/utils/BusyHook";
 
-import Placeholder from "@/components/Placeholder";
+import GenericLoadingState from "@/components/GenericLoadingState";
+
 import Trash from "@/components/icons/Trash";
 
 import type { User } from "@/types";
@@ -31,30 +32,7 @@ export default function StudentsPage() {
   }, [loadAll]);
 
   if (loading) {
-    return (
-      <div className="container-fluid mt-4">
-        <div className="row mt-3">
-          <div className="col">
-            <Placeholder height="24px" rounded />
-          </div>
-        </div>
-        <div className="row mt-3">
-          <div className="col">
-            <Placeholder height="24px" rounded />
-          </div>
-        </div>
-        <div className="row mt-3">
-          <div className="col">
-            <Placeholder height="24px" rounded />
-          </div>
-        </div>
-        <div className="row mt-3">
-          <div className="col">
-            <Placeholder height="24px" rounded />
-          </div>
-        </div>
-      </div>
-    );
+    return <GenericLoadingState/>;
   }
 
   const deleteUserData = (uid: string) => {

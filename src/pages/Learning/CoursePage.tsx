@@ -33,7 +33,6 @@ export default function CoursePage() {
   const [currentProgress, setCurrentProgress] = useState<ProgressRecord | null>(
     null
   );
-  const [wordsToRepeat, setWordsToRepeat] = useState(0);
 
   const [modal, showModal] = useState<boolean>(false);
 
@@ -47,12 +46,10 @@ export default function CoursePage() {
     const fetchCourse = modules.fetchOne(id);
     const fetchLessons = modules.fetchChildren(id);
     const loadCurrentProcess = progress.find(uid(), id);
-    const loadAgenda = repetition.agenda(uid());
-    const [course, lessons, currentProgress, agenda] = await Promise.all([
+    const [course, lessons, currentProgress] = await Promise.all([
       fetchCourse,
       fetchLessons,
       loadCurrentProcess,
-      loadAgenda,
     ]);
 
     const responses = await Promise.all(
@@ -67,8 +64,6 @@ export default function CoursePage() {
     setLessons(lessons.filter(e => e.enabled));
     setStatuses(statuses);
     setCurrentProgress(currentProgress);
-    setWordsToRepeat(agenda.length);
-
   }, [id, uid]);
 
   
@@ -265,23 +260,8 @@ export default function CoursePage() {
           )}
         </div>
         <div className="col">
-          <button
-            className="btn btn-outline-primary w-100"
-            disabled={!wordsToRepeat}
-            onClick={openRepetitionPage}
-          >
-            {t("CoursePage.buttons.repeat")}
-            <span className="badge bg-primary rounded-pill ms-3">
-              {wordsToRepeat}
-            </span>
-          </button>
         </div>
         <div className="col">
-          <button className="btn btn-outline-primary w-100"
-            onClick={openRepetitionAddWordPage}
-          >
-            {t("CoursePage.buttons.add_custom_activities")}
-          </button>
         </div>
       </div>
 

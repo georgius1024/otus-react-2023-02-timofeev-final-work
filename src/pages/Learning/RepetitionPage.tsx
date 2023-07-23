@@ -29,13 +29,13 @@ export default function RepetitionPage() {
   const uid = useUid();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const errorHandler = useError()
+  const errorHandler = useError();
 
   const current = steps.find((e) => e.id === currentStep);
   const currentIndex = steps.findIndex((e) => e.id === currentStep);
 
-  const openLearningPage = useCallback(() => {
-    navigate("/learning");
+  const openHomePage = useCallback(() => {
+    navigate("/");
   }, [navigate]);
 
   const updateRepetitionStatus = useCallback(
@@ -60,7 +60,7 @@ export default function RepetitionPage() {
       await updateRepetitionStatus(uid(), steps, failed)
         .then(() => {
           alert(t("RepetitionPage.confirm"), "success");
-          openLearningPage();
+          openHomePage();
         })
         .finally(() => busy(false));
     } else {
@@ -118,8 +118,8 @@ export default function RepetitionPage() {
   useEffect(() => {
     setLoading(true);
     fetchAll()
-    .catch(errorHandler)
-    .finally(() => setLoading(false));
+      .catch(errorHandler)
+      .finally(() => setLoading(false));
   }, [fetchAll, errorHandler]);
 
   useEffect(() => {
@@ -127,8 +127,7 @@ export default function RepetitionPage() {
       return;
     }
     if (!steps) {
-      openLearningPage();
-      alert("No words to repeat today", "warning");
+      throw new Error("No words to repeat today");
     }
 
     const firstStep = steps.at(0)?.id;
@@ -137,7 +136,7 @@ export default function RepetitionPage() {
       navigateToStep(firstStep);
       setStep(firstStep);
     }
-  }, [loading, steps, step, navigate, alert, openLearningPage, navigateToStep]);
+  }, [loading, steps, step, navigate, alert, navigateToStep]);
 
   if (loading) {
     return <RepetitionPageLoading />;

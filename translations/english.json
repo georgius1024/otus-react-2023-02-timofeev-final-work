@@ -255,5 +255,21 @@
       "save": "Save",
       "reset": "Reset"
     }
+  },
+  "HomePage": {
+    "title": "Home page",
+    "repeat": {
+      "description": "There are words to repeat today: {{wordsToRepeat}}",
+      "action": "Repeat"
+    },
+    "continue": {
+      "description": "You haven't completed course \"{{course}}\" yet",
+      "action": "Continue"
+    },
+    "unstarted": {
+      "title": "We have more courses for you",
+      "description": "Visit the learning page to see more",
+      "action": "Learning page"
+    }
   }
 }
