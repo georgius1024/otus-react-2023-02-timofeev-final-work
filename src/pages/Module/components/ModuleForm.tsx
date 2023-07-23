@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 
 import FormGroup from "@/components/FormGroup";
+import MDField from "@/components/MDField";
 
 import type { Module } from "@/types";
 
@@ -10,6 +11,7 @@ import type { Module } from "@/types";
 const moduleSchema: any = yup.object({
   name: yup.string().required(),
   enabled: yup.boolean().required(),
+  intro: yup.string(),
 });
 
 type OnSubmit = (module: Module) => void;
@@ -47,6 +49,14 @@ export default function ModuleForm(props: ModuleFormProps) {
           {t("ModuleForm.enabled.label")}
         </label>
       </div>
+      {props.module.type === "course" && (
+        <MDField
+          label={t("ModuleForm.intro.label")}
+          preview={t("ModuleForm.intro.preview")}
+          name="intro"
+          placeholder={t("ModuleForm.intro.placeholder")}
+        />
+      )}
       <Form.Submit className="btn btn-primary light-text me-3">
         {t("ModuleForm.buttons.save")}
       </Form.Submit>

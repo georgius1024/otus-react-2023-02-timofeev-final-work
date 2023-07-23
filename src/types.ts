@@ -46,6 +46,7 @@ export type Module = {
   parent: string;
   name: string;
   type: ModuleType;
+  intro?: string;
   enabled?: boolean;
   position?: number;
   activity?: Activity;
