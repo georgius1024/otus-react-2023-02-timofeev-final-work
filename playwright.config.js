@@ -9,7 +9,7 @@ dotenv.config({ path: '.env.test.local' })
 const config = {
   testDir: './e2e',
   /* Maximum time one test can run for. */
-  timeout: 300 * 1000,
+  timeout: 120 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.

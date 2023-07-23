@@ -75,7 +75,7 @@
   },
   "CoursePage": {
     "buttons": {
-      "continue": "Continue course",
+      "continue": "Continue training",
       "exit": "Exit course",
       "repeat": "Repeat words",
       "add_custom_activities": "Add words to learn"
@@ -198,7 +198,7 @@
     "total": "Total: {{total}} words and phrases"
   },
   "ModulesPage": {
-    "title": "Modules",
+    "title": "Courses",
     "breadcrumbs": {
       "root": "Root"
     },

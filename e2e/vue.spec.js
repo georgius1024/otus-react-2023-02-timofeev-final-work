@@ -5,24 +5,18 @@ test.beforeAll(async () => {
   await cleanup();
 });
 
-// import { fileURLToPath } from 'url'
-// import { createServer } from 'vite'
-
-// test('visits the app root url', async ({ page }) => {
-//   await page.goto('/');
-//   expect(await page.title()).toBe('My LMS');
-// })
-
-test("Craft some modules", async ({ page }) => {
-  async function whenButtonIsVisible(name) {
-    const locator = page.getByRole("button", { name });
+test("Long user jorney", async ({ page }) => {
+  //#region utilities
+  async function whenButtonIsVisible(name, nth = 0) {
+    const locator = page.getByRole("button", { name }).nth(nth);
     await locator.waitFor();
-    expect(locator).toBeVisible();
+    await expect(locator).toBeVisible();
   }
-  async function clickButtonWithText(name) {
-    const locator = page.getByRole("button", { name });
+
+  async function clickButtonWithText(name, nth = 0) {
+    const locator = page.getByRole("button", { name }).nth(nth);
     await locator.waitFor();
-    expect(locator).toBeVisible();
+    await expect(locator).toBeVisible();
     await locator.click();
   }
 
@@ -31,49 +25,87 @@ test("Craft some modules", async ({ page }) => {
     await page.getByPlaceholder(placeholder).fill(text);
   }
 
-  // const __dirname = fileURLToPath(new URL('.', import.meta.url))
-  // const server = await createServer({
-  //   root: __dirname,
-  //   envFile: '.env.test.local',
-  //   server: {
-  //     port: 9000,
-  //   },
-  // })
-  // await server.listen()
+  async function clickLinkWithText(name, nth = 0) {
+    const locator = page.getByRole("link", { name }).nth(nth);
+    await locator.waitFor();
+    await expect(locator).toBeVisible();
+    await locator.click();
+  }
 
-  // server.printUrls()
+  async function checkButtonWithTextIsDisabled(name, nth = 0) {
+    const locator = page.getByRole("button", { name }).nth(nth);
+    await locator.waitFor();
+    await expect(locator).toBeDisabled();
+  }
 
+  async function checkButtonWithTextIsEnabled(name, nth = 0) {
+    const locator = page.getByRole("button", { name }).nth(nth);
+    await locator.waitFor();
+    await expect(locator).not.toBeDisabled();
+  }
+
+  async function whenTextIsVisible(text, nth = 0) {
+    const locator = page.getByText(text).nth(nth);
+    await locator.waitFor();
+    await expect(locator).toBeVisible();
+  }
+
+  async function whenHeadingIsVisible(name, nth = 0) {
+    const locator = page.getByRole("heading", { name }).nth(nth);
+    await locator.waitFor();
+    await expect(locator).toBeVisible();
+  }
+  async function continueActivity(name = "Continue") {
+    const locator = page.getByRole("button", { name });
+    await locator.waitFor();
+    await expect(locator).toBeVisible();
+    const disabled = await locator.isDisabled();
+    if (disabled) {
+      await page.waitForTimeout(1000);
+    }
+    await expect(locator).not.toBeDisabled();
+    await locator.click();
+  }
+  //#endregion
+
+  //#region Initial navigation
   await page.goto("/");
-  expect(await page.title()).toBe("My LMS");
+  expect(await page.title()).toBe("Chiroyli LMS");
+  //#endregion
 
-  // Switch to english
+  //#region Switch to english
   await page.getByRole("menu").click();
   await page.getByRole("menuitem", { name: "🇺🇸" }).click();
+  //#endregion
 
-  // Login
-  const loginLink = await page.getByRole("link", { name: "Login" });
-  await loginLink.click();
+  //#region Login
+  await clickLinkWithText("Login");
   await page.waitForURL("**/login");
   await typeIntoPlaceholder("name@example.com", process.env.TEST_USER_EMAIL);
   await page.getByLabel("Password").click();
   await page.getByLabel("Password").fill(process.env.TEST_USER_PASSWORD);
   await clickButtonWithText("login");
-  // Fill profile
+  //#endregion
+  //#region Fill profile
   await page.waitForURL("**/profile");
   await typeIntoPlaceholder("Enter your name here", process.env.TEST_USER_NAME);
   await clickButtonWithText("Save");
   await whenButtonIsVisible(process.env.TEST_USER_NAME);
+  //#endregion
 
-  // Back to home page
+  //#region Back to home page
   await page.goto("/");
   const homePageLocator = page.getByText("Home page");
   expect(homePageLocator).toBeVisible();
+  //#endregion
 
-  // Create course
-
+  //#region create Content
   // 1. Go to courses page
-  await page.getByRole("link", { name: "Courses" }).click();
+  await clickLinkWithText("Courses");
   await page.waitForURL("**/module");
+  await whenHeadingIsVisible("Courses");
+
+  //#region Create course
 
   // 2. Click create button
   await clickButtonWithText("Create course");
@@ -85,7 +117,9 @@ test("Craft some modules", async ({ page }) => {
 
   // 4. Navigate into course
   await clickButtonWithText("Basic course name");
+  //#endregion
 
+  //#region Create lesson
   // 5. Click create button
   await clickButtonWithText("Create lesson");
 
@@ -94,9 +128,11 @@ test("Craft some modules", async ({ page }) => {
   await typeIntoPlaceholder("enter lesson name here...", "General lesson name");
   await clickButtonWithText("Save");
 
-  // 7. Navigate into course
+  // 7. Navigate into lesson
   await clickButtonWithText("General lesson name");
+  //#endregion
 
+  //#region Create activities
   // 8. Create Intro slide
   await clickButtonWithText("Create slide activity");
   await whenButtonIsVisible("Save");
@@ -123,85 +159,144 @@ test("Craft some modules", async ({ page }) => {
   await typeIntoPlaceholder("Enter translation here...", "phrase translation");
   await clickButtonWithText("Save");
   await whenButtonIsVisible('Phrase "phrase"');
+  //#endregion
 
+  //#endregion
 
-  // Back to home page
+  //#region Back to home page
   await page.goto("/");
   expect(homePageLocator).toBeVisible();
+  //#endregion
+  //#region Learning page
+  await clickLinkWithText("Learning");
+  await page.waitForURL("**/learning");
+  await whenHeadingIsVisible("Your courses");
 
-  /*
-  Word "word"
-  edit
-  Slide "Intro slide"
-  edit
-  Phrase "phrase"  
-  */
-  // // Lets learn a little
-  // await page.getByRole('link', { name: 'Learning' }).click();
-  // await page.getByRole('button', { name: 'Basic course name' }).click();
-  // await page.getByRole('button', { name: 'Start course' }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByText('word', { exact: true }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByText('w', { exact: true }).click();
-  // await page.getByText('o', { exact: true }).click();
-  // await page.getByText('r', { exact: true }).click();
-  // await page.getByText('d', { exact: true }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByText('translation', { exact: true }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByText('phrase', { exact: true }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByText('phrase', { exact: true }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByRole('button', { name: 'Exit lesson' }).nth(1).click();
-  // await page.getByRole('button', { name: 'Exit course' }).nth(1).click();
-  // await page.getByRole('button', { name: 'Add words to learn' }).click();
-  // await page.getByPlaceholder('Enter foreign word here').click();
-  // await page.getByPlaceholder('Enter foreign word here').fill('foreign');
-  // await page.getByPlaceholder('Enter translation here').click();
-  // await page.getByPlaceholder('Enter translation here').fill('translation here');
-  // await page.getByLabel('Enabled').check();
-  // await page.getByRole('button', { name: 'Save' }).click();
-  // await page.getByRole('button', { name: 'Repeat words 3' }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByText('ContinueI don\'t remember').click();
-  // await page.getByText('translation', { exact: true }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByText('translation', { exact: true }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByText('translation', { exact: true }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByText('translation here').click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByText('word', { exact: true }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByText('phrase', { exact: true }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByText('foreign').click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByText('w', { exact: true }).click();
-  // await page.getByText('o', { exact: true }).click();
-  // await page.getByText('r', { exact: true }).click();
-  // await page.getByText('d', { exact: true }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByText('phrase', { exact: true }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
-  // await page.getByText('f', { exact: true }).click();
-  // await page.getByText('o', { exact: true }).click();
-  // await page.getByText('r', { exact: true }).click();
-  // await page.getByText('e', { exact: true }).click();
-  // await page.getByText('i', { exact: true }).click();
-  // await page.getByText('g', { exact: true }).click();
-  // await page.getByText('n', { exact: true }).click();
-  // await page.getByRole('button', { name: 'Continue' }).click();
+  //#region Inspect buttons
+  await whenButtonIsVisible("Basic course name");
+  await checkButtonWithTextIsDisabled("Continue training");
+  await checkButtonWithTextIsDisabled("Repeat words");
+  await checkButtonWithTextIsEnabled("Add words to learn");
+  //#endregion
 
-  //await page.waitForURL('**/');
+  //#region add custom word to learn
+  await clickButtonWithText("Add words to learn");
+  await page.waitForURL("**/learning/repetition/add");
+  await whenButtonIsVisible("Save");
+  await typeIntoPlaceholder("Enter foreign word here...", "custom");
+  await typeIntoPlaceholder("Enter translation here...", "custom translation");
+  await clickButtonWithText("Save");
+  await page.waitForURL("**/learning");
+  //#endregion
 
-  await new Promise(() => {});
+  //#region Start the course
+  await clickButtonWithText("Basic course name");
+  await whenButtonIsVisible("Start course");
+  await clickButtonWithText("Start course");
+  await page.waitForURL("**/learning/course/**");
+  await whenHeadingIsVisible("General lesson name");
+  //#endregion
+
+  //#region Return to learning and continue course
+  await clickLinkWithText("Learning");
+  await page.waitForURL("**/learning");
+  await whenHeadingIsVisible("Your courses");
+  await whenTextIsVisible("Basic course name");
+  await whenTextIsVisible("in progress");
+  await checkButtonWithTextIsEnabled("Continue training");
+  await clickButtonWithText("Continue training");
+  await page.waitForURL("**/learning/course/**");
+  await whenTextIsVisible("in progress");
+  await whenTextIsVisible("General lesson name");
+  await checkButtonWithTextIsEnabled("Continue training");
+  await clickButtonWithText("Continue training");
+  await page.waitForURL("**/learning/course/**");
+  await whenHeadingIsVisible("General lesson name");
+  //#endregion
+
+  //#region Learning activities
+  await whenHeadingIsVisible("Intro slide");
+  continueActivity(); // Slide
+  await whenHeadingIsVisible("Please remember the word");
+  continueActivity(); // Learn word
+  await whenHeadingIsVisible("Please select translation for the word");
+  await page.getByText("word translation", { exact: true }).click();
+  continueActivity(); // Translate from foreign to local
+  await whenHeadingIsVisible("Please select word for the translation");
+  await page.getByText("word", { exact: true }).click();
+  continueActivity(); // Translate from local to foreign
+  await whenHeadingIsVisible("Please assemble word");
+  await page.getByText("w", { exact: true }).click();
+  await page.getByText("o", { exact: true }).click();
+  await page.getByText("r", { exact: true }).click();
+  await page.getByText("d", { exact: true }).click();
+  continueActivity(); // Assemble
+  await whenHeadingIsVisible("Please remember the phrase");
+  continueActivity(); // Learn phrase
+  await whenHeadingIsVisible("Please select translation for the phrase");
+  await page.getByText("phrase translation", { exact: true }).click();
+  continueActivity(); // Translate from foreign to local
+  await whenHeadingIsVisible("Please select phrase for the translation");
+  await page.getByText("phrase", { exact: true }).click();
+  continueActivity(); // Translate from local to foreign
+  await whenHeadingIsVisible("Please assemble phrase");
+  await page.getByText("phrase", { exact: true }).click();
+  continueActivity(); // Assemble
+  //#endregion
+
+  //#region Ending course
+  await whenHeadingIsVisible("Congratulations");
+  await clickButtonWithText("Exit lesson", 1);
+  await whenHeadingIsVisible("Basic course name");
+  await whenHeadingIsVisible("Congratulations");
+  await clickButtonWithText("Exit course", 1);
+  //#endregion
+
+  //#region repeat words
+  await page.waitForURL("**/learning");
+  await whenHeadingIsVisible("Your courses");
+  await whenTextIsVisible("Basic course name");
+  await whenTextIsVisible("done");
+
+  await checkButtonWithTextIsDisabled("Continue training");
+  await checkButtonWithTextIsEnabled("Repeat words");
+  await clickButtonWithText("Repeat words");
+
+  await page.waitForURL("**/learning/repetition/**");
+  await whenHeadingIsVisible("Repetition of words");
+
+  await clickButtonWithText("I don't remember");
+  await clickButtonWithText("I don't remember");
+  await clickButtonWithText("I don't remember");
+  await clickButtonWithText("I don't remember");
+  await clickButtonWithText("I don't remember");
+  await clickButtonWithText("I don't remember");
+  await clickButtonWithText("I don't remember");
+  await clickButtonWithText("I don't remember");
+  await clickButtonWithText("I don't remember");
+  await clickButtonWithText("I don't remember");
+  await clickButtonWithText("I don't remember");
+  await clickButtonWithText("I don't remember");
+  await page.waitForURL("**/learning");
+  await whenHeadingIsVisible("Your courses");
+
+  //#endregion
+
+  //#endregion
+  //#region Inspect students page
+  await clickLinkWithText("Students");
+  await page.waitForURL("**/students");
+  await whenHeadingIsVisible("Students");
+  await whenTextIsVisible(process.env.TEST_USER_NAME, 1);
+  //#endregion
+
+  //#region Inspect students page
+  await clickButtonWithText(process.env.TEST_USER_NAME);
+  await clickLinkWithText("Stats");
+  await page.waitForURL("**/stats");
+  await whenHeadingIsVisible("My Stats");
+  await whenTextIsVisible("custom");
+  await whenTextIsVisible("phrase");
+  await whenTextIsVisible("word");
+  //#endregion
 });

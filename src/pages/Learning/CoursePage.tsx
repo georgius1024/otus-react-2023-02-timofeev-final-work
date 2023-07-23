@@ -188,7 +188,7 @@ export default function CoursePage() {
   };
 
   const exitCourse = () => {
-    navigate("/learning/");
+    navigate("/learning");
   };
 
   if (loading) {
@@ -235,7 +235,7 @@ export default function CoursePage() {
   };
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid mt-4">
       <h1>{course?.name}</h1>
       <div className="list-group">
         {lessons.map((lesson) => (

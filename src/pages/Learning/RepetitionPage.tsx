@@ -35,7 +35,7 @@ export default function RepetitionPage() {
   const currentIndex = steps.findIndex((e) => e.id === currentStep);
 
   const openLearningPage = useCallback(() => {
-    navigate("/learning/");
+    navigate("/learning");
   }, [navigate]);
 
   const updateRepetitionStatus = useCallback(

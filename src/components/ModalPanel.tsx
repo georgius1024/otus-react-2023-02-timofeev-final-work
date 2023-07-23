@@ -64,7 +64,7 @@ export default function ModalPanel(props: PropsWithChildren<ModalPanelProps>) {
   }, [props.show]);
 
   const closeControl = () => (
-    <div className="close-control" onClick={props.onClose}>
+    <div role="button" className="close-control" onClick={props.onClose}>
       &times;
     </div>
   );

@@ -141,7 +141,7 @@ export default function ModulePage(): ReactElement {
     }
   })();
   return (
-    <div className="container-fluid module-page">
+    <div className="container-fluid module-page mt-4">
       <h1>{t("ModulesPage.title")}</h1>
       <ModulesBreadcrumbs path={parentModules} />
       <div className="modules-list">

@@ -31,6 +31,8 @@ async function clearTable(tableName) {
 
 export default async function cleanup() {
   const tables = ["modules", "users", "progress", "repetition"];
+  //const tables = ["progress", "repetition"];
+  //const tables = [];
 
   const promises = tables.map((table) => clearTable(table));
 
