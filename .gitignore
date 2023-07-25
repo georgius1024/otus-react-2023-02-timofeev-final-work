@@ -28,3 +28,6 @@ dist-ssr
 
 coverage/*
 playwright-report/index.html
+
+# stryker temp files
+.stryker-tmp

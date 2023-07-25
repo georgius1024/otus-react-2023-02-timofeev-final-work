@@ -53,6 +53,7 @@ export default function HomePage() {
       />
     </svg>
   );
+
   return (
     <div className="container-fluid mt-4">
       <h1>{t("HomePage.title")}</h1>
@@ -96,10 +97,7 @@ export default function HomePage() {
       {unstarted && (
         <>
           <h2>{t("HomePage.unstarted.title")}</h2>
-          <p>
-          {t("HomePage.unstarted.description")}
-            
-            </p>
+          <p>{t("HomePage.unstarted.description")}</p>
           <Link role="button" to="/learning" className="btn btn-link">
             {t("HomePage.unstarted.action")}{" "}
           </Link>
