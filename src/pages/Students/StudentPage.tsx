@@ -94,7 +94,7 @@ export default function StudentPage() {
             </tr>
           )}
           {startedCourses.map((course) => (
-            <tr>
+            <tr key={course.id}>
               <td>{course.name}</td>
               <td>{dayjs(course.progress?.startedAt).format("LLL")}</td>
               <td>
@@ -104,6 +104,7 @@ export default function StudentPage() {
               </td>
               <td className="text-end">
                 <span
+                role="button"
                   className="badge bg-danger ms-3"
                   onClick={() =>
                     course.progress?.moduleId &&
