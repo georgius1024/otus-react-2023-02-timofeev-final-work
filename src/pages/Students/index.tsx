@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 import * as users from "@/services/users";
 import * as progress from "@/services/progress";
@@ -17,7 +18,7 @@ export default function StudentsPage() {
   const [loading, setLoading] = useState<boolean | null>(null);
   const [students, setStudents] = useState<User[]>([]);
 
-  const busy = useBusy()
+  const busy = useBusy();
   const { t } = useTranslation();
 
   const loadAll = useCallback(async () => {
@@ -27,21 +28,22 @@ export default function StudentsPage() {
 
   useEffect(() => {
     setLoading(true);
-    loadAll()
-      .finally(() => setLoading(false));
+    loadAll().finally(() => setLoading(false));
   }, [loadAll]);
 
   if (loading) {
-    return <GenericLoadingState/>;
+    return <GenericLoadingState />;
   }
 
   const deleteUserData = (uid: string) => {
-    busy(true)
-    Promise.all([
-      progress.destroyAll(uid),
-      repetition.destroyAll(uid),
-    ]).then(() => busy(false))
-  }
+    if (!confirm('Really???')) {
+      return
+    }
+    busy(true);
+    Promise.all([progress.destroyAll(uid), repetition.destroyAll(uid)]).then(
+      () => busy(false)
+    );
+  };
 
   const studentList = students.map((student) => {
     return (
@@ -49,10 +51,15 @@ export default function StudentsPage() {
         className="list-group-item module-item d-flex align-items-center"
         key={student.uid}
       >
-        <div className="flex-grow-1">{student.name}</div>
+        <div className="flex-grow-1">
+          <Link to={`/students/${student.uid}`}>{student.name}</Link>
+        </div>
         <div>{student.email}</div>
 
-        <span className="badge bg-danger ms-3" onClick={() => deleteUserData(student.uid)}>
+        <span
+          className="badge bg-danger ms-3"
+          onClick={() => deleteUserData(student.uid)}
+        >
           <Trash />
         </span>
       </div>

@@ -2,8 +2,7 @@ import { vi } from "vitest";
 import { render, screen, act } from "@testing-library/react";
 import flushPromises from "flush-promises";
 
-vi.useFakeTimers();
-vi.mock("@/pages/Home/currentProgress", () => ({
+vi.mock("@/services/currentProgress", () => ({
   default: vi.fn().mockResolvedValue({
     courses: [
       {
@@ -47,7 +46,6 @@ describe("HomePage", () => {
     });
     expect(screen.getByText(/HomePage.title/i)).toBeDefined();
   });
-
   it("shows words to repeat", async () => {
     render(<Subject />);
     await act(async () => {
