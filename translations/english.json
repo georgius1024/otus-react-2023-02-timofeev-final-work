@@ -271,5 +271,17 @@
       "description": "Visit the learning page to see more",
       "action": "Learning page"
     }
+  },
+  "StudentPage": {
+    "title": "Progress of student",
+    "root": "All students",
+    "table": {
+      "course": "Course",
+      "started-at": "Started at",
+      "finished-at": "Finished at",
+      "empty": "No course started"
+    },
+    "repeat": "Words to repeat: {{words}}"
+
   }
 }

@@ -71,7 +71,7 @@ vi.mock("@/services/modules", () => ({
   fetchChildren: vi.fn().mockResolvedValue(mockModules),
 }));
 
-import subject from "@/pages/Home/currentProgress";
+import subject from "@/services/currentProgress";
 
 describe("pages/currentProgress", () => {
   it("throws when uid is empty", async () => {

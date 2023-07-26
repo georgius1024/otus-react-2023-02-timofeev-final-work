@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import currentProgress from "@/pages/Home/currentProgress";
+import currentProgress from "@/services/currentProgress";
 import useUid from "@/utils/UidHook";
 
 import GenericLoadingState from "@/components/GenericLoadingState";
 
-import type { CourseProgress } from "@/pages/Home/currentProgress";
+import type { CourseProgress } from "@/services/currentProgress";
 export default function HomePage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [courses, setCourses] = useState<CourseProgress[]>([]);

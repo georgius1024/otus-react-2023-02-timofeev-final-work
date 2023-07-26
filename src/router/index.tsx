@@ -9,7 +9,8 @@ import RegisterPage from "@/pages/RegisterPage";
 import ForgotPage from "@/pages/ForgotPage";
 import ProfilePage from "@/pages/ProfilePage";
 import ModulePage from "@/pages/Module";
-import StudentsPage from "@/pages/Students";
+import StudentsIndexPage from "@/pages/Students";
+import StudentsPage from "@/pages/Students/StudentPage";
 import LearningPage from "@/pages/Learning";
 import CoursePage from "@/pages/Learning/CoursePage";
 import LessonPage from "@/pages/Learning/LessonPage";
@@ -86,6 +87,12 @@ const routes = [
   },
   {
     path: "/students",
+    element: StudentsIndexPage,
+    layout: DefaultLayout,
+    private: true,
+  },
+  {
+    path: "/students/:uid",
     element: StudentsPage,
     layout: DefaultLayout,
     private: true,

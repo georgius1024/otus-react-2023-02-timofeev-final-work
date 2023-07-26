@@ -29,7 +29,7 @@ export default async function currentProgress(
   const wordsToRepeat = agenda.length;
 
   const promises = courses
-    .map((e) => e.id && progress.find(uid, e.id))
+    .map((e) => (e.id && progress.find(uid, e.id)) as Promise<ProgressRecord | null>)
     .filter(Boolean);
   const records = (await Promise.all(promises)).filter(
     Boolean
