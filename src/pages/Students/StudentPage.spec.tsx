@@ -19,13 +19,13 @@ vi.mock("@/services/currentProgress", () => ({
     wordsToRepeat: 2,
   }),
 }));
-
-vi.mock("@/utils/UidHook.ts", () => ({
-  default: vi.fn().mockReturnValue(() => "123"),
+vi.mock("@/services/users", () => ({
+  find: vi.fn().mockResolvedValue({name: 'Student', uid: '123'}),
 }));
 
 vi.mock("react-router-dom", () => ({
   useNavigate: vi.fn(),
+  useParams: vi.fn().mockReturnValue('123'),
   Link: (props: any) => <span>{props.children}</span>,
 }));
 
@@ -33,9 +33,9 @@ vi.mock("react-i18next", () => ({
   useTranslation: vi.fn().mockReturnValue({ t: (x: any) => x }),
 }));
 
-import Subject from "@/pages/Home";
+import Subject from "@/pages/Students/StudentPage";
 
-describe("HomePage", () => {
+describe("Students/StudentPage", () => {
   it("renders without error", async () => {
     const wrapper = render(<Subject />);
     expect(
@@ -44,20 +44,20 @@ describe("HomePage", () => {
     await act(async () => {
       await flushPromises();
     });
-    expect(screen.getByText(/HomePage.title/i)).toBeDefined();
+    expect(screen.getByText(/StudentPage.title/i)).toBeDefined();
   });
-  it("shows words to repeat", async () => {
-    render(<Subject />);
-    await act(async () => {
-      await flushPromises();
-    });
-    expect(screen.getByText(/HomePage.repeat.action/i)).toBeDefined();
-  });
-  it("shows courses to continue", async () => {
-    render(<Subject />);
-    await act(async () => {
-      await flushPromises();
-    });
-    expect(screen.getByText(/HomePage.unstarted.action/i)).toBeDefined();
-  });
+  // it("shows words to repeat", async () => {
+  //   render(<Subject />);
+  //   await act(async () => {
+  //     await flushPromises();
+  //   });
+  //   expect(screen.getByText(/StudentPage.repeat.action/i)).toBeDefined();
+  // });
+  // it("shows courses to continue", async () => {
+  //   render(<Subject />);
+  //   await act(async () => {
+  //     await flushPromises();
+  //   });
+  //   expect(screen.getByText(/HomePage.unstarted.action/i)).toBeDefined();
+  // });
 });

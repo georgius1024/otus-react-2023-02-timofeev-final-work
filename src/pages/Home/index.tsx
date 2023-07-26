@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import currentProgress from "@/services/currentProgress";
 import useUid from "@/utils/UidHook";
-
 import GenericLoadingState from "@/components/GenericLoadingState";
 
 import type { CourseProgress } from "@/services/currentProgress";

@@ -56,7 +56,6 @@ const mockRepetitions = vi.hoisted(() => [
     finishedAt: null,
   },
 ]);
-
 vi.mock("@/services/progress", () => ({
   find: vi
     .fn()

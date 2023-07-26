@@ -14,7 +14,6 @@ type ProgressResponse = {
 export default async function currentProgress(
   uid: string
 ): Promise<ProgressResponse> {
-
   if (!uid) {
     throw new Error('missing UID')
   }
