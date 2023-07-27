@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage, ref as refFunc, uploadBytes as uploadBytesFunc } from "firebase/storage";
 
 const {
   VITE_APY_KEY,
@@ -25,5 +26,8 @@ const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const storage = getStorage();
+export const ref = (name: string) => refFunc(storage, name);
+export const uploadBytes = uploadBytesFunc;
 
 export default app;
