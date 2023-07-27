@@ -11,7 +11,6 @@ import useUid from "@/utils/UidHook";
 
 import * as modules from "@/services/modules";
 import * as progress from "@/services/progress";
-import * as repetition from "@/services/repetition";
 
 import CoursePageLoading from "@/pages/Learning/components/LearningPageLoading";
 
@@ -138,14 +137,6 @@ export default function CoursePage() {
   const openLessonPage = (lessonId: string) => {
     navigate(`/learning/course/${id}/lesson/${lessonId}`);
   };
-
-  const openRepetitionPage = () => {
-    navigate("/learning/repetition");
-  };
-
-  const openRepetitionAddWordPage = () => {
-    navigate('/learning/repetition/add');
-  }
 
   const startLesson = (lesson: Module) => {
     if (!lesson || !lesson.id) {
