@@ -86,6 +86,7 @@ test("Long user jorney", async ({ page }) => {
   await page.getByLabel("Password").fill(process.env.TEST_USER_PASSWORD);
   await clickButtonWithText("login");
   //#endregion
+
   //#region Fill profile
   await page.waitForURL("**/profile");
   await typeIntoPlaceholder("Enter your name here", process.env.TEST_USER_NAME);
@@ -282,14 +283,25 @@ test("Long user jorney", async ({ page }) => {
   //#endregion
 
   //#endregion
+
+  //#region Inspect home page
+  await page.goto("/");
+  await whenHeadingIsVisible("Home page");
+  await whenHeadingIsVisible('We have more courses for you');
+  //#endregion
+
+
   //#region Inspect students page
   await clickLinkWithText("Students");
   await page.waitForURL("**/students");
   await whenHeadingIsVisible("Students");
   await whenTextIsVisible(process.env.TEST_USER_NAME, 1);
+  clickLinkWithText(process.env.TEST_USER_NAME);
+  await page.waitForURL("**/students/**");
+  await whenTextIsVisible('Basic course name');
   //#endregion
 
-  //#region Inspect students page
+  //#region Inspect Stats page
   await clickButtonWithText(process.env.TEST_USER_NAME);
   await clickLinkWithText("Stats");
   await page.waitForURL("**/stats");
