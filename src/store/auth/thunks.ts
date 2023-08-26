@@ -58,7 +58,7 @@ export const updateProfile = createAsyncThunk(
   "auth/update",
   async (payload: ProfilePayload) => {
     const profile = payload.profile;
-
+    console.log(profile)
     const user = await users.findWithUid(profile.uid)
     if (user) {
       await users.update(profile)
